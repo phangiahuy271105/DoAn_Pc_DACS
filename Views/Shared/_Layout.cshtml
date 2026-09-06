@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TTGSHOP Clone</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Top bar kiểu viên thuốc -->
+    <div class="top-bar d-none d-md-block">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a href="#" class="pill-btn text-white"><i class="fas fa-map-marker-alt"></i> Hệ thống showroom</a>
+                <a href="#" class="pill-btn text-white"><i class="fas fa-phone-alt"></i> Bán hàng trực tuyến</a>
+                <a href="#" class="text-white">Trang tin công nghệ</a>
+                <a href="#" class="pill-btn text-white"><i class="fas fa-tools"></i> TƯ VẤN BUILD PC</a>
+                <a href="#" class="text-white">Phần mềm hay</a>
+            </div>
+            <div>
+                <a href="#" class="text-white me-2">Đăng ký</a> <span class="text-white opacity-50">|</span> <a href="#" class="text-white ms-2">Đăng nhập</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-main">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="/" class="text-decoration-none" style="width: 250px;">
+                <!-- Nhớ thay logo này bằng ảnh logo thật của ông nếu có nhé -->
+                <img src="https://ttgshop.vn/media/banner/logo_ttgshop-logo-27122025-1.png" alt="Logo" style="height: 45px;">
+            </a>
+
+            <!-- Search -->
+            <div class="search-box flex-grow-1 me-4">
+                <select>
+                    <option>Tất cả danh mục</option>
+                    <option>PC GAMING</option>
+                    <option>PC WORKSTATION 2D 3D</option>
+                    <option>PC AMD GAMING</option>
+                    <option>PC MINI</option>
+                    <option>PC VĂN PHÒNG</option>
+                    <option>Linh kiện máy tính</option>
+                    <option>Màn hình máy tính</option>
+                </select>
+                <input type="text" placeholder="Tìm kiếm sản phẩm...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- Actions Hộp Xám -->
+            <div class="header-actions">
+                <a href="#" class="action-item">
+                    <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
+                    <div class="text-dark">
+                        <span class="d-block" style="font-size: 11px;">Hotline mua hàng</span>
+                        <span class="d-block fw-bold" style="font-size: 14px;">098.655.2233</span>
+                    </div>
+                </a>
+                <a href="#" class="action-item">
+                    <div class="icon-circle"><i class="fas fa-desktop"></i></div>
+                    <div class="text-dark fw-bold" style="font-size: 12px; line-height: 1.4;">Xây dựng<br>Cấu hình PC</div>
+                </a>
+                <a href="#" class="action-item">
+                    <div class="icon-circle"><i class="fas fa-shopping-cart text-danger"></i></div>
+                    <div class="text-dark fw-bold" style="font-size: 13px;">Giỏ hàng</div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Nền Trắng -->
+    <div class="menu-wrapper">
+        <div class="container d-flex align-items-center py-2">
+            <div class="cat-btn mb-0">
+                <i class="fas fa-bars"></i> DANH MỤC SẢN PHẨM
+                <div class="cat-menu-dropdown">
+                    <div class="cat-item">
+                        <span>PC GAMING</span> <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="cat-item">
+                        <span>PC WORKSTATION 2D 3D</span> <i class="fas fa-chevron-right"></i>
+                        <div class="mega-menu">
+                            <div class="mega-col">
+                                <a href="#">PC VIDEO EDITING</a>
+                                <a href="#">PC RENDERING</a>
+                            </div>
+                            <div class="mega-col">
+                                <a href="#">PC PHOTO EDITING</a>
+                                <a href="#">PC Architecture - CAD</a>
+                            </div>
+                            <div class="mega-col">
+                                <a href="#">PC 3D DESIGN - Animation</a>
+                                <a href="#">PC Machine Learning / AI</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cat-item">
+                        <span>PC AMD GAMING</span> <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="cat-item">
+                        <span>Màn hình máy tính</span> <i class="fas fa-chevron-right"></i>
+                        <div class="mega-menu">
+                            <div class="mega-col">
+                                <span style="color:var(--primary);font-weight:bold;">Màn Hình Theo Nhu Cầu</span>
+                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Cong</a>
+                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Văn Phòng</a>
+                            </div>
+                            <div class="mega-col">
+                                <span style="color:var(--primary);font-weight:bold;">Màn Hình Theo Hãng</span>
+                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Gigabyte</a>
+                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình MSI</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-menu flex-grow-1">
+                <a href="#"><div class="icon-bg"><i class="fas fa-desktop"></i></div> PC GAMING</a>
+                <a href="#"><div class="icon-bg"><i class="fas fa-server"></i></div> PC WORKSTATION 2D 3D</a>
+                <a href="#"><div class="icon-bg"><i class="fas fa-microchip"></i></div> PC AMD GAMING</a>
+                <a href="#"><div class="icon-bg"><i class="fas fa-box"></i></div> PC MINI</a>
+                <a href="#"><div class="icon-bg"><i class="fas fa-briefcase"></i></div> PC VĂN PHÒNG</a>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Ruột trang web (Các trang con sẽ chui vào đây) -->
+    <main role="main">
+        @RenderBody()
+    </main>
+    <section class="features">
+        <div class="features__wrap">
+            <div class="feature"><i class="fa-solid fa-truck-fast"></i><div><h4>GIAO HÀNG TOÀN QUỐC</h4><p>Giao hàng trước, trả tiền sau COD</p></div></div>
+            <div class="feature"><i class="fa-solid fa-rotate-left"></i><div><h4>ĐỔI TRẢ DỄ DÀNG</h4><p>Đổi mới trong 30 ngày đầu</p></div></div>
+            <div class="feature"><i class="fa-solid fa-wallet"></i><div><h4>THANH TOÁN TIỆN LỢI</h4><p>Trả tiền mặt, chuyển khoản, trả góp 0%</p></div></div>
+            <div class="feature"><i class="fa-solid fa-headset"></i><div><h4>HỖ TRỢ NHIỆT TÌNH</h4><p>Tư vấn tổng đài miễn phí 24/7</p></div></div>
+        </div>
+    </section>
+
+    <section class="commit">
+        <p class="commit__sub">Trải nghiệm mua sắm tại <strong>TTG SHOP</strong></p>
+        <h2 class="commit__title">Cam Kết <span>100%</span> Hài Lòng</h2>
+        <div class="commit__list">
+            <div class="commit__item"><span>1. Liên hệ chăm sóc khách hàng dễ dàng</span><i class="fa-solid fa-plus"></i></div>
+            <div class="commit__item"><span>2. Giao hàng nhanh trong 2 giờ mà không thu thêm phí</span><i class="fa-solid fa-plus"></i></div>
+            <div class="commit__item"><span>3. Miễn phí lên đời và trải nghiệm sản phẩm trong vòng 15 ngày</span><i class="fa-solid fa-plus"></i></div>
+            <div class="commit__item"><span>4. Cam kết thu cũ đổi mới trọn đời với tất cả các sản phẩm Gaming Gear và linh kiện máy tính</span><i class="fa-solid fa-plus"></i></div>
+            <div class="commit__item"><span>5. Cho mượn sản phẩm miễn phí thay thế trong thời gian bảo hành tại TTG SHOP</span><i class="fa-solid fa-plus"></i></div>
+        </div>
+    </section>
+    <!-- Showrooms Footer -->
+    <div class="showrooms">
+        <div class="container">
+            <h2>HỆ THỐNG SHOWROOM PGH</h2>
+            <div class="grid2">
+                <div class="box">
+                    <div class="bar">SHOWROOM HÀ NỘI</div>
+                    <p>📍 Địa chỉ: 85 Thái Hà - Đống Đa - HN</p>
+                    <p>📞 098.655.2233</p>
+                    <p>✉️ pghshoponline@gmail.com</p>
+                </div>
+                <div class="box">
+                    <div class="bar">SHOWROOM TP. HỒ CHÍ MINH</div>
+                    <p>📍 Địa chỉ: 83A Cửu Long - Q10 - TPHCM</p>
+                    <p>📞 098.655.2233</p>
+                    <p>✉️ pghshoponline@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <footer class="bottom">
+        <div class="container grid4">
+            <div>
+                <h4>Về PGH SHOP</h4>
+                <p style="line-height:1.6;">PGH SHOP là đơn vị chuyên cung cấp PC Gaming, PC Workstation, linh kiện máy tính giá tốt.</p>
+            </div>
+            <div>
+                <h4>Thông tin liên hệ</h4>
+                <ul>
+                    <li>CS1: 85 Thái Hà - Đống Đa - HN</li>
+                    <li>CS2: 83A Cửu Long - Q10 - TPHCM</li>
+                    <li>098.655.2233</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Tài khoản ngân hàng</h4>
+                <ul><li>Tra cứu phương thức thanh toán</li></ul>
+            </div>
+            <div>
+                <h4>Chính sách</h4>
+                <ul>
+                    <li>Chính sách bảo mật</li>
+                    <li>Quy định bảo hành</li>
+                    <li>Chính sách đổi trả</li>
+                    <li>Điều khoản sử dụng</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright container">© 2026 PGHSHOP - Đồ án lập trình.</div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
