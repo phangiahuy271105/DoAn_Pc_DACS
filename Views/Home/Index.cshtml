@@ -1,0 +1,189 @@
+﻿@{
+    ViewData["Title"] = "Trang Chủ";
+}
+@model IEnumerable<DoAn_Pc_DACS.Models.Product>
+
+<div class="hero" style="max-width: 1280px; margin: 0 auto; padding: 0 16px;">
+
+    <div id="dragBannerContainer" style="overflow: hidden; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 16px; cursor: grab; position: relative;">
+        <div id="dragBanner" style="display: flex; transition: transform 0.4s ease-out; width: 100%;">
+            <img src="~/images/banner/banner-main-1.png" class="banner-slide-img" style="width: 100%; flex-shrink: 0; object-fit: cover; aspect-ratio: 21/9; user-select: none; -webkit-user-drag: none;" />
+            <img src="~/images/banner/banner-main-2.jpg" class="banner-slide-img" style="width: 100%; flex-shrink: 0; object-fit: cover; aspect-ratio: 21/9; user-select: none; -webkit-user-drag: none;" />
+            <img src="~/images/banner/banner-main-3.jpg" class="banner-slide-img" style="width: 100%; flex-shrink: 0; object-fit: cover; aspect-ratio: 21/9; user-select: none; -webkit-user-drag: none;" />
+        </div>
+    </div>
+
+    <div class="promo-triple" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 30px;">
+        <img src="~/images/banner/banner-under-1.png" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" />
+        <img src="~/images/banner/banner-under-2.png" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" />
+        <img src="~/images/banner/banner-under-3.jpg" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" />
+    </div>
+
+    <!-- DANH MỤC 1: PC GAMING -->
+    <section class="section">
+        <div class="section-head">
+            <h2>PC GAMING <span class="tabs"><a href="#">PC Gaming giá rẻ</a><a href="#">PC Stream Game</a><a href="#">PC Gaming Premium</a></span></h2>
+            <a class="see-all" href="#">Xem tất cả »</a>
+        </div>
+
+        <div class="product-slider-wrapper">
+            <button class="slider-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="product-slider-track">
+                @foreach (var item in Model.Where(p => p.CategoryId == 99))
+                {
+                    <div class="pcard">
+                        <span class="badge">-@item.Discount%</span>
+
+                        <!-- ĐÃ KHÔI PHỤC HÌNH ẢNH, TÊN, GIÁ -->
+                        <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
+                            <div class="thumb" style="background: none; padding: 0;">
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 1/1;" />
+                            </div>
+                            <h3>@item.Name</h3>
+                            <div style="display: flex; flex-direction: column; margin-bottom: 12px;">
+                                <span class="price" style="color: #e6231e; font-size: 15px;">@item.Price.ToString("N0") VNĐ</span>
+                                <span class="old-price" style="font-size: 12px; margin-left: 0;">@item.OldPrice.ToString("N0") VNĐ</span>
+                            </div>
+                        </a>
+
+                        <!-- ĐÃ FIX NÚT FORM GIỎ HÀNG CHUẨN CSS CŨ CỦA ÔNG -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                    <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
+                                </button>
+                            </form>
+                            <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                        </div>
+
+                        <div class="product-tooltip">
+                            <div class="tt-header">@item.Name</div>
+                            <div class="tt-body">
+                                <div class="tt-price-row"><span>Giá bán:</span> <span class="tt-price-val">@item.Price.ToString("N0") VNĐ</span></div>
+                                <div class="tt-price-row"><span>Bảo hành:</span> <span>36 Tháng</span></div>
+                                <div style="background:#ff5636;color:#fff;padding:4px 8px;border-radius:4px;display:inline-block;font-weight:bold;margin-top:5px;font-size:12px;">Mô tả tóm tắt:</div>
+                                <ul class="tt-specs">
+                                    <li>Mainboard: @(item.ComponentSpec?.Mainboard ?? "Đang cập nhật")</li>
+                                    <li>CPU: @(item.ComponentSpec?.Socket ?? "Đang cập nhật")</li>
+                                    <li>RAM: @(item.ComponentSpec?.RamType ?? "Đang cập nhật")</li>
+                                    <li>VGA: @(item.ComponentSpec?.Vga ?? "Đang cập nhật")</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="slider-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- DANH MỤC 2: PC WORKSTATION -->
+    <section class="section">
+        <div class="section-head"><h2>PC WORKSTATION 2D 3D</h2><a class="see-all" href="#">Xem tất cả »</a></div>
+        <div class="product-slider-wrapper">
+            <button class="slider-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="product-slider-track">
+                @foreach (var item in Model.Where(p => p.CategoryId == 100))
+                {
+                    <div class="pcard">
+                        <span class="badge">-@item.Discount%</span>
+
+                        <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
+                            <div class="thumb" style="background: none; padding: 0;">
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 1/1;" />
+                            </div>
+                            <h3>@item.Name</h3>
+                            <div style="display: flex; flex-direction: column; margin-bottom: 12px;">
+                                <span class="price" style="color: #e6231e; font-size: 15px;">@item.Price.ToString("N0") VNĐ</span>
+                                <span class="old-price" style="font-size: 12px; margin-left: 0;">@item.OldPrice.ToString("N0") VNĐ</span>
+                            </div>
+                        </a>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                    <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
+                                </button>
+                            </form>
+                            <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                        </div>
+
+                        <div class="product-tooltip">
+                            <div class="tt-header">@item.Name</div>
+                            <div class="tt-body">
+                                <div class="tt-price-row"><span>Giá bán:</span> <span class="tt-price-val">@item.Price.ToString("N0") VNĐ</span></div>
+                                <div class="tt-price-row"><span>Bảo hành:</span> <span>36 Tháng</span></div>
+                                <div style="background:#ff5636;color:#fff;padding:4px 8px;border-radius:4px;display:inline-block;font-weight:bold;margin-top:5px;font-size:12px;">Mô tả tóm tắt:</div>
+                                <ul class="tt-specs">
+                                    <li>Mainboard: @(item.ComponentSpec?.Mainboard ?? "Đang cập nhật")</li>
+                                    <li>CPU: @(item.ComponentSpec?.Socket ?? "Đang cập nhật")</li>
+                                    <li>RAM: @(item.ComponentSpec?.RamType ?? "Đang cập nhật")</li>
+                                    <li>VGA: @(item.ComponentSpec?.Vga ?? "Đang cập nhật")</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="slider-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- DANH MỤC 3: LINH KIỆN MÁY TÍNH -->
+    <section class="section" style="margin-bottom: 50px;">
+        <div class="section-head"><h2>LINH KIỆN MÁY TÍNH</h2><a class="see-all" href="#">Xem tất cả »</a></div>
+        <div class="product-slider-wrapper">
+            <button class="slider-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="product-slider-track">
+                @foreach (var item in Model.Where(p => p.CategoryId == 101))
+                {
+                    <div class="pcard">
+                        <span class="badge">-@item.Discount%</span>
+
+                        <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
+                            <div class="thumb" style="background: none; padding: 0;">
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 1/1;" />
+                            </div>
+                            <h3>@item.Name</h3>
+                            <div style="display: flex; flex-direction: column; margin-bottom: 12px;">
+                                <span class="price" style="color: #e6231e; font-size: 15px;">@item.Price.ToString("N0") VNĐ</span>
+                                <span class="old-price" style="font-size: 12px; margin-left: 0;">@item.OldPrice.ToString("N0") VNĐ</span>
+                            </div>
+                        </a>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                    <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
+                                </button>
+                            </form>
+                            <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                        </div>
+
+                        <div class="product-tooltip">
+                            <div class="tt-header">@item.Name</div>
+                            <div class="tt-body">
+                                <div class="tt-price-row"><span>Giá bán:</span> <span class="tt-price-val">@item.Price.ToString("N0") VNĐ</span></div>
+                                <div class="tt-price-row"><span>Bảo hành:</span> <span>36 Tháng</span></div>
+                                <div style="background:#ff5636;color:#fff;padding:4px 8px;border-radius:4px;display:inline-block;font-weight:bold;margin-top:5px;font-size:12px;">Mô tả tóm tắt:</div>
+                                <ul class="tt-specs">
+                                    <li>Mainboard: @(item.ComponentSpec?.Mainboard ?? "Đang cập nhật")</li>
+                                    <li>CPU: @(item.ComponentSpec?.Socket ?? "Đang cập nhật")</li>
+                                    <li>RAM: @(item.ComponentSpec?.RamType ?? "Đang cập nhật")</li>
+                                    <li>VGA: @(item.ComponentSpec?.Vga ?? "Đang cập nhật")</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="slider-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+</div>
