@@ -1,0 +1,150 @@
+﻿@model IEnumerable<DoAn_Pc_DACS.Models.Product>
+@{
+    ViewData["Title"] = "Tất cả sản phẩm";
+}
+
+<div class="container mt-4 mb-5" style="max-width: 1450px;">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-dt mb-4 fw-bold" style="font-size: 13px;">
+        <a href="/" class="text-decoration-none text-secondary">Trang chủ</a> <span class="mx-2 text-muted">›</span>
+        <span class="text-dark">Tất cả sản phẩm</span>
+    </div>
+
+    <div class="row">
+        <!-- ================= CỘT TRÁI: BỘ LỌC (SIDEBAR) ================= -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <form id="filterForm" method="get" action="/Product/Index">
+                <div class="bg-white p-3 rounded shadow-sm border">
+                    <h5 class="fw-bold mb-3 border-bottom pb-2 text-uppercase">
+                        <i class="fa-solid fa-filter text-danger"></i> LỌC SẢN PHẨM
+                    </h5>
+                    <!-- 1. Lọc theo Danh mục -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2">DANH MỤC</h6>
+                        <div class="form-check mb-2">
+                            <!-- Đổi name thành "slug", value thành chuỗi rỗng -->
+                            <input class="form-check-input" type="radio" name="slug" id="cat-all" value="" checked>
+                            <label class="form-check-label" for="cat-all">Tất cả sản phẩm</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="slug" id="cat-gaming" value="pc-gaming">
+                            <label class="form-check-label" for="cat-gaming">PC Gaming</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="slug" id="cat-workstation" value="pc-workstation">
+                            <label class="form-check-label" for="cat-workstation">PC Workstation</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="slug" id="cat-linhkien" value="linh-kien">
+                            <label class="form-check-label" for="cat-linhkien">Linh kiện máy tính</label>
+                        </div>
+                    </div>
+
+                    <!-- 2. Lọc theo Khoảng Giá -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2">KHOẢNG GIÁ</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceRange" id="price-all" value="" checked>
+                            <label class="form-check-label" for="price-all">Tất cả mức giá</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceRange" id="price-1" value="0-10000000">
+                            <label class="form-check-label" for="price-1">Dưới 10 triệu</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceRange" id="price-2" value="10000000-20000000">
+                            <label class="form-check-label" for="price-2">Từ 10 - 20 triệu</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceRange" id="price-3" value="20000000-30000000">
+                            <label class="form-check-label" for="price-3">Từ 20 - 30 triệu</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="priceRange" id="price-4" value="30000000-999999999">
+                            <label class="form-check-label" for="price-4">Trên 30 triệu</label>
+                        </div>
+                    </div>
+
+                    <!-- 3. Lọc theo Dòng CPU -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2">DÒNG CPU (HÃNG)</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="cpuBrand" id="cpu-intel" value="Intel">
+                            <label class="form-check-label" for="cpu-intel">Intel Core</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="cpuBrand" id="cpu-amd" value="AMD">
+                            <label class="form-check-label" for="cpu-amd">AMD Ryzen</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 fw-bold shadow-sm py-2">XEM KẾT QUẢ LỌC</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ================= CỘT PHẢI: LƯỚI SẢN PHẨM ================= -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Thanh Công Cụ (Sắp xếp) -->
+            <div class="bg-white p-3 rounded shadow-sm border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h4 class="fw-bold m-0 text-dark">
+                    Tìm thấy <span class="text-danger">@(Model != null ? Model.Count() : 0)</span> sản phẩm
+                </h4>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fw-bold" style="font-size: 14px;">Sắp xếp theo:</span>
+                    <select class="form-select form-select-sm border-danger text-danger fw-bold shadow-none" style="width: 150px;" onchange="this.form.submit()" form="filterForm" name="sortBy">
+                        <option value="newest">Mới nhất</option>
+                        <option value="price_asc">Giá tăng dần</option>
+                        <option value="price_desc">Giá giảm dần</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Danh sách PC (Dùng lại Class .pcard của ông) -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <div class="col">
+                            <div class="pcard h-100 d-flex flex-column bg-white border rounded shadow-sm p-3">
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">-@item.Discount%</span>
+                                <a href="/Home/Details/@item.Id" class="text-decoration-none text-dark flex-grow-1">
+                                    <div class="text-center mb-3">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid rounded" style="object-fit: cover; aspect-ratio: 1/1;" />
+                                    </div>
+                                    <h3 class="fs-6 fw-bold mb-2" style="height: 40px; overflow: hidden;">@item.Name</h3>
+                                    <div class="d-flex flex-column mb-3">
+                                        <span class="fw-bold" style="color: #e6231e; font-size: 16px;">@item.Price.ToString("N0") VNĐ</span>
+                                        <span class="text-muted text-decoration-line-through" style="font-size: 12px;">@item.OldPrice.ToString("N0") VNĐ</span>
+                                    </div>
+                                </a>
+
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="m-0 p-0">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-sm btn-outline-primary fw-bold px-2 py-1" style="font-size: 12px;">
+                                            <i class="fa-solid fa-cart-shopping me-1"></i> THÊM VÀO GIỎ
+                                        </button>
+                                    </form>
+                                    <span class="badge bg-success bg-opacity-25 text-success">Còn hàng</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-warning text-center py-5">
+                            <i class="fa-solid fa-box-open fs-1 text-warning mb-3"></i>
+                            <h5 class="fw-bold">Không tìm thấy sản phẩm nào!</h5>
+                            <p>Vui lòng thử điều chỉnh lại bộ lọc.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

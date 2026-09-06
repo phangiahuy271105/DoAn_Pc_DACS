@@ -1,0 +1,48 @@
+﻿@model IEnumerable<DoAn_Pc_DACS.Models.Product>
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">QUẢN LÝ SẢN PHẨM</h2>
+        <a href="/Admin/CreateProduct" class="btn btn-primary btn-lg fw-bold">+ THÊM SẢN PHẨM MỚI</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 80px;" class="text-center">ID</th>
+                    <th style="width: 120px;" class="text-center">Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th class="text-end">Giá bán</th>
+                    <th style="width: 150px;" class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center fw-bold">@item.Id</td>
+                        <td class="text-center">
+                            <img src="@item.ImageUrl" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; padding: 4px; background: #fff;" />
+                        </td>
+                        <td class="fw-bold">@item.Name</td>
+                        <td>
+                            <span class="badge bg-info text-dark">@item.Category?.Name</span>
+                        </td>
+                        <td class="text-end text-danger fw-bold">@item.Price.ToString("N0") đ</td>
+                        <td class="text-center">
+                            <a href="/Admin/EditProduct/@item.Id" class="btn btn-sm btn-warning fw-bold">Sửa</a>
+                            <form asp-action="DeleteProduct" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger fw-bold ms-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này sẽ xóa sạch dữ liệu và hình ảnh trong ổ cứng!');">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
