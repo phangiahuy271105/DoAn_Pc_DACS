@@ -19,6 +19,7 @@ namespace DoAn_Pc_DACS.Controllers
         public IActionResult Index()
         {
             var products = _context.Products
+                                   .Include(p => p.Category)
                                    .Include(p => p.ComponentSpec)
                                    .ToList();
             return View(products);
@@ -27,6 +28,7 @@ namespace DoAn_Pc_DACS.Controllers
         public IActionResult Details(int id)
         {
             var product = _context.Products
+                                  .Include(p => p.Category)
                                   .Include(p => p.ComponentSpec)
                                   .Include(p => p.ProductImages)
                                   .FirstOrDefault(p => p.Id == id);

@@ -47,3 +47,68 @@ button.accept-policy {
     white-space: nowrap;
     line-height: 60px;
 }
+.search-suggest-dropdown {
+    position: absolute;
+    top: 100%; /* Căn nằm ngay sát dưới thanh tìm kiếm */
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 9999; /* Đảm bảo nó nổi lên trên mọi thành phần khác */
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+#suggestList {
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.suggest-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.2s;
+}
+
+    .suggest-item:hover {
+        background: #f9f9f9;
+    }
+
+.suggest-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 1px solid #eee;
+}
+
+.suggest-name {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Cắt chữ nếu tên dài quá 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.suggest-price {
+    color: #e6231e;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.suggest-footer {
+    background: #e9ecef;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    .suggest-footer:hover {
+        background: #dee2e6;
+    }

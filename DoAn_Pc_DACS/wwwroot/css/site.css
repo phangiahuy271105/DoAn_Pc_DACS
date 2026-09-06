@@ -488,7 +488,7 @@ ul {
    ======================================= */
 .section {
     max-width: 1280px;
-    margin: 26px auto 0;
+    margin: 26px auto 40px;
     padding: 0 16px;
 }
 
@@ -1008,9 +1008,10 @@ footer.bottom {
     scroll-behavior: smooth;
     cursor: grab;
     padding-top: 20px;
-    padding-bottom: 250px;
+   
+    padding-bottom: 30px;
     margin-top: -20px;
-    margin-bottom: -250px;
+    margin-bottom: -30px;
 }
 
     .product-slider-track::-webkit-scrollbar {
@@ -1069,3 +1070,28 @@ footer.bottom {
         flex: 0 0 85%;
     }
 }
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+    border-color: #ccc;
+    cursor: pointer;
+}
+
+    .form-check-input:checked {
+        background-color: #e6231e;
+        border-color: #e6231e;
+    }
+
+.form-check-label {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 5px;
+    color: #444;
+}
+
+    .form-check-label:hover {
+        color: #e6231e;
+    }

@@ -36,7 +36,9 @@
                         <td class="text-end text-danger fw-bold">@item.Price.ToString("N0") đ</td>
                         <td class="text-center">
                             <a href="/Admin/EditProduct/@item.Id" class="btn btn-sm btn-warning fw-bold">Sửa</a>
-                            <a asp-action="DeleteProduct" asp-route-id="@item.Id" class="btn btn-sm btn-danger fw-bold ms-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này sẽ xóa sạch dữ liệu và hình ảnh trong ổ cứng!');">Xóa</a>
+                            <form asp-action="DeleteProduct" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger fw-bold ms-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này sẽ xóa sạch dữ liệu và hình ảnh trong ổ cứng!');">Xóa</button>
+                            </form>
                         </td>
                     </tr>
                 }

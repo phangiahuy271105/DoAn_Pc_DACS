@@ -114,7 +114,6 @@ wwwroot\images\uploads\e4d70b1d-2d47-41ed-b0d7-d225eb0acf48_RYZEN7_7800X3D_RTX50
 wwwroot\images\uploads\e75170d5-fc9a-472b-82f4-62e272a95239_RYZEN7_7800X3D_RTX5070_12GBOC_WHITE_3.jpg
 wwwroot\images\uploads\f0dda62f-82c1-40c4-aa7e-07dfd1bd8597_RYZEN7_7800X3D_RTX5070_12GBOC_WHITE_3.jpg
 wwwroot\images\uploads\f2575a26-3dc3-4a82-8134-1956b2580630_PC_ULTRA_GAMING_i5_14400F_RTX5070_2.png
-wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -175,9 +174,10 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\js\site.js
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\css\details.css
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\css\site.css
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\favicon.ico
-C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\css\details.css
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css

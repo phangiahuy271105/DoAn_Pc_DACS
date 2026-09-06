@@ -206,6 +206,11 @@ namespace DoAn_Pc_DACS.Controllers
 
                 if (model.DeleteOldGallery && product.ProductImages != null && product.ProductImages.Any())
                 {
+                    foreach (var oldImg in product.ProductImages)
+                    {
+                        var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, oldImg.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath); // Xóa file vật lý
+                    }
                     _context.ProductImages.RemoveRange(product.ProductImages);
                     product.ProductImages.Clear();
                 }
@@ -214,6 +219,14 @@ namespace DoAn_Pc_DACS.Controllers
 
                 if (model.ImageFile != null)
                 {
+                    // =============== FIX LỖI 2: XÓA ẢNH ĐẠI DIỆN CŨ TRONG Ổ CỨNG ===============
+                    if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath)) System.IO.File.Delete(oldImagePath); // Xóa file vật lý
+                    }
+
+                    // Lưu ảnh mới
                     if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -272,7 +285,8 @@ namespace DoAn_Pc_DACS.Controllers
 
             return View(model);
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products

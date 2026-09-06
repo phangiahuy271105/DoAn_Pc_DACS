@@ -92,8 +92,6 @@ C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net1
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\DoAn_Pc_DACS.pdb
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\DoAn_Pc_DACS.genruntimeconfig.cache
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\ref\DoAn_Pc_DACS.dll
-C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\hicpb6vqv3-{0}-qge551tp5p-qge551tp5p.gz
-C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\0ha6y542ms-{0}-qge551tp5p-qge551tp5p.gz
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\DoAn_Pc_DACS.csproj.AssemblyReference.cache
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\bin\Debug\net10.0\Azure.Core.dll
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\bin\Debug\net10.0\Azure.Identity.dll
@@ -221,6 +219,9 @@ C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\bin\Debug\net1
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\bin\Debug\net10.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\DoAn_Pc_.452FD2BD.Up2Date
-C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\rbxkwoglaa-{0}-vvwx7iq45n-vvwx7iq45n.gz
-C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\df2lbn5ef6-{0}-i0x7v0wtab-i0x7v0wtab.gz
 C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\b90or9l0w6-{0}-508excqk2v-508excqk2v.gz
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\DoAn_Pc_DACS.sourcelink.json
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\rbxkwoglaa-{0}-v9kyjhnb2a-v9kyjhnb2a.gz
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\df2lbn5ef6-{0}-24v04xucx9-24v04xucx9.gz
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\hicpb6vqv3-{0}-jd52cuvb12-jd52cuvb12.gz
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\DoAn_Pc_DACS\obj\Debug\net10.0\compressed\0ha6y542ms-{0}-jd52cuvb12-jd52cuvb12.gz

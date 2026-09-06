@@ -513,3 +513,63 @@ function updateDynamicPrices() {
         lblTietKiem.innerText = formatCurrency(totalTietKiem) + "đ";
     }
 }
+<script>
+    let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+    const suggestList = document.getElementById('suggestList');
+    const suggestTotal = document.getElementById('suggestTotal');
+
+    // Lắng nghe sự kiện mỗi khi khách hàng gõ phím
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout); // Xóa bộ đếm cũ nếu khách đang gõ liên tục
+    const keyword = this.value.trim();
+
+    // Nếu gõ ít hơn 2 chữ thì ẩn đi, không tìm
+    if(keyword.length < 2) {
+        searchDropdown.style.display = 'none';
+    return;
+        }
+
+        // Đợi 300ms sau khi ngừng gõ mới gọi API để đỡ lag server
+        searchTimeout = setTimeout(() => {
+        fetch(`/Product/SearchSuggest?keyword=${encodeURIComponent(keyword)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.items.length > 0) {
+                    suggestList.innerHTML = ''; // Xóa list cũ
+
+                    // Vòng lặp vẽ ra từng HTML của sản phẩm mới
+                    data.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <a href="/Home/Details/${item.id}" class="suggest-item">
+                                <img src="${item.imageUrl}" class="suggest-img" alt="${item.name}">
+                                <div>
+                                    <div class="suggest-name">${item.name}</div>
+                                    <div class="suggest-price">${item.price}</div>
+                                </div>
+                            </a>
+                        `;
+                        suggestList.appendChild(li);
+                    });
+
+                    // Cập nhật số lượng ở dưới cùng
+                    suggestTotal.innerText = data.total;
+
+                    // Hiển thị Dropdown
+                    searchDropdown.style.display = 'flex';
+                } else {
+                    searchDropdown.style.display = 'none'; // Không có thì ẩn
+                }
+            });
+        }, 300); 
+    });
+
+    // Ẩn Dropdown khi khách click chuột ra ngoài vùng tìm kiếm
+    document.addEventListener('click', function(e) {
+        if(!document.getElementById('mySearchForm').contains(e.target)) {
+        searchDropdown.style.display = 'none';
+        }
+    });
+</script>
