@@ -513,7 +513,7 @@ function updateDynamicPrices() {
         lblTietKiem.innerText = formatCurrency(totalTietKiem) + "đ";
     }
 }
-<script>
+
     let searchTimeout;
     const searchInput = document.getElementById('searchInput');
     const searchDropdown = document.getElementById('searchDropdown');
@@ -572,4 +572,3 @@ function updateDynamicPrices() {
         searchDropdown.style.display = 'none';
         }
     });
-</script>

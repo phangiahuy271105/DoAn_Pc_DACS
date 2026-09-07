@@ -1,4 +1,5 @@
-﻿using DoAn_Pc_DACS.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using DoAn_Pc_DACS.Data;
 using DoAn_Pc_DACS.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace DoAn_Pc_DACS.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;

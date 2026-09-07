@@ -5,13 +5,14 @@ namespace DoAn_Pc_DACS.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ComponentSpec> ComponentSpecs { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-
+        public DbSet<Account> Accounts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -19,6 +20,16 @@ namespace DoAn_Pc_DACS.Data
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 99, Name = "PC GAMING", Slug = "pc-gaming" },
                 new Category { Id = 100, Name = "PC WORKSTATION", Slug = "pc-workstation" }
+            );
+
+            modelBuilder.Entity<Account>().HasData(
+                new Account
+                {
+                    Id = 1,
+                    Username = "admin",
+                    Password = "123", // Mật khẩu lúc demo bảo vệ đồ án
+                    Role = "Admin"
+                }
             );
 
             modelBuilder.Entity<Product>().HasData(

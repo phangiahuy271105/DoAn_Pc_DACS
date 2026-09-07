@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using DoAn_Pc_DACS.Helpers
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -21,7 +24,21 @@
                 <a href="#" class="text-white">Phần mềm hay</a>
             </div>
             <div>
-                <a href="#" class="text-white me-2">Đăng ký</a> <span class="text-white opacity-50">|</span> <a href="#" class="text-white ms-2">Đăng nhập</a>
+                <!-- Nút của Khách Hàng (Hiện tại để #, sau này ông làm form Login khách hàng thì gắn link vào) -->
+                <a href="#" class="text-white me-2 text-decoration-none">Đăng ký</a>
+                <span class="text-white opacity-50">|</span>
+                <a href="#" class="text-white ms-2 text-decoration-none">Đăng nhập</a>
+
+                <!-- DÒNG LỆNH BÍ MẬT: Chỉ khi nào ông gõ link ẩn đăng nhập thành công, nó mới hiện nút này lên -->
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <span class="text-white opacity-50 mx-2">|</span>
+                    <a href="/Admin/Index" class="text-warning fw-bold me-2 text-decoration-none">
+                        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+                    </a>
+                    <span class="text-white opacity-50">|</span>
+                    <a href="/Account/Logout" class="text-white ms-2 text-decoration-none text-warning">Đăng xuất</a>
+                }
             </div>
         </div>
     </div>
@@ -80,9 +97,19 @@
                     <div class="icon-circle"><i class="fas fa-desktop"></i></div>
                     <div class="text-dark fw-bold" style="font-size: 12px; line-height: 1.4;">Xây dựng<br>Cấu hình PC</div>
                 </a>
-                <a href="#" class="action-item">
+                <a href="/Cart/Index" class="action-item position-relative">
                     <div class="icon-circle"><i class="fas fa-shopping-cart text-danger"></i></div>
                     <div class="text-dark fw-bold" style="font-size: 13px;">Giỏ hàng</div>
+                    @{
+                        var cart = HttpContextAccessor.HttpContext.Session.Get<List<DoAn_Pc_DACS.Models.CartItem>>("Cart");
+                        int cartCount = cart != null ? cart.Sum(c => c.Quantity) : 0;
+                    }
+                    @if (cartCount > 0)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; margin-left: -15px;">
+                            @cartCount
+                        </span>
+                    }
                 </a>
             </div>
         </div>

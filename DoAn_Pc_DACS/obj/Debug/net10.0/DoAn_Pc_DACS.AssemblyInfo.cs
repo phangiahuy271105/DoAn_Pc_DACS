@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c47846b03a3c5bd20a3500abe958c7ffceeebb4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05186c08c4fc397973eb8cb886e04a5c77f77429")]
 [assembly: System.Reflection.AssemblyProductAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
