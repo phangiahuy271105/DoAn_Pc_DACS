@@ -1,46 +1,67 @@
 ﻿@model IEnumerable<DoAn_Pc_DACS.Models.Product>
+
 @{
-    ViewData["Title"] = "Quản lý sản phẩm";
+    ViewData["Title"] = "Quản lý Sản phẩm";
+    ViewData["Active"] = "products";
+    Layout = "_AdminLayout";
 }
 
-<div class="container mt-4 mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">QUẢN LÝ SẢN PHẨM</h2>
-        <a href="/Admin/CreateProduct" class="btn btn-primary fw-bold me-2"><i class="fa-solid fa-plus"></i> THÊM MỚI</a>
-        <a href="/Account/ChangePassword" class="btn btn-warning fw-bold me-2"><i class="fa-solid fa-key"></i> Đổi Mật Khẩu</a>
-        <a href="/Account/Logout" class="btn btn-danger fw-bold"><i class="fa-solid fa-right-from-bracket"></i> Đăng Xuất</a>
+<div class="content-head">
+    <div>
+        <h1>Sản phẩm</h1>
+        <div class="breadcrumb-sm">Danh sách các sản phẩm đang bán trên PGHSHOP</div>
     </div>
+    <!-- Nút bấm gọi Action CreateProduct thật của anh em mình -->
+    <a href="/Admin/CreateProduct" class="btn btn-accent">
+        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+    </a>
+</div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
+<div class="panel">
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
                 <tr>
-                    <th style="width: 80px;" class="text-center">ID</th>
-                    <th style="width: 120px;" class="text-center">Hình ảnh</th>
-                    <th>Tên sản phẩm</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên Sản phẩm</th>
                     <th>Danh mục</th>
-                    <th class="text-end">Giá bán</th>
-                    <th style="width: 150px;" class="text-center">Thao tác</th>
+                    <th>Giá bán</th>
+                    <th>Giá gốc</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                <!-- LÒNG GHÉP CODE C# LẤY DATABASE Ở ĐÂY -->
+                @foreach (var p in Model)
                 {
                     <tr>
-                        <td class="text-center fw-bold">@item.Id</td>
-                        <td class="text-center">
-                            <img src="@item.ImageUrl" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; padding: 4px; background: #fff;" />
-                        </td>
-                        <td class="fw-bold">@item.Name</td>
                         <td>
-                            <span class="badge bg-info text-dark">@item.Category?.Name</span>
+                            <div class="cell-thumb">
+                                <img src="@p.ImageUrl" alt="@p.Name" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;" />
+                            </div>
                         </td>
-                        <td class="text-end text-danger fw-bold">@item.Price.ToString("N0") đ</td>
-                        <td class="text-center">
-                            <a href="/Admin/EditProduct/@item.Id" class="btn btn-sm btn-warning fw-bold">Sửa</a>
-                            <form asp-action="DeleteProduct" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger fw-bold ms-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này sẽ xóa sạch dữ liệu và hình ảnh trong ổ cứng!');">Xóa</button>
-                            </form>
+                        <td>
+                            <div class="cell-title">@p.Name</div>
+                            <div class="cell-sub">ID: #@p.Id</div>
+                        </td>
+                        <td><span class="pill pill-info">@(p.Category?.Name ?? "Chưa có")</span></td>
+                        <td class="cell-title" style="color: var(--a-danger);">@p.Price.ToString("N0")₫</td>
+                        <td style="text-decoration: line-through; color: var(--a-muted);">@p.OldPrice.ToString("N0")₫</td>
+
+                        <td>
+                            <div class="row-actions">
+                                <!-- Nút Sửa gọi Action thật -->
+                                <a href="/Admin/EditProduct/@p.Id" class="btn btn-outline btn-icon" title="Sửa">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <!-- Nút Xóa gọi Action thật -->
+                                <form action="/Admin/DeleteProduct" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xoá sản phẩm này?');" style="display:inline;">
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="btn btn-outline btn-icon" title="Xoá" style="color:var(--a-danger);">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 }

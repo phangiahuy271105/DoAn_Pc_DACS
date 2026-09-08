@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PGHSHOP Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <!-- ============ SIDEBAR ============ -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="brand"><span>PGH</span>SHOP <small style="font-size:11px;color:#5e7577;font-weight:400;margin-left:4px;">Admin</small></div>
+
+            <nav class="admin-nav">
+                <div class="nav-label">TỔNG QUAN</div>
+                <a href="#" class="@(ViewData["Active"] as string == "dashboard" ? "active" : "")">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+
+                <div class="nav-label">QUẢN LÝ BÁN HÀNG</div>
+                <a href="/Admin/Index" class="@(ViewData["Active"] as string == "products" ? "active" : "")">
+                    <i class="fa-solid fa-box"></i> Sản phẩm
+                </a>
+                <a href="#" class="@(ViewData["Active"] as string == "orders" ? "active" : "")">
+                    <i class="fa-solid fa-file-invoice"></i> Đơn hàng &amp; Hóa đơn
+                </a>
+                <a href="#" class="@(ViewData["Active"] as string == "customers" ? "active" : "")">
+                    <i class="fa-solid fa-users"></i> Khách hàng
+                </a>
+
+                <div class="nav-label">HỆ THỐNG</div>
+                <a href="/Account/ChangePassword" class="@(ViewData["Active"] as string == "settings" ? "active" : "")">
+                    <i class="fa-solid fa-key"></i> Đổi mật khẩu
+                </a>
+                <a href="/Account/Logout">
+                    <i class="fa-solid fa-right-from-bracket" style="color: var(--a-danger)"></i> Đăng xuất
+                </a>
+            </nav>
+            <div class="sidebar-foot">PGHSHOP Admin v1.0</div>
+        </aside>
+
+        <!-- ============ MAIN ============ -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div style="display:flex;align-items:center;gap:16px;">
+                    <div class="page-title">@ViewData["Title"]</div>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Profile Động -->
+                    <div class="dropdown" id="profileDropdown">
+                        <div class="admin-profile" onclick="toggleDropdown('profileDropdown')" style="cursor:pointer;">
+                            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+                            <div class="who">
+                                <!-- CODE C# HIỂN THỊ TÊN ADMIN ĐĂNG NHẬP -->
+                                <strong>@(User.Identity.IsAuthenticated ? User.Identity.Name : "Admin")</strong>
+                                <span>Quản trị viên</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--a-muted);"></i>
+                        </div>
+                        <div class="dropdown-panel" style="width:200px;">
+                            <div class="dp-item" style="padding:10px 16px;"><a href="/Account/ChangePassword" style="display:flex;gap:8px;align-items:center;"><i class="fa-solid fa-key"></i> Đổi mật khẩu</a></div>
+                            <div class="dp-item" style="padding:10px 16px;"><a href="/Account/Logout" style="display:flex;gap:8px;align-items:center;color:var(--a-danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script>
+            function toggleDropdown(id) {
+                document.querySelectorAll('.dropdown.open').forEach(el => { if (el.id !== id) el.classList.remove('open'); });
+                document.getElementById(id).classList.toggle('open');
+            }
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.dropdown').forEach(dd => {
+                    if (!dd.contains(e.target)) dd.classList.remove('open');
+                });
+            });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

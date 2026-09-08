@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\admin.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +25,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\PC_gaming\PC ULTRA GAMING i5 14400F - RTX 5070 Ti 16GB\" />
     <Folder Include="wwwroot\images\uploads\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\admin.css" />
   </ItemGroup>
 
 </Project>
