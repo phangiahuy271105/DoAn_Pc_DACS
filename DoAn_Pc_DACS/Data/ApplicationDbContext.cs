@@ -13,6 +13,8 @@ namespace DoAn_Pc_DACS.Data
         public DbSet<ComponentSpec> ComponentSpecs { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,40 +1,58 @@
 ﻿@{
-    ViewData["Title"] = "Đăng nhập hệ thống";
-    Layout = "_AdminLayout";
+    ViewData["Title"] = "Đăng nhập";
+    Layout = null; // Trang này đứng độc lập, không dùng chung _AdminLayout
 }
-
-<div class="container mt-5 mb-5 d-flex justify-content-center">
-    <div class="card shadow-lg border-0" style="width: 450px; border-radius: 12px;">
-        <div class="card-header text-center text-white" style="background: #e6231e; border-radius: 12px 12px 0 0;">
-            <h4 class="fw-bold mb-0 py-2"><i class="fa-solid fa-user-shield"></i> ĐĂNG NHẬP ADMIN</h4>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - PGHSHOP Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body class="admin-body">
+    <div class="auth-shell">
+        <div class="auth-visual">
+            <div class="brand">PGH<span>SHOP</span></div>
+            <div>
+                <h2>Quản lý toàn bộ cửa hàng PC của bạn ở một nơi duy nhất.</h2>
+                <p>Đơn hàng, kho, khách hàng, doanh thu — cập nhật theo thời gian thực, không cần mở nhiều công cụ.</p>
+            </div>
+            <p style="color:#5e7577;">© 2026 PGHSHOP Admin</p>
         </div>
-        <div class="card-body p-4 bg-white">
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger fw-bold text-center">
-                    <i class="fa-solid fa-triangle-exclamation"></i> @ViewBag.Error
-                </div>
-            }
 
-            <form asp-action="Login" asp-controller="Account" method="post">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Tài khoản</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" name="username" class="form-control" placeholder="Nhập tài khoản..." required />
+        <div class="auth-form-side">
+            <div class="auth-card">
+                <h1>Đăng nhập quản trị</h1>
+                <div class="sub">Nhập thông tin tài khoản admin để tiếp tục.</div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div style="padding: 12px; background: var(--a-danger-bg); color: var(--a-danger); border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 13.5px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> @ViewBag.Error
                     </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Mật khẩu</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." required />
+                }
+
+                <form method="post" asp-controller="Account" asp-action="Login">
+                    <div class="form-field">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" name="username" placeholder="Nhập tài khoản admin..." required />
                     </div>
-                </div>
-                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 fs-5">
-                    ĐĂNG NHẬP
-                </button>
-            </form>
+                    <div class="form-field">
+                        <label>Mật khẩu</label>
+                        <input type="password" name="password" placeholder="••••••••" required />
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:12.5px;">
+                        <label style="display:flex;align-items:center;gap:6px;color:var(--a-muted);font-weight:400;">
+                            <input type="checkbox" style="width:auto;" /> Ghi nhớ đăng nhập
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;">Đăng nhập</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</body>
+</html>

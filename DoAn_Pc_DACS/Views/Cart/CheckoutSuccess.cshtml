@@ -1,0 +1,68 @@
+﻿@model DoAn_Pc_DACS.Models.Order
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container mt-5 mb-5" style="max-width: 700px;">
+
+    <!-- Lời cảm ơn -->
+    <div class="text-center mb-4">
+        <p class="mb-2" style="font-size: 15px;">Cảm ơn Quý khách hàng đã chọn mua hàng tại PGHSHOP. Trong 15 phút, PGHSHOP sẽ SMS hoặc gọi để xác nhận đơn hàng.</p>
+        <p class="fst-italic text-muted" style="font-size: 14px;">
+            * Các đơn hàng từ 21h30 tới 8h sáng hôm sau. PGHSHOP sẽ liên hệ với Quý khách trước 10h trưa cùng ngày.
+        </p>
+    </div>
+
+    <!-- Khối thông tin đơn hàng (Nền xanh lá) -->
+    <div class="card border-0 mb-4 shadow-sm" style="background-color: #d4edda; border-radius: 10px;">
+        <div class="card-body p-4 text-dark">
+            <h4 class="text-center fw-bold mb-4" style="color: #155724;">ĐẶT HÀNG THÀNH CÔNG</h4>
+
+            <div class="row mb-2" style="font-size: 15px;">
+                <div class="col-sm-4 fw-bold" style="color: #155724;">Mã Đơn Hàng:</div>
+                <div class="col-sm-8 fw-bold" style="color: #d9534f;">#@Model.Id</div>
+            </div>
+            <div class="row mb-2" style="font-size: 15px;">
+                <div class="col-sm-4 fw-bold" style="color: #155724;">Người Nhận:</div>
+                <div class="col-sm-8 fw-bold text-dark">@Model.CustomerName</div>
+            </div>
+            <div class="row mb-2" style="font-size: 15px;">
+                <div class="col-sm-4 fw-bold" style="color: #155724;">Số Điện Thoại:</div>
+                <div class="col-sm-8 fw-bold text-dark">@Model.PhoneNumber</div>
+            </div>
+            <div class="row mb-2" style="font-size: 15px;">
+                <div class="col-sm-4 fw-bold" style="color: #155724;">Địa Chỉ:</div>
+                <div class="col-sm-8 fw-bold text-dark">@Model.Address</div>
+            </div>
+            <div class="row mb-2" style="font-size: 15px;">
+                <div class="col-sm-4 fw-bold" style="color: #155724;">Tổng Tiền:</div>
+                <div class="col-sm-8 fw-bold" style="color: #d9534f; font-size: 16px;">@Model.TotalAmount.ToString("N0") Đ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khối danh sách sản phẩm trong đơn hàng -->
+    @foreach (var item in Model.OrderDetails)
+    {
+        <div class="card mb-3 border-0 shadow-sm" style="border-radius: 10px;">
+            <div class="card-body d-flex align-items-center p-3">
+                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; padding: 5px; border-radius: 8px;" />
+                <div>
+                    <h6 class="fw-bold mb-2 text-dark" style="font-size: 15px;">@item.Product.Name</h6>
+                    <div class="text-muted" style="font-size: 14px; line-height: 1.6;">
+                        Giá: <span class="text-dark fw-bold">@item.Price.ToString("N0")đ</span><br />
+                        Số lượng: <span class="text-dark fw-bold">@item.Quantity</span><br />
+                        Tổng tiền: <span class="fw-bold" style="color: #d9534f;">@((item.Price * item.Quantity).ToString("N0"))đ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Nút Tiếp tục mua hàng -->
+    <div class="text-center mt-4">
+        <a href="/" class="btn w-100 fw-bold text-white shadow-sm" style="background-color: #dc3545; font-size: 16px; padding: 12px; border-radius: 8px;">
+            Tiếp tục mua hàng <i class="fa-solid fa-cart-shopping ms-1"></i>
+        </a>
+    </div>
+</div>

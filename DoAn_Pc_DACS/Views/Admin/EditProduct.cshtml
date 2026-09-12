@@ -4,173 +4,90 @@
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <h2 class="fw-bold">CẬP NHẬT SẢN PHẨM</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-10">
-            <form asp-action="EditProduct" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="ExistingImageUrl" />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="Price" class="form-label fw-bold">Giá bán</label>
-                        <input asp-for="Price" type="number" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="OldPrice" class="form-label fw-bold">Giá cũ</label>
-                        <input asp-for="OldPrice" type="number" class="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="Discount" class="form-label fw-bold">Phần trăm giảm (%)</label>
-                        <input asp-for="Discount" type="number" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
-                    <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
-                        <option value="">-- Chọn danh mục --</option>
-                    </select>
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-                </div>
-
-                <div class="row mb-4 bg-light p-3 border rounded">
-                    <div class="col-md-5 border-end">
-                        <label class="form-label fw-bold text-danger">Ảnh đại diện hiện tại</label>
-                        <div class="mb-2">
-                            <img id="imagePreview" src="@Model.ExistingImageUrl" style="max-width: 150px; border: 1px solid #ccc; border-radius: 8px; padding: 4px; background: #fff;" />
-                        </div>
-                        <label asp-for="ImageFile" class="form-label fw-bold mt-2">Đổi ảnh đại diện</label>
-                        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" id="imageInput" />
-                    </div>
-
-                    <div class="col-md-7">
-                        <label class="form-label fw-bold text-primary">Ảnh thư viện hiện tại</label>
-                        @if (Model.ExistingGalleryImages != null && Model.ExistingGalleryImages.Count > 0)
-                        {
-                            <div class="d-flex gap-2 overflow-auto mb-3 pb-2">
-                                @foreach (var img in Model.ExistingGalleryImages)
-                                {
-                                    <img src="@img.ImageUrl" style="width: 60px; height: 60px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px;" />
-                                }
-                            </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" asp-for="DeleteOldGallery" />
-                                <label class="form-check-label text-danger fw-bold" asp-for="DeleteOldGallery">
-                                    Xóa tất cả ảnh thư viện cũ (Check vào đây nếu muốn up lại bộ ảnh mới bên dưới)
-                                </label>
-                            </div>
-                        }
-                        else
-                        {
-                            <p class="text-muted fst-italic">Chưa có ảnh thư viện nào.</p>
-                        }
-
-                        <label asp-for="GalleryFiles" class="form-label fw-bold text-success">Thêm ảnh vào thư viện mới</label>
-                        <input asp-for="GalleryFiles" type="file" class="form-control" accept="image/*" multiple />
-                    </div>
-                </div>
-
-                <h4 class="mt-4 fw-bold">CẤU HÌNH CHI TIẾT (BẢNG THÔNG SỐ)</h4>
-                <hr />
-                <div class="table-responsive mb-5">
-                    <table class="table table-bordered align-middle text-center bg-white shadow-sm">
-                        <thead class="table-dark">
-                            <tr>
-                                <th style="width: 120px;">Linh kiện</th>
-                                <th>Mô tả chi tiết (Tên đầy đủ)</th>
-                                <th style="width: 80px;">SL</th>
-                                <th style="width: 120px;">Bảo hành</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold">CPU</td>
-                                <td><input asp-for="Socket" class="form-control" placeholder="VD: CPU AMD Ryzen 7 9800X3D (TRAY)..." /></td>
-                                <td><input asp-for="SocketSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="SocketBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Mainboard</td>
-                                <td><input asp-for="Mainboard" class="form-control" placeholder="VD: Mainboard MSI B650M GAMING PLUS..." /></td>
-                                <td><input asp-for="MainboardSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="MainboardBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">RAM</td>
-                                <td><input asp-for="RamType" class="form-control" placeholder="VD: Ram Adata Lancer Blade 32GB..." /></td>
-                                <td><input asp-for="RamSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="RamBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Ổ cứng</td>
-                                <td><input asp-for="Storage" class="form-control" placeholder="VD: Ổ cứng SSD HIKSEMI 512GB..." /></td>
-                                <td><input asp-for="StorageSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="StorageBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Nguồn</td>
-                                <td><input asp-for="PowerSupply" class="form-control" placeholder="VD: Nguồn Máy Tính Darkflash PMT850..." /></td>
-                                <td><input asp-for="PowerSupplySl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="PowerSupplyBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">VGA</td>
-                                <td><input asp-for="Vga" class="form-control" placeholder="VD: Card Màn Hình COLORFUL RTX 5070..." /></td>
-                                <td><input asp-for="VgaSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="VgaBh" class="form-control text-center" value="36 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Vỏ Case</td>
-                                <td><input asp-for="FormFactor" class="form-control" placeholder="VD: VỎ CASE FRACTAL DESIGN NORTH..." /></td>
-                                <td><input asp-for="FormFactorSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="FormFactorBh" class="form-control text-center" value="12 Tháng" /></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Tản nhiệt</td>
-                                <td><input asp-for="Cooler" class="form-control" placeholder="VD: Tản nhiệt khí TRYX TURRIS..." /></td>
-                                <td><input asp-for="CoolerSl" type="number" class="form-control text-center" value="1" /></td>
-                                <td><input asp-for="CoolerBh" class="form-control text-center" value="12 Tháng" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- KHỐI NÚT LƯU ĐÃ ĐƯỢC PHỤC HỒI CHUẨN XÁC -->
-                <div class="mt-4 mb-5">
-                    <button type="submit" class="btn btn-warning btn-lg fw-bold">CẬP NHẬT SẢN PHẨM</button>
-                    <a href="/Admin/Index" class="btn btn-secondary btn-lg ms-2">HỦY</a>
-                </div>
-            </form>
-        </div>
+<div class="content-head">
+    <div>
+        <h1>Cập nhật sản phẩm</h1>
+        <div class="breadcrumb-sm">Chỉnh sửa thông tin sản phẩm: @Model.Name</div>
     </div>
+    <a href="/Admin/Index" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</a>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        document.getElementById('imageInput').addEventListener('change', function(event) {
-            var input = event.target;
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var img = document.getElementById('imagePreview');
-                    img.src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        });
-    </script>
-}
+<form asp-action="EditProduct" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ExistingImageUrl" />
+
+    <div class="two-col">
+        <!-- CỘT TRÁI: THÔNG TIN -->
+        <div class="panel">
+            <div class="panel-head"><h2>Thông tin cơ bản</h2></div>
+            <div class="form-grid">
+                <div class="form-field full">
+                    <label>Tên sản phẩm</label>
+                    <input asp-for="Name" type="text" required />
+                </div>
+                <div class="form-field">
+                    <label>Danh mục</label>
+                    <select asp-for="CategoryId" asp-items="@Model.Categories"></select>
+                </div>
+                <div class="form-field">
+                    <label>Phần trăm giảm (%)</label>
+                    <input asp-for="Discount" type="number" />
+                </div>
+                <div class="form-field">
+                    <label>Giá bán (VNĐ)</label>
+                    <input asp-for="Price" type="number" required />
+                </div>
+                <div class="form-field">
+                    <label>Giá gốc (VNĐ)</label>
+                    <input asp-for="OldPrice" type="number" />
+                </div>
+
+                <div class="form-field full">
+                    <label>Ảnh đại diện hiện tại</label>
+                    @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+                    {
+                        <img src="@Model.ExistingImageUrl" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--a-border);" />
+                    }
+                    <label style="margin-top: 10px;">Đổi ảnh đại diện mới (bỏ trống nếu giữ nguyên)</label>
+                    <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" style="padding: 6px;" />
+                </div>
+
+                <div class="form-field full">
+                    <label>Ảnh thư viện (Chọn lại từ đầu nếu muốn cập nhật)</label>
+                    <input asp-for="GalleryFiles" type="file" accept="image/*" multiple class="form-control" style="padding: 6px;" />
+                    <div style="margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input asp-for="DeleteOldGallery" type="checkbox" style="width: auto;" /> Xóa tất cả ảnh thư viện cũ khi upload ảnh mới
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: CẤU HÌNH -->
+        <div class="panel">
+            <div class="panel-head"><h2>Cấu hình chi tiết (Bảng thông số)</h2></div>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead><tr><th>Linh kiện</th><th>Mô tả chi tiết</th><th style="width:60px;">SL</th><th style="width:100px;">Bảo hành</th></tr></thead>
+                    <tbody>
+                        <tr><td class="cell-title">CPU</td><td><div class="form-field" style="margin:0;"><input asp-for="Socket" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="SocketSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="SocketBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">Mainboard</td><td><div class="form-field" style="margin:0;"><input asp-for="Mainboard" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="MainboardSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="MainboardBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">RAM</td><td><div class="form-field" style="margin:0;"><input asp-for="RamType" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="RamSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="RamBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">Ổ cứng</td><td><div class="form-field" style="margin:0;"><input asp-for="Storage" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="StorageSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="StorageBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">Nguồn</td><td><div class="form-field" style="margin:0;"><input asp-for="PowerSupply" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="PowerSupplySl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="PowerSupplyBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">VGA</td><td><div class="form-field" style="margin:0;"><input asp-for="Vga" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="VgaSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="VgaBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">Vỏ Case</td><td><div class="form-field" style="margin:0;"><input asp-for="FormFactor" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="FormFactorSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="FormFactorBh" type="text" /></div></td></tr>
+                        <tr><td class="cell-title">Tản nhiệt</td><td><div class="form-field" style="margin:0;"><input asp-for="Cooler" type="text" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="CoolerSl" type="number" /></div></td><td><div class="form-field" style="margin:0;"><input asp-for="CoolerBh" type="text" /></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 15px; text-align: right;">
+        <button type="submit" class="btn btn-accent" style="padding: 12px 24px; font-size: 16px;">
+            <i class="fa-solid fa-floppy-disk"></i> CẬP NHẬT SẢN PHẨM
+        </button>
+    </div>
+</form>

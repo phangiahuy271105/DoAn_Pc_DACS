@@ -4,6 +4,7 @@ using DoAn_Pc_DACS.Models;
 using DoAn_Pc_DACS.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoAn_Pc_DACS.Controllers
 {
@@ -84,6 +85,100 @@ namespace DoAn_Pc_DACS.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+       
+
+        // 1. Giao diện trang Thanh toán (GET)
+        [HttpGet]
+        public IActionResult Checkout()
+        {
+            var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            if (cart == null || cart.Count == 0)
+            {
+                return RedirectToAction("Index", "Cart"); // Giỏ hàng trống thì đuổi về trang giỏ hàng
+            }
+
+            ViewBag.Cart = cart;
+            ViewBag.Total = cart.Sum(item => item.Price * item.Quantity);
+
+            return View(new Order());
+        }
+
+        // 2. Xử lý lưu Đơn hàng vào CSDL (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(Order order)
+        {
+            var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            if (cart == null || cart.Count == 0)
+            {
+                return RedirectToAction("Index", "Cart");
+            }
+
+            // MẤU CHỐT LÀ 3 DÒNG NÀY: Bỏ qua kiểm tra các trường không nhập từ form
+            ModelState.Remove("OrderDetails");
+            ModelState.Remove("Status");
+            ModelState.Remove("Note");
+
+            if (ModelState.IsValid)
+            {
+                // Bước 1: Lưu thông tin Order (Đơn hàng)
+                order.OrderDate = DateTime.Now;
+                order.TotalAmount = cart.Sum(item => item.Price * item.Quantity);
+                order.Status = "Chờ xác nhận";
+
+                
+                if (order.Note == null)
+                {
+                    order.Note = ""; // Gán bằng chuỗi rỗng nếu khách không nhập gì
+                }
+               
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync(); // Lưu để sinh ID đơn hàng
+
+                // Bước 2: Lưu chi tiết vào OrderDetails
+                foreach (var item in cart)
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        OrderId = order.Id,
+                        ProductId = item.ProductId, // Lấy đúng ProductId theo CartItem
+                        Quantity = item.Quantity,
+                        Price = item.Price          // Lấy đúng Price
+                    };
+                    _context.OrderDetails.Add(orderDetail);
+                }
+                await _context.SaveChangesAsync();
+
+                // Bước 3: Xóa giỏ hàng trong Session
+                HttpContext.Session.Remove("Cart");
+
+                return RedirectToAction("CheckoutSuccess", new { id = order.Id });
+            }
+
+            // Nếu người dùng nhập thiếu Tên, SĐT, Địa chỉ sẽ bị văng về lại form
+            ViewBag.Cart = cart;
+            ViewBag.Total = cart.Sum(item => item.Price * item.Quantity);
+            return View(order);
+        }
+
+        // 3. Trang thông báo Đặt hàng thành công
+        public IActionResult CheckoutSuccess(int id)
+        {
+            // Truy vấn lấy đơn hàng kèm theo chi tiết sản phẩm
+            var order = _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .FirstOrDefault(o => o.Id == id);
+
+            if (order == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(order);
         }
     }
 }

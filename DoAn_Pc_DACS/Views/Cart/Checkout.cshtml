@@ -1,0 +1,70 @@
+﻿@model DoAn_Pc_DACS.Models.Order
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container" style="margin-top: 40px; margin-bottom: 60px;">
+    <h2 style="font-weight: 800; margin-bottom: 20px;">ĐẶT HÀNG & THANH TOÁN</h2>
+    <div class="row">
+        <!-- Cột trái: Form nhập thông tin -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4" style="font-weight: bold;"><i class="fa-solid fa-truck-fast"></i> Thông tin giao hàng</h5>
+
+                    <form asp-action="Checkout" method="post">
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Họ và tên người nhận</label>
+                            <input asp-for="CustomerName" class="form-control" placeholder="Nhập họ và tên..." required />
+                            <span asp-validation-for="CustomerName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Số điện thoại</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại..." required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Địa chỉ giao hàng chi tiết</label>
+                            <textarea asp-for="Address" class="form-control" rows="3" placeholder="Ví dụ: Số nhà, Tên đường, Phường/Xã, Quận/Huyện..." required></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Ghi chú thêm (Tùy chọn)</label>
+                            <textarea asp-for="Note" class="form-control" rows="2" placeholder="Giao giờ hành chính, bọc kỹ hàng..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 mt-3" style="font-size: 18px; font-weight: bold; padding: 12px;">
+                            XÁC NHẬN ĐẶT HÀNG
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Tóm tắt đơn hàng -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0" style="background-color: #f8f9fa;">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4" style="font-weight: bold;"><i class="fa-solid fa-bag-shopping"></i> Tóm tắt đơn hàng</h5>
+                    <ul class="list-group mb-3">
+                        @if (ViewBag.Cart != null)
+                        {
+                            foreach (var item in ViewBag.Cart)
+                            {
+                                <li class="list-group-item d-flex justify-content-between lh-sm" style="background: transparent; border-color: #e9ecef;">
+                                    <div>
+                                        <h6 class="my-0" style="font-size: 14px;">@item.ProductName</h6>
+                                        <small class="text-muted">Số lượng: @item.Quantity</small>
+                                    </div>
+                                    <span class="text-muted" style="font-weight: bold;">@((item.Price * item.Quantity).ToString("N0"))₫</span>
+                                </li>
+                            }
+                        }
+                        <li class="list-group-item d-flex justify-content-between bg-white" style="border-top: 2px solid #dee2e6;">
+                            <span style="font-weight: bold; font-size: 16px;">TỔNG CỘNG (VNĐ)</span>
+                            <strong style="color: red; font-size: 18px;">@((ViewBag.Total ?? 0).ToString("N0"))₫</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
