@@ -1,0 +1,95 @@
+﻿@model IEnumerable<DoAn_Pc_DACS.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+    ViewData["Active"] = "orders";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-head">
+    <div>
+        <h1>Đơn hàng & Hóa đơn</h1>
+        <div class="breadcrumb-sm">Quản lý các đơn đặt hàng từ khách hàng</div>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Mã ĐH</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Số SP</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td class="cell-title">#@o.Id</td>
+                        <td>
+                            <div class="cell-title">@o.CustomerName</div>
+                            <div class="cell-sub">@o.PhoneNumber</div>
+                        </td>
+                        <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="pill pill-muted">@o.OrderDetails.Sum(d => d.Quantity) món</span></td>
+                        <td class="cell-title" style="color: var(--a-danger);">@o.TotalAmount.ToString("N0")₫</td>
+                        <td>
+                            <!-- Dropdown để Admin đổi trạng thái liền tay -->
+                            <select class="form-select form-select-sm status-dropdown"
+                                    data-id="@o.Id"
+                                    style="padding: 4px; border-radius: 4px; font-weight: bold; border-color: #ccc;
+                                @(o.Status == "Chờ xác nhận" ? "color:#c8860a; background:#fff4d9;" :
+                                  o.Status == "Đang giao" ? "color:#1a73e8; background:#eaf1fd;" :
+                                  o.Status == "Hoàn tất" ? "color:#0aa06e; background:#e7f8f1;" : "color:#e6231e; background:#fdecec;")"
+                                    onchange="changeOrderStatus(this)">
+                                <option value="Chờ xác nhận" selected="@(o.Status == "Chờ xác nhận")">Chờ xác nhận</option>
+                                <option value="Đang giao" selected="@(o.Status == "Đang giao")">Đang giao</option>
+                                <option value="Hoàn tất" selected="@(o.Status == "Hoàn tất")">Hoàn tất</option>
+                                <option value="Đã hủy" selected="@(o.Status == "Đã hủy")">Đã hủy</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline btn-icon" title="Xem chi tiết" onclick="alert('Chức năng xem chi tiết đang phát triển!')">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeOrderStatus(selectElement) {
+            const orderId = selectElement.getAttribute("data-id");
+            const newStatus = selectElement.value;
+
+            fetch(`/Admin/UpdateOrderStatus`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `orderId=${orderId}&newStatus=${encodeURIComponent(newStatus)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Đổi màu nền của ô Select cho đẹp
+                        if (newStatus === "Chờ xác nhận") { selectElement.style.color = "#c8860a"; selectElement.style.background = "#fff4d9"; }
+                        if (newStatus === "Đang giao") { selectElement.style.color = "#1a73e8"; selectElement.style.background = "#eaf1fd"; }
+                        if (newStatus === "Hoàn tất") { selectElement.style.color = "#0aa06e"; selectElement.style.background = "#e7f8f1"; }
+                        if (newStatus === "Đã hủy") { selectElement.style.color = "#e6231e"; selectElement.style.background = "#fdecec"; }
+                    } else {
+                        alert("Lỗi: " + data.message);
+                    }
+                });
+        }
+    </script>
+}

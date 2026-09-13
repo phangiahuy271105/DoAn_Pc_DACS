@@ -1,10 +1,28 @@
 ﻿@model List<DoAn_Pc_DACS.Models.CartItem>
 @{
     ViewData["Title"] = "Giỏ hàng của bạn";
+
+    bool hasStockError = Model != null &&
+        Model.Any(x =>
+            x.StockQuantity <= 0 ||
+            x.Quantity > x.StockQuantity
+        );
 }
 
 <div class="container mt-5 mb-5" style="max-width: 1200px;">
     <h2 class="fw-bold mb-4" style="color: #ff5636;"><i class="fa-solid fa-cart-shopping"></i> GIỎ HÀNG CỦA BẠN</h2>
+    @if (TempData["CartError"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            @TempData["CartError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
 
     @if (Model == null || Model.Count == 0)
     {
@@ -45,8 +63,20 @@
                                             <!-- Form cập nhật số lượng tự động khi đổi số -->
                                             <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" class="d-flex justify-content-center">
                                                 <input type="hidden" name="id" value="@item.ProductId" />
-                                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="99" class="form-control text-center fw-bold" style="width: 60px;" onchange="this.form.submit()" />
+                                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="@item.StockQuantity" class="form-control text-center fw-bold" style="width: 60px;" onchange="this.form.submit()" />
                                             </form>
+                                            @if (item.StockQuantity > 0)
+                                            {
+                                                <div class="text-muted mt-1" style="font-size: 11px;">
+                                                    Kho: @item.StockQuantity
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="text-danger fw-bold mt-1" style="font-size: 11px;">
+                                                    Hết hàng
+                                                </div>
+                                            }
                                         </td>
                                         <td class="text-center text-danger fw-bold">@item.TotalPrice.ToString("N0")đ</td>
                                         <td class="text-center">
@@ -75,7 +105,26 @@
                         <span class="fw-bold fs-5">TỔNG TIỀN:</span>
                         <span class="text-danger fw-bold fs-4">@Model.Sum(x => x.TotalPrice).ToString("N0") VNĐ</span>
                     </div>
-                    <a href="/Cart/Checkout" class="btn btn-lg w-100 fw-bold mb-2 text-white d-block text-center text-decoration-none" style="background: #ff5636;">TIẾN HÀNH THANH TOÁN</a>
+                    @if (!hasStockError)
+                    {
+                        <a href="/Cart/Checkout"
+                           class="btn btn-lg w-100 fw-bold mb-2 text-white d-block text-center text-decoration-none"
+                           style="background: #ff5636;">
+                            TIẾN HÀNH THANH TOÁN
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn btn-secondary btn-lg w-100 fw-bold mb-2"
+                                disabled>
+                            KIỂM TRA LẠI TỒN KHO
+                        </button>
+
+                        <small class="text-danger d-block text-center mb-2">
+                            Có sản phẩm không đủ số lượng để thanh toán.
+                        </small>
+                    }
                     <a href="/" class="btn btn-outline-secondary w-100 fw-bold">TIẾP TỤC MUA HÀNG</a>
                 </div>
             </div>

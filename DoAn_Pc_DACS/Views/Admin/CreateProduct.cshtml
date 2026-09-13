@@ -39,6 +39,15 @@
                     <label>Giá gốc (VNĐ)</label>
                     <input asp-for="OldPrice" type="number" />
                 </div>
+                <div class="form-field">
+                    <label>Số lượng tồn kho</label>
+                    <input asp-for="StockQuantity"
+                           type="number"
+                           min="0"
+                           placeholder="Nhập số lượng tồn..." />
+                    <span asp-validation-for="StockQuantity"
+                          style="font-size:12px; color:var(--a-danger);"></span>
+                </div>
                 <div class="form-field full">
                     <label>Ảnh đại diện (Bắt buộc)</label>
                     <input asp-for="ImageFile" type="file" accept="image/*" required class="form-control" style="padding: 6px;" />

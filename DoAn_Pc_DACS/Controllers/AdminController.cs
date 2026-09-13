@@ -27,7 +27,11 @@ namespace DoAn_Pc_DACS.Controllers
 
         public IActionResult Index()
         {
-            var products = _context.Products.Include(p => p.Category).ToList();
+            var products = _context.Products
+                       .Include(p => p.Category)
+                       .Include(p => p.ComponentSpec)
+                       .Include(p => p.ProductImages)
+                       .ToList();
             return View(products);
         }
 
@@ -74,6 +78,7 @@ namespace DoAn_Pc_DACS.Controllers
                     Price = model.Price,
                     OldPrice = model.OldPrice,
                     Discount = model.Discount,
+                    StockQuantity = model.StockQuantity,
                     CategoryId = model.CategoryId,
                     ImageUrl = "/images/uploads/" + uniqueFileName,
                     ComponentSpec = new ComponentSpec
@@ -154,6 +159,7 @@ namespace DoAn_Pc_DACS.Controllers
                 Price = product.Price,
                 OldPrice = product.OldPrice,
                 Discount = product.Discount,
+                StockQuantity = product.StockQuantity,
                 CategoryId = product.CategoryId,
                 ExistingImageUrl = product.ImageUrl,
                 ExistingGalleryImages = product.ProductImages.ToList(),
@@ -260,6 +266,7 @@ namespace DoAn_Pc_DACS.Controllers
                 product.Price = model.Price;
                 product.OldPrice = model.OldPrice;
                 product.Discount = model.Discount;
+                product.StockQuantity = model.StockQuantity;
                 product.CategoryId = model.CategoryId;
 
                 if (product.ComponentSpec == null) product.ComponentSpec = new ComponentSpec();
@@ -318,6 +325,34 @@ namespace DoAn_Pc_DACS.Controllers
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Admin");
+        }
+        // ==========================================
+        // QUẢN LÝ ĐƠN HÀNG
+        // ==========================================
+
+        // 1. Hiển thị danh sách Đơn hàng
+        public IActionResult Orders()
+        {
+            // Lấy tất cả đơn hàng, sắp xếp mới nhất lên đầu
+            var orders = _context.Orders
+                                 .Include(o => o.OrderDetails) // Lọc chi tiết để biết 1 đơn có bao nhiêu món
+                                 .OrderByDescending(o => o.OrderDate)
+                                 .ToList();
+            return View(orders);
+        }
+
+        // 2. Cập nhật trạng thái Đơn hàng 
+        [HttpPost]
+        public IActionResult UpdateOrderStatus(int orderId, string newStatus)
+        {
+            var order = _context.Orders.Find(orderId);
+            if (order != null)
+            {
+                order.Status = newStatus;
+                _context.SaveChanges();
+                return Json(new { success = true, message = "Cập nhật thành công!" });
+            }
+            return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
         }
     }
 }

@@ -315,25 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
 /* ========================================================
    TÍNH TỔNG TIỀN TỰ ĐỘNG & NÚT SỐ LƯỢNG TRANG CHI TIẾT
    ======================================================== */
-function decreaseQtyCustom() {
-    let input = document.getElementById('productQty');
-    if (!input) return;
-    let val = parseInt(input.value);
-    if (val > 1) {
-        input.value = val - 1;
-        updateDynamicPrices(input.value); // Gọi hàm tính tiền
-    }
-}
 
-function increaseQtyCustom() {
-    let input = document.getElementById('productQty');
-    if (!input) return;
-    let val = parseInt(input.value);
-    if (val < 99) {
-        input.value = val + 1;
-        updateDynamicPrices(input.value); // Gọi hàm tính tiền
-    }
-}
 
 // Hàm format tiền tệ (Thêm dấu chấm)
 function formatCurrency(num) {
@@ -483,9 +465,15 @@ function decreaseQtyCustom() {
 function increaseQtyCustom() {
     let input = document.getElementById('productQty');
     if (!input) return;
-    if (parseInt(input.value) < 99) { input.value = parseInt(input.value) + 1; updateDynamicPrices(); }
-}
 
+    const currentQty = parseInt(input.value) || 1;
+    const stock = parseInt(input.getAttribute('data-stock')) || 0;
+
+    if (currentQty < stock) {
+        input.value = currentQty + 1;
+        updateDynamicPrices();
+    }
+}
 // Hàm tính tổng tiền Siêu Cấp Vô Địch (PC + Tất cả phụ kiện)
 function updateDynamicPrices() {
     const lblTamTinh = document.getElementById('lblTamTinh');

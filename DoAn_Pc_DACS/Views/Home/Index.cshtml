@@ -51,15 +51,90 @@
                                 </div>
                             </a>
 
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                                        <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
-                                    </button>
-                                </form>
-                                <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+
+                                @if (item.StockQuantity > 0)
+                                {
+                                    <form asp-controller="Cart"
+                                          asp-action="AddToCart"
+                                          method="post"
+                                          style="margin:0; padding:0;">
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
+                                        <input type="hidden"
+                                               name="quantity"
+                                               value="1" />
+
+                                        <button type="submit"
+                                                style="background:none;
+                                            color:#1e3a8a;
+                                            border:none;
+                                            font-size:11px;
+                                            font-weight:800;
+                                            padding:0;
+                                            display:flex;
+                                            align-items:center;
+                                            gap:6px;
+                                            white-space:nowrap;">
+
+                                            <i class="fa-solid fa-cart-shopping"
+                                               style="background:#1e3a8a;
+                                            color:#fff;
+                                            padding:6px;
+                                            border-radius:50%;
+                                            font-size:10px;"></i>
+
+                                            THÊM VÀO GIỎ
+                                        </button>
+                                    </form>
+
+                                    @if (item.StockQuantity <= 5)
+                                    {
+                                        <span style="color:#b77900;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#fff3cd;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn @item.StockQuantity
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#0aa06e;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#e6f6eb;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn hàng
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span style="color:#999;
+                                        font-size:11px;
+                                        font-weight:800;">
+                                        <i class="fa-solid fa-ban me-1"></i>
+                                        HẾT HÀNG
+                                    </span>
+
+                                    <span style="color:#dc3545;
+                                        font-size:11px;
+                                        font-weight:700;
+                                        background:#fdecec;
+                                        padding:4px 8px;
+                                        border-radius:4px;">
+                                        Hết hàng
+                                    </span>
+                                }
+
                             </div>
 
                             <div class="product-tooltip">
@@ -123,15 +198,90 @@
                                 </div>
                             </a>
 
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                                        <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
-                                    </button>
-                                </form>
-                                <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+
+                                @if (item.StockQuantity > 0)
+                                {
+                                    <form asp-controller="Cart"
+                                          asp-action="AddToCart"
+                                          method="post"
+                                          style="margin:0; padding:0;">
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
+                                        <input type="hidden"
+                                               name="quantity"
+                                               value="1" />
+
+                                        <button type="submit"
+                                                style="background:none;
+                                            color:#1e3a8a;
+                                            border:none;
+                                            font-size:11px;
+                                            font-weight:800;
+                                            padding:0;
+                                            display:flex;
+                                            align-items:center;
+                                            gap:6px;
+                                            white-space:nowrap;">
+
+                                            <i class="fa-solid fa-cart-shopping"
+                                               style="background:#1e3a8a;
+                                            color:#fff;
+                                            padding:6px;
+                                            border-radius:50%;
+                                            font-size:10px;"></i>
+
+                                            THÊM VÀO GIỎ
+                                        </button>
+                                    </form>
+
+                                    @if (item.StockQuantity <= 5)
+                                    {
+                                        <span style="color:#b77900;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#fff3cd;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn @item.StockQuantity
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#0aa06e;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#e6f6eb;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn hàng
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span style="color:#999;
+                                        font-size:11px;
+                                        font-weight:800;">
+                                        <i class="fa-solid fa-ban me-1"></i>
+                                        HẾT HÀNG
+                                    </span>
+
+                                    <span style="color:#dc3545;
+                                        font-size:11px;
+                                        font-weight:700;
+                                        background:#fdecec;
+                                        padding:4px 8px;
+                                        border-radius:4px;">
+                                        Hết hàng
+                                    </span>
+                                }
+
                             </div>
 
                             <div class="product-tooltip">
@@ -194,15 +344,90 @@
                                 </div>
                             </a>
 
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post" style="margin: 0; padding: 0;">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button type="submit" style="background: none; color: #1e3a8a; border: none; font-size: 11px; font-weight: 800; padding: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                                        <i class="fa-solid fa-cart-shopping" style="background: #1e3a8a; color: #fff; padding: 6px; border-radius: 50%; font-size: 10px;"></i> THÊM VÀO GIỎ
-                                    </button>
-                                </form>
-                                <span style="color: #0aa06e; font-size: 11px; font-weight: 700; background: #e6f6eb; padding: 4px 8px; border-radius: 4px; white-space: nowrap;">Còn hàng</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+
+                                @if (item.StockQuantity > 0)
+                                {
+                                    <form asp-controller="Cart"
+                                          asp-action="AddToCart"
+                                          method="post"
+                                          style="margin:0; padding:0;">
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
+                                        <input type="hidden"
+                                               name="quantity"
+                                               value="1" />
+
+                                        <button type="submit"
+                                                style="background:none;
+                                            color:#1e3a8a;
+                                            border:none;
+                                            font-size:11px;
+                                            font-weight:800;
+                                            padding:0;
+                                            display:flex;
+                                            align-items:center;
+                                            gap:6px;
+                                            white-space:nowrap;">
+
+                                            <i class="fa-solid fa-cart-shopping"
+                                               style="background:#1e3a8a;
+                                            color:#fff;
+                                            padding:6px;
+                                            border-radius:50%;
+                                            font-size:10px;"></i>
+
+                                            THÊM VÀO GIỎ
+                                        </button>
+                                    </form>
+
+                                    @if (item.StockQuantity <= 5)
+                                    {
+                                        <span style="color:#b77900;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#fff3cd;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn @item.StockQuantity
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#0aa06e;
+                                            font-size:11px;
+                                            font-weight:700;
+                                            background:#e6f6eb;
+                                            padding:4px 8px;
+                                            border-radius:4px;
+                                            white-space:nowrap;">
+                                            Còn hàng
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span style="color:#999;
+                                        font-size:11px;
+                                        font-weight:800;">
+                                        <i class="fa-solid fa-ban me-1"></i>
+                                        HẾT HÀNG
+                                    </span>
+
+                                    <span style="color:#dc3545;
+                                        font-size:11px;
+                                        font-weight:700;
+                                        background:#fdecec;
+                                        padding:4px 8px;
+                                        border-radius:4px;">
+                                        Hết hàng
+                                    </span>
+                                }
+
                             </div>
 
                             <div class="product-tooltip">

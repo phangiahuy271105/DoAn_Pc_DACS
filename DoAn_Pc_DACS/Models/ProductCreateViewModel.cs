@@ -19,6 +19,9 @@ namespace DoAn_Pc_DACS.Models
 
         public int Discount { get; set; }
 
+        [Range(0, int.MaxValue, ErrorMessage = "Số lượng tồn kho không được âm")]
+        public int StockQuantity { get; set; }
+
         [Required(ErrorMessage = "Vui lòng chọn ảnh đại diện")]
         public IFormFile ImageFile { get; set; }
 

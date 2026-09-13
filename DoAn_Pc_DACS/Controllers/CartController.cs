@@ -21,6 +21,22 @@ namespace DoAn_Pc_DACS.Controllers
         public IActionResult Index()
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            var productIds = cart.Select(x => x.ProductId).ToList();
+
+            var stockData = _context.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionary(p => p.Id, p => p.StockQuantity);
+
+            foreach (var item in cart)
+            {
+                item.StockQuantity = stockData.ContainsKey(item.ProductId)
+                    ? stockData[item.ProductId]
+                    : 0;
+            }
+
+            HttpContext.Session.Set("Cart", cart);
+
             return View(cart);
         }
 
@@ -29,14 +45,44 @@ namespace DoAn_Pc_DACS.Controllers
         public IActionResult AddToCart(int id, int quantity = 1)
         {
             var product = _context.Products.Find(id);
-            if (product == null) return NotFound();
 
-            var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
+            if (product == null)
+                return NotFound();
+
+            // Sản phẩm hết hàng
+            if (product.StockQuantity <= 0)
+            {
+                TempData["CartError"] = "Sản phẩm này hiện đã hết hàng.";
+                return RedirectToAction("Index");
+            }
+
+            // Không cho quantity nhỏ hơn 1
+            if (quantity < 1)
+                quantity = 1;
+
+            var cart = HttpContext.Session.Get<List<CartItem>>("Cart")
+                       ?? new List<CartItem>();
+
             var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
+
+            // Số lượng hiện đã nằm trong giỏ
+            int currentQuantity = cartItem?.Quantity ?? 0;
+
+            // Số lượng sau khi cộng thêm
+            int newQuantity = currentQuantity + quantity;
+
+            if (newQuantity > product.StockQuantity)
+            {
+                TempData["CartError"] =
+                    $"Sản phẩm \"{product.Name}\" chỉ còn {product.StockQuantity} sản phẩm trong kho.";
+
+                return RedirectToAction("Index");
+            }
 
             if (cartItem != null)
             {
-                cartItem.Quantity += quantity; // Nếu đã có trong giỏ thì cộng dồn số lượng
+                cartItem.Quantity = newQuantity;
+                cartItem.StockQuantity = product.StockQuantity;
             }
             else
             {
@@ -46,11 +92,13 @@ namespace DoAn_Pc_DACS.Controllers
                     ProductName = product.Name,
                     Price = product.Price,
                     ImageUrl = product.ImageUrl,
-                    Quantity = quantity
+                    Quantity = quantity,
+                    StockQuantity = product.StockQuantity
                 });
             }
 
             HttpContext.Session.Set("Cart", cart);
+
             return RedirectToAction("Index");
         }
 
@@ -59,15 +107,49 @@ namespace DoAn_Pc_DACS.Controllers
         public IActionResult UpdateQuantity(int id, int quantity)
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart");
-            if (cart != null)
+
+            if (cart == null)
+                return RedirectToAction("Index");
+
+            var item = cart.FirstOrDefault(c => c.ProductId == id);
+
+            if (item == null)
+                return RedirectToAction("Index");
+
+            var product = _context.Products.Find(id);
+
+            if (product == null)
+                return RedirectToAction("Index");
+
+            if (product.StockQuantity <= 0)
             {
-                var item = cart.FirstOrDefault(c => c.ProductId == id);
-                if (item != null)
-                {
-                    item.Quantity = quantity > 0 ? quantity : 1;
-                    HttpContext.Session.Set("Cart", cart);
-                }
+                item.StockQuantity = 0;
+
+                TempData["CartError"] =
+                    $"Sản phẩm \"{product.Name}\" hiện đã hết hàng.";
+
+                HttpContext.Session.Set("Cart", cart);
+
+                return RedirectToAction("Index");
             }
+
+            if (quantity < 1)
+                quantity = 1;
+
+            // Nếu nhập vượt tồn kho thì tự đưa về số lượng tối đa
+            if (quantity > product.StockQuantity)
+            {
+                quantity = product.StockQuantity;
+
+                TempData["CartError"] =
+                    $"Sản phẩm \"{product.Name}\" chỉ còn {product.StockQuantity} sản phẩm.";
+            }
+
+            item.Quantity = quantity;
+            item.StockQuantity = product.StockQuantity;
+
+            HttpContext.Session.Set("Cart", cart);
+
             return RedirectToAction("Index");
         }
 

@@ -27,6 +27,7 @@
                     <th>Danh mục</th>
                     <th>Giá bán</th>
                     <th>Giá gốc</th>
+                    <th>Tồn kho</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -47,6 +48,26 @@
                         <td><span class="pill pill-info">@(p.Category?.Name ?? "Chưa có")</span></td>
                         <td class="cell-title" style="color: var(--a-danger);">@p.Price.ToString("N0")₫</td>
                         <td style="text-decoration: line-through; color: var(--a-muted);">@p.OldPrice.ToString("N0")₫</td>
+                        <td>
+                            @if (p.StockQuantity <= 0)
+                            {
+                                <span class="pill pill-danger">
+                                    Hết hàng
+                                </span>
+                            }
+                            else if (p.StockQuantity <= 5)
+                            {
+                                <span class="pill pill-warning">
+                                    Còn @p.StockQuantity
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="pill pill-success">
+                                    @p.StockQuantity sản phẩm
+                                </span>
+                            }
+                        </td>
 
                         <td>
                             <div class="row-actions">

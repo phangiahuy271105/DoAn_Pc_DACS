@@ -195,30 +195,108 @@
             </div>
 
             <!-- FORM ĐẶT HÀNG (LẤY 100% CẤU TRÚC VÀ CLASS CỦA ÔNG) -->
-            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-4 border-top pt-4">
-                <input type="hidden" name="id" value="@Model.Id" />
+            @if (Model.StockQuantity > 0)
+            {
+                <form asp-controller="Cart"
+                      asp-action="AddToCart"
+                      method="post"
+                      class="mt-4 border-top pt-4">
 
-                <!-- Form số lượng cũ (Nằm ngang) -->
-                <div class="qty-row">
-                    <span>Số lượng:</span>
-                    <div class="qty-control">
-                        <button type="button" onclick="decreaseQtyCustom()">−</button>
-                        <input type="text" id="productQty" name="quantity" value="1" readonly>
-                        <button type="button" onclick="increaseQtyCustom()">+</button>
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    @if (Model.StockQuantity <= 5)
+                    {
+                        <div class="alert alert-warning py-2 mb-3 fw-bold">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                            Chỉ còn @Model.StockQuantity sản phẩm trong kho
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3 text-success fw-bold">
+                            <i class="fa-solid fa-circle-check me-1"></i>
+                            Còn hàng
+                        </div>
+                    }
+
+                    <div class="qty-row">
+                        <span>Số lượng:</span>
+
+                        <div class="qty-control">
+                            <button type="button"
+                                    onclick="decreaseQtyCustom()">
+                                −
+                            </button>
+
+                            <input type="text"
+                                   id="productQty"
+                                   name="quantity"
+                                   value="1"
+                                   data-stock="@Model.StockQuantity"
+                                   readonly />
+
+                            <button type="button"
+                                    onclick="increaseQtyCustom()">
+                                +
+                            </button>
+                        </div>
                     </div>
-                </div>
+                    <button type="submit" class="btn-order">ĐẶT HÀNG NGAY</button>
+                    
+                    <button type="submit" class="btn-order">
+                        <i class="fa-solid fa-cart-shopping me-2"></i>
+                        THÊM VÀO GIỎ
+                    </button>
 
-                <!-- Cụm nút Đặt hàng của ông -->
-                <button type="submit" class="btn-order">ĐẶT HÀNG NGAY</button>
-                <div class="btn-row2">
-                    <button type="submit" class="btn-outline">THÊM VÀO GIỎ</button>
-                    <button type="button" class="btn-blue">TRẢ GÓP QUA HỒ SƠ<br><small>Duyệt cực nhanh</small></button>
+                    <div class="btn-row2">
+                        <button type="button" class="btn-blue">
+                            TRẢ GÓP QUA HỒ SƠ
+                            <br />
+                            <small>Duyệt cực nhanh</small>
+                        </button>
+
+                        <button type="button" class="btn-cardpay">
+                            TRẢ GÓP QUA THẺ
+                            <br />
+                            <small>Visa, Master, JCB</small>
+                        </button>
+                    </div>
+
+                    <div class="btn-row2">
+                        <button type="button" class="btn-yellow">
+                            MUA NGAY - TRẢ SAU
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="mt-4 border-top pt-4">
+
+                    <div class="alert alert-danger d-flex align-items-center gap-3 p-3 mb-3">
+                        <i class="fa-solid fa-box-open"
+                           style="font-size: 32px;"></i>
+
+                        <div>
+                            <div class="fw-bold fs-5">
+                                SẢN PHẨM ĐÃ HẾT HÀNG
+                            </div>
+
+                            <div style="font-size: 13px;">
+                                Sản phẩm này hiện không còn trong kho.
+                                Vui lòng chọn sản phẩm khác.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-secondary w-100 fw-bold py-3"
+                            disabled>
+                        <i class="fa-solid fa-ban me-2"></i>
+                        TẠM HẾT HÀNG
+                    </button>
                 </div>
-                <div class="btn-row2">
-                    <button type="button" class="btn-cardpay">TRẢ GÓP QUA THẺ<br><small>Visa, Master, JCB</small></button>
-                    <button type="button" class="btn-yellow">MUA NGAY - TRẢ SAU</button>
-                </div>
-            </form>
+            }
         </div>
     </div>
 </div>

@@ -36,12 +36,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseSession();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseRouting(); 
+app.UseSession(); 
+app.UseAuthentication(); 
+app.UseAuthorization();  
 app.UseRouting();
+app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
