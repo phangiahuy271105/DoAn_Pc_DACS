@@ -15,10 +15,13 @@ namespace DoAn_Pc_DACS.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập giá bán")]
+        [Range(1, double.MaxValue, ErrorMessage = "Giá bán phải lớn hơn 0")]
         public decimal Price { get; set; }
 
+        [Range(0, double.MaxValue, ErrorMessage = "Giá gốc không được âm")]
         public decimal OldPrice { get; set; }
 
+        [Range(0, 100, ErrorMessage = "Giảm giá phải từ 0 đến 100%")]
         public int Discount { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Số lượng tồn kho không được âm")]
@@ -38,6 +41,9 @@ namespace DoAn_Pc_DACS.Models
         public int CategoryId { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
+
+        public List<int> RelatedProductIds { get; set; } = new();
+        public IEnumerable<SelectListItem> AvailableRelatedProducts { get; set; } = new List<SelectListItem>();
 
         [StringLength(50)]
         public string Socket { get; set; }

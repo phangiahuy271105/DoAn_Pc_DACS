@@ -50,107 +50,85 @@
                     </div>
                 }
             </div>
-            <div class="combo-tag-img">Sản phẩm mua kèm</div>
-
-            <div class="combo-wrapper">
-                <button class="combo-arrow prev" id="btnComboPrev"><i class="fa-solid fa-chevron-left"></i></button>
-
-                <div class="combo-items custom-scrollbar" id="comboSlider">
-                    <!-- Item 1 -->
-                    <div class="combo-item-img" id="combo-item-monitor" data-price="0" data-discount="0">
-                        <div class="combo-empty-img state-active">
-                            <img src="https://placehold.co/150x150?text=Monitor" />
-                            <h4>Màn hình máy tính</h4>
-                            <button type="button" class="btn-choose-img" onclick="openComboModal('monitor', 'Màn Hình Gaming')">Chọn sản phẩm</button>
+            @{
+                var bundleProducts = ViewBag.BundleProducts as IEnumerable<BundleProductViewModel> ?? Enumerable.Empty<BundleProductViewModel>();
+                var bundleProductList = bundleProducts.ToList();
+            }
+            @if (bundleProductList.Count > 0)
+            {
+                <div class="combo-tag-img">Sản phẩm mua kèm</div>
+                <form asp-controller="Cart" asp-action="AddBundleToCart" method="post" id="bundleForm">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="combo-wrapper">
+                        <button type="button" class="combo-arrow prev" id="btnComboPrev"><i class="fa-solid fa-chevron-left"></i></button>
+                        <div class="combo-items custom-scrollbar" id="comboSlider">
+                            @foreach (var bundleProduct in bundleProductList)
+                            {
+                                decimal saving = Math.Max(0, bundleProduct.OldPrice - bundleProduct.Price);
+                                bool available = bundleProduct.StockQuantity > 0;
+                                <div class="combo-item-img bundle-product-card @(available ? "bundle-selected" : "bundle-unavailable")"
+                                     data-relation-id="@bundleProduct.RelationId"
+                                     data-product-id="@bundleProduct.ProductId"
+                                     data-category-name="@bundleProduct.CategoryName"
+                                     data-price="@bundleProduct.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                     data-discount="@saving.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                                    <input type="hidden" name="relationIds" value="@bundleProduct.RelationId"
+                                           class="bundle-form-input bundle-relation-input" disabled="@(!available)" />
+                                    <input type="hidden" name="relatedProductIds" value="@bundleProduct.ProductId"
+                                           class="bundle-form-input bundle-product-input" disabled="@(!available)" />
+                                    <i class="fa-solid fa-circle-check check-icon"></i>
+                                    <div class="bundle-category">@bundleProduct.CategoryName</div>
+                                    <img class="bundle-product-image" src="@bundleProduct.ImageUrl" alt="@bundleProduct.Name" loading="lazy" />
+                                    <h4 class="bundle-product-name">@bundleProduct.Name</h4>
+                                    <div class="bundle-old-price">@(bundleProduct.OldPrice > bundleProduct.Price ? $"{bundleProduct.OldPrice:N0}đ" : string.Empty)</div>
+                                    <div class="sel-new-price bundle-product-price">@bundleProduct.Price.ToString("N0")đ</div>
+                                    <div class="sel-save bundle-product-saving">@(available ? $"Tiết kiệm {saving:N0}đ" : "Hết hàng - hãy chọn sản phẩm khác")</div>
+                                    <div class="bundle-actions">
+                                        <button type="button" class="btn-remove-bundle" onclick="removeBundleProduct(this)">Xóa</button>
+                                        <button type="button" class="btn-change-bundle" onclick="openBundleModal(this)">Sản phẩm khác</button>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                        <div class="combo-selected-img state-hidden">
-                            <i class="fa-solid fa-circle-check check-icon"></i>
-                            <img src="" class="sel-img" />
-                            <h4 class="sel-title"></h4>
-                            <div class="sel-prices"><span class="sel-old-price"></span><span class="sel-discount"></span></div>
-                            <div class="sel-new-price"></div>
-                            <div class="sel-save"></div>
-                            <div class="btn-row">
-                                <button type="button" class="btn-choose-outline" onclick="removeCombo('monitor')">Xóa</button>
-                                <button type="button" class="btn-choose-blue" onclick="openComboModal('monitor', 'Màn Hình Gaming')">Khác</button>
+                        <button type="button" class="combo-arrow next" id="btnComboNext"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="combo-price-bar">
+                        <div class="cp-left">
+                            <div class="cp-tamtinh">Tạm tính: <span id="lblTamTinh" data-baseprice="@Model.Price" class="cp-tamtinh-val">@Model.Price.ToString("N0")đ</span></div>
+                            <div class="cp-tietkiem">Tiết kiệm: <span id="lblTietKiem" data-basediscount="@Math.Max(0, Model.OldPrice - Model.Price)" class="cp-tietkiem-val">@Math.Max(0, Model.OldPrice - Model.Price).ToString("N0")đ</span></div>
+                        </div>
+                        <button type="submit" class="btn-buy-combo" disabled="@(Model.StockQuantity <= 0)">
+                            <i class="fa-solid fa-cart-shopping"></i> Mua combo
+                        </button>
+                    </div>
+                </form>
+
+                <div class="combo-modal-overlay" id="bundleModal" aria-hidden="true">
+                    <div class="combo-modal" role="dialog" aria-modal="true" aria-labelledby="bundleModalTitle">
+                        <div class="combo-modal-header">
+                            <div>
+                                <h3 id="bundleModalTitle">Sản phẩm được đề xuất</h3>
+                                <span id="bundleModalCategory" class="bundle-modal-category"></span>
                             </div>
+                            <button type="button" class="btn-close-modal" onclick="closeBundleModal()" aria-label="Đóng">&times;</button>
                         </div>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="combo-item-img" id="combo-item-keyboard" data-price="0" data-discount="0">
-                        <div class="combo-empty-img state-active">
-                            <img src="https://placehold.co/150x150?text=Keyboard" />
-                            <h4>Bàn phím</h4>
-                            <button type="button" class="btn-choose-img" onclick="openComboModal('keyboard', 'Bàn phím cơ')">Chọn sản phẩm</button>
+                        <div class="bundle-modal-tools">
+                            <input type="search" id="bundleSearchInput" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off" />
+                            <select id="bundleSortSelect" aria-label="Sắp xếp sản phẩm">
+                                <option value="newest">Mới nhất</option>
+                                <option value="price-asc">Giá tăng dần</option>
+                                <option value="price-desc">Giá giảm dần</option>
+                            </select>
                         </div>
-                        <div class="combo-selected-img state-hidden">
-                            <i class="fa-solid fa-circle-check check-icon"></i>
-                            <img src="" class="sel-img" />
-                            <h4 class="sel-title"></h4>
-                            <div class="sel-prices"><span class="sel-old-price"></span><span class="sel-discount"></span></div>
-                            <div class="sel-new-price"></div>
-                            <div class="sel-save"></div>
-                            <div class="btn-row">
-                                <button type="button" class="btn-choose-outline" onclick="removeCombo('keyboard')">Xóa</button>
-                                <button type="button" class="btn-choose-blue" onclick="openComboModal('keyboard', 'Bàn phím cơ')">Khác</button>
-                            </div>
+                        <div class="combo-modal-body">
+                            <div id="bundleModalLoading" class="bundle-modal-message">Đang tải sản phẩm...</div>
+                            <div id="bundleModalEmpty" class="bundle-modal-message d-none">Danh mục này chưa có sản phẩm phù hợp.</div>
+                            <div class="modal-grid" id="bundleModalGrid"></div>
                         </div>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="combo-item-img" id="combo-item-mouse" data-price="0" data-discount="0">
-                        <div class="combo-empty-img state-active">
-                            <img src="https://placehold.co/150x150?text=Mouse" />
-                            <h4>Chuột</h4>
-                            <button type="button" class="btn-choose-img" onclick="openComboModal('mouse', 'Chuột Gaming')">Chọn sản phẩm</button>
-                        </div>
-                        <div class="combo-selected-img state-hidden">
-                            <i class="fa-solid fa-circle-check check-icon"></i>
-                            <img src="" class="sel-img" />
-                            <h4 class="sel-title"></h4>
-                            <div class="sel-prices"><span class="sel-old-price"></span><span class="sel-discount"></span></div>
-                            <div class="sel-new-price"></div>
-                            <div class="sel-save"></div>
-                            <div class="btn-row">
-                                <button type="button" class="btn-choose-outline" onclick="removeCombo('mouse')">Xóa</button>
-                                <button type="button" class="btn-choose-blue" onclick="openComboModal('mouse', 'Chuột Gaming')">Khác</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Item 4 -->
-                    <div class="combo-item-img" id="combo-item-headset" data-price="0" data-discount="0">
-                        <div class="combo-empty-img state-active">
-                            <img src="https://placehold.co/150x150?text=Headset" />
-                            <h4>Tai nghe Chơi Game</h4>
-                            <button type="button" class="btn-choose-img" onclick="openComboModal('headset', 'Tai nghe Gaming')">Chọn sản phẩm</button>
-                        </div>
-                        <div class="combo-selected-img state-hidden"></div>
-                    </div>
-
-                    <!-- Item 5 -->
-                    <div class="combo-item-img" id="combo-item-pad" data-price="0" data-discount="0">
-                        <div class="combo-empty-img state-active">
-                            <img src="https://placehold.co/150x150?text=Pad" />
-                            <h4>Lót chuột</h4>
-                            <button type="button" class="btn-choose-img" onclick="openComboModal('pad', 'Lót chuột')">Chọn sản phẩm</button>
-                        </div>
-                        <div class="combo-selected-img state-hidden"></div>
                     </div>
                 </div>
-
-                <button class="combo-arrow next" id="btnComboNext"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-           
-            <!-- TẠM TÍNH (ĐÃ ĐỔI TIẾT KIỆM THÀNH 0 VNĐ) -->
-            <div class="combo-price-bar">
-                <div class="cp-left">
-                    <div class="cp-tamtinh">Tạm tính: <span id="lblTamTinh" data-baseprice="@Model.Price" class="cp-tamtinh-val">@Model.Price.ToString("N0")đ</span></div>
-                    <div class="cp-tietkiem">Tiết kiệm: <span id="lblTietKiem" data-basediscount="0" class="cp-tietkiem-val">0đ</span></div>
-                </div>
-                <button class="btn-buy-combo"><i class="fa-solid fa-cart-shopping"></i> Mua combo</button>
-            </div>
+            }
         </div>
 
 
@@ -300,7 +278,6 @@
         </div>
     </div>
 </div>
-
 <!-- ================= BẢNG THÔNG SỐ (LẤY 100% CẤU TRÚC GỐC CỦA ÔNG) ================= -->
 <section class="section-dt">
     <div class="panel-dt">
@@ -333,35 +310,56 @@
     </div>
 </section>
 
-<!-- ================= SẢN PHẨM TƯƠNG TỰ (LẤY 100% CẤU TRÚC GỐC CỦA ÔNG) ================= -->
+<!-- ================= SẢN PHẨM TƯƠNG TỰ ================= -->
 <section class="section-dt" style="margin-bottom: 50px;">
     <div class="section-head-dt">
         <h2>SẢN PHẨM TƯƠNG TỰ</h2>
-        <a class="see-all" href="#">Xem tất cả »</a>
+        <a class="see-all" asp-controller="Product" asp-action="Index" asp-route-slug="@Model.Category?.Slug">Xem tất cả »</a>
     </div>
 
     <div class="similar-wrapper">
         <button class="similar-arrow prev" id="sim-prev"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="similar-slider" id="sim-slider">
-            @for (int i = 0; i < 8; i++)
+            @{
+                var similarProducts = ViewBag.SimilarProducts as IEnumerable<Product> ?? Enumerable.Empty<Product>();
+            }
+            @foreach (var item in similarProducts)
             {
                 <div class="pcard-dt">
-                    <a href="#" style="display: block; text-decoration: none; color: inherit; flex: 1;">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" style="display: block; text-decoration: none; color: inherit; flex: 1;">
                         <div class="thumb">
-                            <img src="@Model.ImageUrl" alt="Sản phẩm tương tự" />
+                            <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" />
                         </div>
-                        <h3>PC TTG GAMING ULTRA 5 245KF - RTX 5060 Ti 16GB...</h3>
+                        <h3>@item.Name</h3>
                         <div class="price-area">
                             <div class="price-col">
-                                <span class="new-price">38.480.000 VNĐ</span>
-                                <span class="old-price-card">39.990.000 VNĐ</span>
+                                <span class="new-price">@item.Price.ToString("N0") VNĐ</span>
+                                @if (item.OldPrice > item.Price)
+                                {
+                                    <span class="old-price-card">@item.OldPrice.ToString("N0") VNĐ</span>
+                                }
                             </div>
-                            <span class="discount-badge">-4%</span>
+                            @if (item.Discount > 0)
+                            {
+                                <span class="discount-badge">-@item.Discount%</span>
+                            }
                         </div>
                     </a>
                     <div class="action-area">
-                        <button class="btn-add"><i class="fa-solid fa-cart-shopping"></i> THÊM VÀO GIỎ</button>
-                        <span class="stock">Còn hàng</span>
+                        @if (item.StockQuantity > 0)
+                        {
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn-add"><i class="fa-solid fa-cart-shopping"></i> THÊM VÀO GIỎ</button>
+                            </form>
+                            <span class="stock">Còn hàng</span>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn-add" disabled>HẾT HÀNG</button>
+                            <span class="stock" style="color:#dc3545;">Hết hàng</span>
+                        }
                     </div>
                 </div>
             }
@@ -374,17 +372,4 @@
 <div id="lightboxOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-none justify-content-center align-items-center" style="z-index: 9999;" onclick="closeLightbox(event)">
     <button class="btn btn-light position-absolute top-0 end-0 m-4 rounded-circle fw-bold" onclick="closeLightbox(event)" style="width: 40px; height: 40px;">X</button>
     <img id="lightboxImage" src="" class="img-fluid rounded shadow-lg" style="max-height: 90vh; max-width: 90vw; object-fit: contain;" />
-</div>
-
-<div id="comboModal" class="combo-modal-overlay">
-    <div class="combo-modal">
-        <div class="combo-modal-header">
-            <h3>Sản phẩm được đề xuất</h3>
-            <button class="btn-close-modal" onclick="closeComboModal()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="combo-modal-body">
-            <input type="text" class="form-control mb-3 py-2 border-2" placeholder="🔍 Bạn cần tìm sản phẩm gì?" />
-            <div class="modal-grid" id="modalGridContent"></div>
-        </div>
-    </div>
 </div>

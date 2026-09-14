@@ -15,7 +15,7 @@ namespace DoAn_Pc_DACS.Controllers
         }
 
         // Hàm này sẽ hứng toàn bộ các tham số từ form bộ lọc truyền lên URL
-        public IActionResult Index(string slug, string priceRange, string[] cpuBrand, string sortBy, string keyword)
+        public IActionResult Index(string slug, string group, string priceRange, string[] cpuBrand, string sortBy, string keyword)
         {
             var query = _context.Products
                                 .Include(p => p.Category)
@@ -23,7 +23,12 @@ namespace DoAn_Pc_DACS.Controllers
                                 .AsQueryable();
 
             // 1. Xử lý Lọc theo Danh mục (Slug)
-            if (!string.IsNullOrEmpty(slug))
+            if (string.Equals(group, "gear", StringComparison.OrdinalIgnoreCase))
+            {
+                string[] gearSlugs = ["ban-phim", "chuot", "tai-nghe"];
+                query = query.Where(product => product.Category != null && gearSlugs.Contains(product.Category.Slug));
+            }
+            else if (!string.IsNullOrEmpty(slug))
             {
                 string searchSlug = slug.ToLower();
                 query = query.Where(p => p.Category != null && (
@@ -84,6 +89,7 @@ namespace DoAn_Pc_DACS.Controllers
             var products = query.ToList();
 
             ViewBag.CurrentSlug = slug;
+            ViewBag.CurrentGroup = group;
             ViewBag.CurrentPrice = priceRange;
             ViewBag.CurrentCpu = cpuBrand;
             ViewBag.CurrentSort = sortBy;
@@ -106,7 +112,7 @@ namespace DoAn_Pc_DACS.Controllers
             var query = _context.Products.Where(p => p.Name.ToLower().Contains(kw));
             int totalCount = query.Count();
 
-            var products = query.Select(p => new
+            var products = query.OrderByDescending(p => p.Id).Select(p => new
             {
                 id = p.Id,
                 name = p.Name,

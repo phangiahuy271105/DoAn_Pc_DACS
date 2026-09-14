@@ -1,0 +1,98 @@
+@model DoAn_Pc_DACS.Models.Order
+@{
+    ViewData["Title"] = $"Chi tiết đơn hàng #{Model.Id}";
+    ViewData["Active"] = "orders";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-head">
+    <div>
+        <h1>Đơn hàng #@Model.Id</h1>
+        <div class="breadcrumb-sm">Đặt lúc @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+    </div>
+    <a asp-action="Orders" class="btn btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+    </a>
+</div>
+
+<div class="two-col">
+    <section class="panel">
+        <div class="panel-head"><h2>Thông tin nhận hàng</h2></div>
+        <div class="form-grid">
+            <div class="form-field">
+                <label>Khách hàng</label>
+                <div class="cell-title">@Model.CustomerName</div>
+            </div>
+            <div class="form-field">
+                <label>Số điện thoại</label>
+                <div>@Model.PhoneNumber</div>
+            </div>
+            <div class="form-field full">
+                <label>Địa chỉ</label>
+                <div>@Model.Address</div>
+            </div>
+            <div class="form-field full">
+                <label>Ghi chú</label>
+                <div>@(string.IsNullOrWhiteSpace(Model.Note) ? "Không có" : Model.Note)</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head"><h2>Thông tin đơn hàng</h2></div>
+        <div class="form-grid">
+            <div class="form-field">
+                <label>Trạng thái</label>
+                <div class="cell-title">@Model.Status</div>
+            </div>
+            <div class="form-field">
+                <label>Tổng số lượng</label>
+                <div>@Model.OrderDetails.Sum(detail => detail.Quantity) sản phẩm</div>
+            </div>
+            <div class="form-field full">
+                <label>Tổng thanh toán</label>
+                <div class="cell-title" style="font-size:22px;color:var(--a-danger);">
+                    @Model.TotalAmount.ToString("N0")₫
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="panel" style="margin-top:20px;">
+    <div class="panel-head"><h2>Sản phẩm trong đơn</h2></div>
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                @if (!string.IsNullOrWhiteSpace(detail.Product?.ImageUrl))
+                                {
+                                    <img src="@detail.Product.ImageUrl" alt="@detail.Product.Name"
+                                         style="width:52px;height:52px;object-fit:contain;border:1px solid #eee;border-radius:6px;" />
+                                }
+                                <div class="cell-title">@(detail.Product?.Name ?? $"Sản phẩm #{detail.ProductId}")</div>
+                            </div>
+                        </td>
+                        <td>@detail.Price.ToString("N0")₫</td>
+                        <td>@detail.Quantity</td>
+                        <td class="cell-title" style="color:var(--a-danger);">
+                            @((detail.Price * detail.Quantity).ToString("N0"))₫
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

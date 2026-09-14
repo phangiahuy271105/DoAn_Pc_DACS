@@ -457,3 +457,27 @@
             </div>
         }
     </section>
+
+    @{
+        var monitorProducts = Model
+            .Where(product => product.Category?.Slug == "man-hinh")
+            .ToList();
+        var gearProducts = Model
+            .Where(product => product.Category != null &&
+                new[] { "ban-phim", "chuot", "tai-nghe" }.Contains(product.Category.Slug))
+            .ToList();
+    }
+
+    <partial name="_HomeProductSection" model="@(new HomeProductSectionViewModel
+    {
+        Title = "MÀN HÌNH MÁY TÍNH",
+        SeeAllUrl = Url.Action("Index", "Product", new { slug = "man-hinh" }) ?? "#",
+        Products = monitorProducts
+    })" />
+
+    <partial name="_HomeProductSection" model="@(new HomeProductSectionViewModel
+    {
+        Title = "GAMING GEAR",
+        SeeAllUrl = Url.Action("Index", "Product", new { group = "gear" }) ?? "#",
+        Products = gearProducts
+    })" />

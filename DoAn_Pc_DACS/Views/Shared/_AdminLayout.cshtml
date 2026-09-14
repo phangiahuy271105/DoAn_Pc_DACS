@@ -35,9 +35,11 @@
                 <a href="/Account/ChangePassword" class="@(ViewData["Active"] as string == "settings" ? "active" : "")">
                     <i class="fa-solid fa-key"></i> Đổi mật khẩu
                 </a>
-                <a href="/Account/Logout">
-                    <i class="fa-solid fa-right-from-bracket" style="color: var(--a-danger)"></i> Đăng xuất
-                </a>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="admin-nav-button">
+                        <i class="fa-solid fa-right-from-bracket" style="color: var(--a-danger)"></i> Đăng xuất
+                    </button>
+                </form>
             </nav>
             <div class="sidebar-foot">PGHSHOP Admin v1.0</div>
         </aside>
@@ -56,14 +58,20 @@
                             <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
                             <div class="who">
                                 <!-- CODE C# HIỂN THỊ TÊN ADMIN ĐĂNG NHẬP -->
-                                <strong>@(User.Identity.IsAuthenticated ? User.Identity.Name : "Admin")</strong>
+                                <strong>@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "Admin")</strong>
                                 <span>Quản trị viên</span>
                             </div>
                             <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--a-muted);"></i>
                         </div>
                         <div class="dropdown-panel" style="width:200px;">
                             <div class="dp-item" style="padding:10px 16px;"><a href="/Account/ChangePassword" style="display:flex;gap:8px;align-items:center;"><i class="fa-solid fa-key"></i> Đổi mật khẩu</a></div>
-                            <div class="dp-item" style="padding:10px 16px;"><a href="/Account/Logout" style="display:flex;gap:8px;align-items:center;color:var(--a-danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></div>
+                            <div class="dp-item" style="padding:10px 16px;">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" style="display:flex;gap:8px;align-items:center;color:var(--a-danger);background:none;border:0;padding:0;width:100%;">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -80,7 +80,13 @@
                                         </td>
                                         <td class="text-center text-danger fw-bold">@item.TotalPrice.ToString("N0")đ</td>
                                         <td class="text-center">
-                                            <a asp-action="RemoveFromCart" asp-controller="Cart" asp-route-id="@item.ProductId" class="text-danger fs-5" onclick="return confirm('Xóa sản phẩm này khỏi giỏ hàng?');"><i class="fa-solid fa-trash-can"></i></a>
+                                            <form asp-action="RemoveFromCart" asp-controller="Cart" method="post">
+                                                <input type="hidden" name="id" value="@item.ProductId" />
+                                                <button type="submit" class="btn btn-link text-danger fs-5 p-0" title="Xóa sản phẩm"
+                                                        onclick="return confirm('Xóa sản phẩm này khỏi giỏ hàng?');">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 }

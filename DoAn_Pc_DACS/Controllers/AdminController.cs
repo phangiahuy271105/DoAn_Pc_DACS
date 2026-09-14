@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DoAn_Pc_DACS.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,15 +35,16 @@ namespace DoAn_Pc_DACS.Controllers
             return View(products);
         }
 
-        public IActionResult CreateProduct()
+        public async Task<IActionResult> CreateProduct()
         {
             var viewModel = new ProductCreateViewModel
             {
-                Categories = _context.Categories.Select(c => new SelectListItem
+                Categories = await _context.Categories.Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name
-                }).ToList()
+                }).ToListAsync(),
+                AvailableRelatedProducts = await GetRelatedProductOptionsAsync()
             };
             return View(viewModel);
         }
@@ -52,83 +53,54 @@ namespace DoAn_Pc_DACS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(ProductCreateViewModel model)
         {
+            await ValidateProductImagesAsync(model.ImageFile, model.GalleryFiles);
+            ValidateProductData(model.Price, model.OldPrice, model.CategoryId);
+            model.RelatedProductIds = model.RelatedProductIds.Distinct().ToList();
+            await ValidateRelatedProductsAsync(0, model.CategoryId, model.RelatedProductIds);
+
             if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
-
-                if (!Directory.Exists(uploadsFolder))
+                var savedImageUrls = new List<string>();
+                try
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                    string mainImageUrl = await SaveImageAsync(model.ImageFile);
+                    savedImageUrls.Add(mainImageUrl);
 
-                if (model.ImageFile != null)
-                {
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    var product = new Product
                     {
-                        await model.ImageFile.CopyToAsync(fileStream);
-                    }
-                }
-
-                var product = new Product
-                {
-                    Name = model.Name,
-                    Price = model.Price,
-                    OldPrice = model.OldPrice,
-                    Discount = model.Discount,
-                    StockQuantity = model.StockQuantity,
-                    CategoryId = model.CategoryId,
-                    ImageUrl = "/images/uploads/" + uniqueFileName,
-                    ComponentSpec = new ComponentSpec
-                    {
-                        Socket = model.Socket,
-                        SocketSl = model.SocketSl,
-                        SocketBh = model.SocketBh,
-                        Mainboard = model.Mainboard,
-                        MainboardSl = model.MainboardSl,
-                        MainboardBh = model.MainboardBh,
-                        RamType = model.RamType,
-                        RamSl = model.RamSl,
-                        RamBh = model.RamBh,
-                        Storage = model.Storage,
-                        StorageSl = model.StorageSl,
-                        StorageBh = model.StorageBh,
-                        PowerSupply = model.PowerSupply,
-                        PowerSupplySl = model.PowerSupplySl,
-                        PowerSupplyBh = model.PowerSupplyBh,
-                        Vga = model.Vga,
-                        VgaSl = model.VgaSl,
-                        VgaBh = model.VgaBh,
-                        FormFactor = model.FormFactor,
-                        FormFactorSl = model.FormFactorSl,
-                        FormFactorBh = model.FormFactorBh,
-                        Cooler = model.Cooler,
-                        CoolerSl = model.CoolerSl,
-                        CoolerBh = model.CoolerBh
-                    },
-                    ProductImages = new List<ProductImage>()
-                };
-
-                if (model.GalleryFiles != null && model.GalleryFiles.Count > 0)
-                {
-                    foreach (var file in model.GalleryFiles)
-                    {
-                        string galleryFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                        string galleryFilePath = Path.Combine(uploadsFolder, galleryFileName);
-                        using (var fileStream = new FileStream(galleryFilePath, FileMode.Create))
+                        Name = model.Name.Trim(),
+                        Price = model.Price,
+                        OldPrice = model.OldPrice,
+                        Discount = model.Discount,
+                        StockQuantity = model.StockQuantity,
+                        CategoryId = model.CategoryId,
+                        ImageUrl = mainImageUrl,
+                        ComponentSpec = CreateComponentSpec(model),
+                        ProductImages = new List<ProductImage>(),
+                        RelatedProducts = model.RelatedProductIds.Select((relatedId, index) => new ProductRelation
                         {
-                            await file.CopyToAsync(fileStream);
-                        }
-                        product.ProductImages.Add(new ProductImage { ImageUrl = "/images/uploads/" + galleryFileName });
+                            RelatedProductId = relatedId,
+                            DisplayOrder = index
+                        }).ToList()
+                    };
+
+                    foreach (var file in model.GalleryFiles ?? [])
+                    {
+                        string galleryUrl = await SaveImageAsync(file);
+                        savedImageUrls.Add(galleryUrl);
+                        product.ProductImages.Add(new ProductImage { ImageUrl = galleryUrl });
                     }
+
+                    _context.Products.Add(product);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Index", "Admin");
                 }
-
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Admin");
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or DbUpdateException)
+                {
+                    foreach (string imageUrl in savedImageUrls) DeleteUploadedImage(imageUrl);
+                    ModelState.AddModelError(string.Empty, "Không thể lưu sản phẩm hoặc ảnh. Vui lòng thử lại.");
+                }
             }
 
             model.Categories = _context.Categories.Select(c => new SelectListItem
@@ -136,16 +108,19 @@ namespace DoAn_Pc_DACS.Controllers
                 Value = c.Id.ToString(),
                 Text = c.Name
             }).ToList();
+            model.AvailableRelatedProducts = await GetRelatedProductOptionsAsync();
 
             return View(model);
         }
 
-        public IActionResult EditProduct(int id)
+        public async Task<IActionResult> EditProduct(int id)
         {
-            var product = _context.Products
+            var product = await _context.Products
                 .Include(p => p.ComponentSpec)
                 .Include(p => p.ProductImages)
-                .FirstOrDefault(p => p.Id == id);
+                .Include(p => p.RelatedProducts)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -163,6 +138,10 @@ namespace DoAn_Pc_DACS.Controllers
                 CategoryId = product.CategoryId,
                 ExistingImageUrl = product.ImageUrl,
                 ExistingGalleryImages = product.ProductImages.ToList(),
+                RelatedProductIds = product.RelatedProducts
+                    .OrderBy(relation => relation.DisplayOrder)
+                    .Select(relation => relation.RelatedProductId)
+                    .ToList(),
 
                 Socket = product.ComponentSpec?.Socket,
                 SocketSl = product.ComponentSpec?.SocketSl ?? 1,
@@ -189,11 +168,12 @@ namespace DoAn_Pc_DACS.Controllers
                 CoolerSl = product.ComponentSpec?.CoolerSl ?? 1,
                 CoolerBh = product.ComponentSpec?.CoolerBh ?? "12 Tháng",
 
-                Categories = _context.Categories.Select(c => new SelectListItem
+                Categories = await _context.Categories.Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name
-                }).ToList()
+                }).ToListAsync(),
+                AvailableRelatedProducts = await GetRelatedProductOptionsAsync(product.Id)
             };
 
             return View(viewModel);
@@ -203,94 +183,92 @@ namespace DoAn_Pc_DACS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(ProductEditViewModel model)
         {
+            await ValidateProductImagesAsync(model.ImageFile, model.GalleryFiles, requireMainImage: false);
+            ValidateProductData(model.Price, model.OldPrice, model.CategoryId);
+            model.RelatedProductIds = model.RelatedProductIds.Distinct().ToList();
+            await ValidateRelatedProductsAsync(model.Id, model.CategoryId, model.RelatedProductIds);
+
             if (ModelState.IsValid)
             {
-                var product = _context.Products
+                var product = await _context.Products
                     .Include(p => p.ComponentSpec)
                     .Include(p => p.ProductImages)
-                    .FirstOrDefault(p => p.Id == model.Id);
+                    .Include(p => p.RelatedProducts)
+                    .AsSplitQuery()
+                    .FirstOrDefaultAsync(p => p.Id == model.Id);
 
                 if (product == null) return NotFound();
 
-                if (model.DeleteOldGallery && product.ProductImages != null && product.ProductImages.Any())
+                var savedImageUrls = new List<string>();
+                var oldImageUrlsToDelete = new List<string>();
+                product.ProductImages ??= new List<ProductImage>();
+
+                if (model.DeleteOldGallery && product.ProductImages.Any())
                 {
-                    foreach (var oldImg in product.ProductImages)
-                    {
-                        var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, oldImg.ImageUrl.TrimStart('/'));
-                        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath); // Xóa file vật lý
-                    }
+                    oldImageUrlsToDelete.AddRange(product.ProductImages.Select(image => image.ImageUrl));
                     _context.ProductImages.RemoveRange(product.ProductImages);
                     product.ProductImages.Clear();
                 }
 
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
-
-                if (model.ImageFile != null)
+                try
                 {
-                    // =============== FIX LỖI 2: XÓA ẢNH ĐẠI DIỆN CŨ TRONG Ổ CỨNG ===============
-                    if (!string.IsNullOrEmpty(product.ImageUrl))
+                    if (model.ImageFile != null)
                     {
-                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('/'));
-                        if (System.IO.File.Exists(oldImagePath)) System.IO.File.Delete(oldImagePath); // Xóa file vật lý
+                        string newMainImageUrl = await SaveImageAsync(model.ImageFile);
+                        savedImageUrls.Add(newMainImageUrl);
+                        oldImageUrlsToDelete.Add(product.ImageUrl);
+                        product.ImageUrl = newMainImageUrl;
                     }
 
-                    // Lưu ảnh mới
-                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    foreach (var file in model.GalleryFiles ?? [])
                     {
-                        await model.ImageFile.CopyToAsync(fileStream);
+                        string galleryUrl = await SaveImageAsync(file);
+                        savedImageUrls.Add(galleryUrl);
+                        product.ProductImages.Add(new ProductImage { ImageUrl = galleryUrl });
                     }
-                    product.ImageUrl = "/images/uploads/" + uniqueFileName;
+
+                    product.Name = model.Name.Trim();
+                    product.Price = model.Price;
+                    product.OldPrice = model.OldPrice;
+                    product.Discount = model.Discount;
+                    product.StockQuantity = model.StockQuantity;
+                    product.CategoryId = model.CategoryId;
+
+                    if (product.ComponentSpec == null) product.ComponentSpec = new ComponentSpec();
+
+                    product.ComponentSpec.Socket = model.Socket; product.ComponentSpec.SocketSl = model.SocketSl; product.ComponentSpec.SocketBh = model.SocketBh;
+                    product.ComponentSpec.Mainboard = model.Mainboard; product.ComponentSpec.MainboardSl = model.MainboardSl; product.ComponentSpec.MainboardBh = model.MainboardBh;
+                    product.ComponentSpec.RamType = model.RamType; product.ComponentSpec.RamSl = model.RamSl; product.ComponentSpec.RamBh = model.RamBh;
+                    product.ComponentSpec.Storage = model.Storage; product.ComponentSpec.StorageSl = model.StorageSl; product.ComponentSpec.StorageBh = model.StorageBh;
+                    product.ComponentSpec.PowerSupply = model.PowerSupply; product.ComponentSpec.PowerSupplySl = model.PowerSupplySl; product.ComponentSpec.PowerSupplyBh = model.PowerSupplyBh;
+                    product.ComponentSpec.Vga = model.Vga; product.ComponentSpec.VgaSl = model.VgaSl; product.ComponentSpec.VgaBh = model.VgaBh;
+                    product.ComponentSpec.FormFactor = model.FormFactor; product.ComponentSpec.FormFactorSl = model.FormFactorSl; product.ComponentSpec.FormFactorBh = model.FormFactorBh;
+                    product.ComponentSpec.Cooler = model.Cooler; product.ComponentSpec.CoolerSl = model.CoolerSl; product.ComponentSpec.CoolerBh = model.CoolerBh;
+                    product.ComponentSpec.Wattage = model.Wattage;
+
+                    _context.ProductRelations.RemoveRange(product.RelatedProducts);
+                    product.RelatedProducts = model.RelatedProductIds.Select((relatedId, index) => new ProductRelation
+                    {
+                        ProductId = product.Id,
+                        RelatedProductId = relatedId,
+                        DisplayOrder = index
+                    }).ToList();
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (string imageUrl in oldImageUrlsToDelete) DeleteUploadedImage(imageUrl);
+
+                    return RedirectToAction("Index", "Admin");
                 }
-
-                if (model.GalleryFiles != null && model.GalleryFiles.Count > 0)
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or DbUpdateException)
                 {
-                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-                    if (product.ProductImages == null) product.ProductImages = new List<ProductImage>();
-
-                    foreach (var file in model.GalleryFiles)
-                    {
-                        string galleryFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                        string galleryFilePath = Path.Combine(uploadsFolder, galleryFileName);
-                        using (var fileStream = new FileStream(galleryFilePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-                        product.ProductImages.Add(new ProductImage { ImageUrl = "/images/uploads/" + galleryFileName });
-                    }
+                    foreach (string imageUrl in savedImageUrls) DeleteUploadedImage(imageUrl);
+                    _context.ChangeTracker.Clear();
+                    ModelState.AddModelError(string.Empty, "Không thể cập nhật sản phẩm hoặc ảnh. Vui lòng thử lại.");
                 }
-
-                product.Name = model.Name;
-                product.Price = model.Price;
-                product.OldPrice = model.OldPrice;
-                product.Discount = model.Discount;
-                product.StockQuantity = model.StockQuantity;
-                product.CategoryId = model.CategoryId;
-
-                if (product.ComponentSpec == null) product.ComponentSpec = new ComponentSpec();
-
-                product.ComponentSpec.Socket = model.Socket; product.ComponentSpec.SocketSl = model.SocketSl; product.ComponentSpec.SocketBh = model.SocketBh;
-                product.ComponentSpec.Mainboard = model.Mainboard; product.ComponentSpec.MainboardSl = model.MainboardSl; product.ComponentSpec.MainboardBh = model.MainboardBh;
-                product.ComponentSpec.RamType = model.RamType; product.ComponentSpec.RamSl = model.RamSl; product.ComponentSpec.RamBh = model.RamBh;
-                product.ComponentSpec.Storage = model.Storage; product.ComponentSpec.StorageSl = model.StorageSl; product.ComponentSpec.StorageBh = model.StorageBh;
-                product.ComponentSpec.PowerSupply = model.PowerSupply; product.ComponentSpec.PowerSupplySl = model.PowerSupplySl; product.ComponentSpec.PowerSupplyBh = model.PowerSupplyBh;
-                product.ComponentSpec.Vga = model.Vga; product.ComponentSpec.VgaSl = model.VgaSl; product.ComponentSpec.VgaBh = model.VgaBh;
-                product.ComponentSpec.FormFactor = model.FormFactor; product.ComponentSpec.FormFactorSl = model.FormFactorSl; product.ComponentSpec.FormFactorBh = model.FormFactorBh;
-                product.ComponentSpec.Cooler = model.Cooler; product.ComponentSpec.CoolerSl = model.CoolerSl; product.ComponentSpec.CoolerBh = model.CoolerBh;
-
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Admin");
             }
 
-            model.Categories = _context.Categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
+            await PopulateEditViewModelAsync(model);
 
             return View(model);
         }
@@ -298,6 +276,12 @@ namespace DoAn_Pc_DACS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
+            if (await _context.OrderDetails.AnyAsync(detail => detail.ProductId == id))
+            {
+                TempData["AdminError"] = "Không thể xóa sản phẩm đã xuất hiện trong đơn hàng. Hãy đặt tồn kho về 0 để ngừng bán.";
+                return RedirectToAction("Index");
+            }
+
             var product = await _context.Products
                 .Include(p => p.ComponentSpec)
                 .Include(p => p.ProductImages)
@@ -305,25 +289,19 @@ namespace DoAn_Pc_DACS.Controllers
 
             if (product == null) return NotFound();
 
-            string webRootPath = _webHostEnvironment.WebRootPath;
+            var incomingRelations = await _context.ProductRelations
+                .Where(relation => relation.RelatedProductId == id)
+                .ToListAsync();
+            _context.ProductRelations.RemoveRange(incomingRelations);
 
-            if (!string.IsNullOrEmpty(product.ImageUrl))
-            {
-                var imagePath = Path.Combine(webRootPath, product.ImageUrl.TrimStart('/'));
-                if (System.IO.File.Exists(imagePath)) System.IO.File.Delete(imagePath);
-            }
-
-            if (product.ProductImages != null && product.ProductImages.Count > 0)
-            {
-                foreach (var img in product.ProductImages)
-                {
-                    var galleryPath = Path.Combine(webRootPath, img.ImageUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(galleryPath)) System.IO.File.Delete(galleryPath);
-                }
-            }
+            var imageUrlsToDelete = product.ProductImages.Select(image => image.ImageUrl).ToList();
+            imageUrlsToDelete.Add(product.ImageUrl);
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+
+            foreach (string imageUrl in imageUrlsToDelete) DeleteUploadedImage(imageUrl);
+
             return RedirectToAction("Index", "Admin");
         }
         // ==========================================
@@ -341,18 +319,295 @@ namespace DoAn_Pc_DACS.Controllers
             return View(orders);
         }
 
+        public IActionResult OrderDetails(int id)
+        {
+            var order = _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(detail => detail.Product)
+                .FirstOrDefault(o => o.Id == id);
+
+            return order == null ? NotFound() : View(order);
+        }
+
         // 2. Cập nhật trạng thái Đơn hàng 
         [HttpPost]
-        public IActionResult UpdateOrderStatus(int orderId, string newStatus)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, string newStatus)
         {
-            var order = _context.Orders.Find(orderId);
-            if (order != null)
+            string[] allowedStatuses = ["Chờ xác nhận", "Đang giao", "Hoàn tất", "Đã hủy"];
+            if (!allowedStatuses.Contains(newStatus))
             {
-                order.Status = newStatus;
-                _context.SaveChanges();
-                return Json(new { success = true, message = "Cập nhật thành công!" });
+                return BadRequest(new { success = false, message = "Trạng thái không hợp lệ." });
             }
-            return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
+
+            await using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            var order = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(detail => detail.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return NotFound(new { success = false, message = "Không tìm thấy đơn hàng!" });
+            }
+
+            if (order.Status == newStatus)
+            {
+                return Json(new { success = true, message = "Trạng thái không thay đổi." });
+            }
+
+            bool wasCancelled = order.Status == "Đã hủy";
+            bool isBeingCancelled = newStatus == "Đã hủy";
+
+            if (!wasCancelled && isBeingCancelled)
+            {
+                foreach (var detail in order.OrderDetails.Where(detail => detail.Product != null))
+                {
+                    detail.Product.StockQuantity += detail.Quantity;
+                }
+            }
+            else if (wasCancelled && !isBeingCancelled)
+            {
+                var insufficientProduct = order.OrderDetails
+                    .FirstOrDefault(detail => detail.Product == null || detail.Product.StockQuantity < detail.Quantity);
+
+                if (insufficientProduct != null)
+                {
+                    await transaction.RollbackAsync();
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Không đủ tồn kho để khôi phục đơn hàng đã hủy."
+                    });
+                }
+
+                foreach (var detail in order.OrderDetails)
+                {
+                    detail.Product.StockQuantity -= detail.Quantity;
+                }
+            }
+
+            order.Status = newStatus;
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Json(new { success = true, message = "Cập nhật thành công!" });
+        }
+
+        private void ValidateProductData(decimal price, decimal oldPrice, int categoryId)
+        {
+            if (oldPrice > 0 && oldPrice < price)
+            {
+                ModelState.AddModelError("OldPrice", "Giá gốc không được thấp hơn giá bán.");
+            }
+
+            if (!_context.Categories.Any(category => category.Id == categoryId))
+            {
+                ModelState.AddModelError("CategoryId", "Danh mục đã chọn không tồn tại.");
+            }
+        }
+
+        private async Task ValidateRelatedProductsAsync(int productId, int productCategoryId, List<int> relatedProductIds)
+        {
+            if (relatedProductIds.Count > 5)
+            {
+                ModelState.AddModelError("RelatedProductIds", "Chỉ được chọn tối đa 5 sản phẩm mua kèm.");
+            }
+
+            if (productId > 0 && relatedProductIds.Contains(productId))
+            {
+                ModelState.AddModelError("RelatedProductIds", "Sản phẩm không thể mua kèm chính nó.");
+            }
+
+            var relatedProducts = await _context.Products
+                .AsNoTracking()
+                .Where(product => relatedProductIds.Contains(product.Id))
+                .Select(product => new { product.Id, product.CategoryId })
+                .ToListAsync();
+
+            if (relatedProducts.Count != relatedProductIds.Count)
+            {
+                ModelState.AddModelError("RelatedProductIds", "Có sản phẩm mua kèm không còn tồn tại.");
+            }
+
+            if (relatedProducts.Any(product => product.CategoryId == productCategoryId))
+            {
+                ModelState.AddModelError("RelatedProductIds", "Sản phẩm mua kèm phải thuộc danh mục khác sản phẩm chính.");
+            }
+
+            if (relatedProducts.Select(product => product.CategoryId).Distinct().Count() != relatedProducts.Count)
+            {
+                ModelState.AddModelError("RelatedProductIds", "Mỗi danh mục chỉ được chọn một sản phẩm mua kèm mặc định.");
+            }
+        }
+
+        private async Task<List<SelectListItem>> GetRelatedProductOptionsAsync(int excludedProductId = 0)
+        {
+            return await _context.Products
+                .AsNoTracking()
+                .Where(product => product.Id != excludedProductId)
+                .OrderBy(product => product.Category.Name)
+                .ThenBy(product => product.Name)
+                .Select(product => new SelectListItem
+                {
+                    Value = product.Id.ToString(),
+                    Text = product.Category.Name + " — " + product.Name
+                })
+                .ToListAsync();
+        }
+
+        private async Task ValidateProductImagesAsync(
+            IFormFile? mainImage,
+            List<IFormFile>? galleryFiles,
+            bool requireMainImage = true)
+        {
+            if (requireMainImage && mainImage == null)
+            {
+                ModelState.AddModelError("ImageFile", "Vui lòng chọn ảnh đại diện.");
+            }
+
+            if (mainImage != null && !await IsValidImageAsync(mainImage))
+            {
+                ModelState.AddModelError("ImageFile", "Ảnh đại diện phải là JPG, PNG hoặc WEBP và không vượt quá 5 MB.");
+            }
+
+            if (galleryFiles != null && galleryFiles.Count > 8)
+            {
+                ModelState.AddModelError("GalleryFiles", "Mỗi lần chỉ được tải lên tối đa 8 ảnh phụ.");
+            }
+
+            foreach (var file in galleryFiles ?? [])
+            {
+                if (!await IsValidImageAsync(file))
+                {
+                    ModelState.AddModelError("GalleryFiles", $"Ảnh phụ \"{Path.GetFileName(file.FileName)}\" không hợp lệ.");
+                }
+            }
+        }
+
+        private static async Task<bool> IsValidImageAsync(IFormFile file)
+        {
+            const long maxImageSize = 5 * 1024 * 1024;
+            string extension = Path.GetExtension(Path.GetFileName(file.FileName)).ToLowerInvariant();
+
+            if (file.Length <= 0 || file.Length > maxImageSize ||
+                extension is not (".jpg" or ".jpeg" or ".png" or ".webp"))
+            {
+                return false;
+            }
+
+            byte[] header = new byte[12];
+            await using var stream = file.OpenReadStream();
+            int bytesRead = await stream.ReadAsync(header.AsMemory(0, header.Length));
+
+            bool isJpeg = bytesRead >= 3 && header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF;
+            bool isPng = bytesRead >= 8 &&
+                         header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47 &&
+                         header[4] == 0x0D && header[5] == 0x0A && header[6] == 0x1A && header[7] == 0x0A;
+            bool isWebP = bytesRead >= 12 &&
+                          header[0] == 0x52 && header[1] == 0x49 && header[2] == 0x46 && header[3] == 0x46 &&
+                          header[8] == 0x57 && header[9] == 0x45 && header[10] == 0x42 && header[11] == 0x50;
+
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => isJpeg,
+                ".png" => isPng,
+                ".webp" => isWebP,
+                _ => false
+            };
+        }
+
+        private async Task<string> SaveImageAsync(IFormFile file)
+        {
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
+            Directory.CreateDirectory(uploadsFolder);
+
+            string extension = Path.GetExtension(Path.GetFileName(file.FileName)).ToLowerInvariant();
+            string fileName = $"{Guid.NewGuid():N}{extension}";
+            string filePath = Path.Combine(uploadsFolder, fileName);
+
+            await using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            await file.CopyToAsync(fileStream);
+
+            return $"/images/uploads/{fileName}";
+        }
+
+        private void DeleteUploadedImage(string? imageUrl)
+        {
+            const string uploadsPrefix = "/images/uploads/";
+            if (string.IsNullOrWhiteSpace(imageUrl) ||
+                !imageUrl.StartsWith(uploadsPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            string fileName = imageUrl[uploadsPrefix.Length..];
+            if (!string.Equals(fileName, Path.GetFileName(fileName), StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            string uploadsFolder = Path.GetFullPath(Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads"));
+            string filePath = Path.GetFullPath(Path.Combine(uploadsFolder, fileName));
+            string safeRoot = uploadsFolder.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+
+            if (filePath.StartsWith(safeRoot, StringComparison.OrdinalIgnoreCase) && System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+
+        private async Task PopulateEditViewModelAsync(ProductEditViewModel model)
+        {
+            model.Categories = await _context.Categories.Select(category => new SelectListItem
+            {
+                Value = category.Id.ToString(),
+                Text = category.Name
+            }).ToListAsync();
+            model.AvailableRelatedProducts = await GetRelatedProductOptionsAsync(model.Id);
+
+            var existingProduct = await _context.Products
+                .AsNoTracking()
+                .Include(product => product.ProductImages)
+                .FirstOrDefaultAsync(product => product.Id == model.Id);
+
+            if (existingProduct != null)
+            {
+                model.ExistingImageUrl = existingProduct.ImageUrl;
+                model.ExistingGalleryImages = existingProduct.ProductImages.ToList();
+            }
+        }
+
+        private static ComponentSpec CreateComponentSpec(ProductCreateViewModel model)
+        {
+            return new ComponentSpec
+            {
+                Socket = model.Socket,
+                SocketSl = model.SocketSl,
+                SocketBh = model.SocketBh,
+                Mainboard = model.Mainboard,
+                MainboardSl = model.MainboardSl,
+                MainboardBh = model.MainboardBh,
+                RamType = model.RamType,
+                RamSl = model.RamSl,
+                RamBh = model.RamBh,
+                Storage = model.Storage,
+                StorageSl = model.StorageSl,
+                StorageBh = model.StorageBh,
+                PowerSupply = model.PowerSupply,
+                PowerSupplySl = model.PowerSupplySl,
+                PowerSupplyBh = model.PowerSupplyBh,
+                Vga = model.Vga,
+                VgaSl = model.VgaSl,
+                VgaBh = model.VgaBh,
+                FormFactor = model.FormFactor,
+                FormFactorSl = model.FormFactorSl,
+                FormFactorBh = model.FormFactorBh,
+                Cooler = model.Cooler,
+                CoolerSl = model.CoolerSl,
+                CoolerBh = model.CoolerBh,
+                Wattage = model.Wattage
+            };
         }
     }
 }

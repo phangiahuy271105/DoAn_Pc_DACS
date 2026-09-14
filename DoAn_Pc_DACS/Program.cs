@@ -1,10 +1,16 @@
 using DoAn_Pc_DACS.Data;
+using DoAn_Pc_DACS.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -13,7 +19,9 @@ builder.Services.AddAuthentication("AdminCookie")
     .AddCookie("AdminCookie", options =>
     {
         options.LoginPath = "/Account/Login"; // Đường dẫn bị đuổi về nếu chưa đăng nhập
+        options.AccessDeniedPath = "/Account/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(2); // Tài khoản sẽ tự đăng xuất sau 2 tiếng
+        options.SlidingExpiration = true;
     });
 builder.Services.AddSession(options =>
 {
@@ -27,7 +35,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
-    DbInitializer.Initialize(context);
+    var passwordHasher = services.GetRequiredService<IPasswordHasher<Account>>();
+    DbInitializer.Initialize(context, passwordHasher);
 }
 
 if (!app.Environment.IsDevelopment())
@@ -36,12 +45,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseRouting(); 
-app.UseSession(); 
-app.UseAuthentication(); 
-app.UseAuthorization();  
-app.UseRouting();
 app.UseStaticFiles();
+app.UseRouting();
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",

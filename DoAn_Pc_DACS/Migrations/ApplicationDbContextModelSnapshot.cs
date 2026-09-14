@@ -91,6 +91,30 @@ namespace DoAn_Pc_DACS.Migrations
                             Id = 100,
                             Name = "PC WORKSTATION",
                             Slug = "pc-workstation"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Name = "MÀN HÌNH",
+                            Slug = "man-hinh"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            Name = "BÀN PHÍM",
+                            Slug = "ban-phim"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            Name = "CHUỘT",
+                            Slug = "chuot"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            Name = "TAI NGHE",
+                            Slug = "tai-nghe"
                         });
                 });
 
@@ -250,15 +274,17 @@ namespace DoAn_Pc_DACS.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("CustomerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -272,6 +298,7 @@ namespace DoAn_Pc_DACS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -291,6 +318,7 @@ namespace DoAn_Pc_DACS.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
@@ -332,9 +360,11 @@ namespace DoAn_Pc_DACS.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<decimal>("OldPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("StockQuantity")
@@ -393,6 +423,33 @@ namespace DoAn_Pc_DACS.Migrations
                     b.ToTable("ProductImages");
                 });
 
+            modelBuilder.Entity("DoAn_Pc_DACS.Models.ProductRelation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RelatedProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RelatedProductId");
+
+                    b.HasIndex("ProductId", "RelatedProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductRelations");
+                });
+
             modelBuilder.Entity("DoAn_Pc_DACS.Models.ComponentSpec", b =>
                 {
                     b.HasOne("DoAn_Pc_DACS.Models.Product", "Product")
@@ -445,6 +502,25 @@ namespace DoAn_Pc_DACS.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("DoAn_Pc_DACS.Models.ProductRelation", b =>
+                {
+                    b.HasOne("DoAn_Pc_DACS.Models.Product", "Product")
+                        .WithMany("RelatedProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DoAn_Pc_DACS.Models.Product", "RelatedProduct")
+                        .WithMany("RecommendedByProducts")
+                        .HasForeignKey("RelatedProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("RelatedProduct");
+                });
+
             modelBuilder.Entity("DoAn_Pc_DACS.Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -457,10 +533,13 @@ namespace DoAn_Pc_DACS.Migrations
 
             modelBuilder.Entity("DoAn_Pc_DACS.Models.Product", b =>
                 {
-                    b.Navigation("ComponentSpec")
-                        .IsRequired();
+                    b.Navigation("ComponentSpec");
 
                     b.Navigation("ProductImages");
+
+                    b.Navigation("RecommendedByProducts");
+
+                    b.Navigation("RelatedProducts");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,11 +9,11 @@ namespace DoAn_Pc_DACS.Models
 
         [Required(ErrorMessage = "Vui lòng nhập tài khoản")]
         [StringLength(50)]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         [StringLength(255)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         public string Role { get; set; } = "Admin";
     }

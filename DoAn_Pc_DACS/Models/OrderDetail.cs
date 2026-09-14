@@ -15,9 +15,9 @@ namespace DoAn_Pc_DACS.Models
         public decimal Price { get; set; }
 
         [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public Order Order { get; set; } = null!;
 
         [ForeignKey("ProductId")]
-        public Product Product { get; set; }
+        public Product Product { get; set; } = null!;
     }
 }

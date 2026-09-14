@@ -1,6 +1,7 @@
 ﻿using DoAn_Pc_DACS.Data; // Nhớ thêm thư viện này để gọi DbContext
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
@@ -11,10 +12,12 @@ namespace DoAn_Pc_DACS.Controllers
     {
         // Khai báo kết nối Database
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordHasher<Models.Account> _passwordHasher;
 
-        public AccountController(ApplicationDbContext context)
+        public AccountController(ApplicationDbContext context, IPasswordHasher<Models.Account> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         // 1. Hiển thị form đăng nhập
@@ -30,13 +33,23 @@ namespace DoAn_Pc_DACS.Controllers
 
         // 2. Xử lý khi bấm nút Đăng nhập (Dò trong Database)
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string username, string password, bool rememberMe = false)
         {
-            // Truy vấn Database xem có tài khoản nào khớp không
-            var user = _context.Accounts.FirstOrDefault(u => u.Username == username && u.Password == password);
+            username = username?.Trim() ?? string.Empty;
+            var user = _context.Accounts.FirstOrDefault(u => u.Username == username);
+            var verificationResult = user == null
+                ? PasswordVerificationResult.Failed
+                : _passwordHasher.VerifyHashedPassword(user, user.Password, password ?? string.Empty);
 
-            if (user != null)
+            if (user != null && verificationResult != PasswordVerificationResult.Failed)
             {
+                if (verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+                {
+                    user.Password = _passwordHasher.HashPassword(user, password ?? string.Empty);
+                    await _context.SaveChangesAsync();
+                }
+
                 // Nếu tìm thấy, cấp quyền dựa trên Role trong DB
                 var claims = new List<Claim>
                 {
@@ -47,10 +60,10 @@ namespace DoAn_Pc_DACS.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, "AdminCookie");
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true // Nhớ đăng nhập
+                    IsPersistent = rememberMe
                 };
 
-                HttpContext.SignInAsync("AdminCookie", new ClaimsPrincipal(claimsIdentity), authProperties).Wait();
+                await HttpContext.SignInAsync("AdminCookie", new ClaimsPrincipal(claimsIdentity), authProperties);
 
                 return RedirectToAction("Index", "Admin");
             }
@@ -61,9 +74,11 @@ namespace DoAn_Pc_DACS.Controllers
         }
 
         // 3. Đăng xuất
-        public IActionResult Logout()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.SignOutAsync("AdminCookie").Wait();
+            await HttpContext.SignOutAsync("AdminCookie");
             return RedirectToAction("Login", "Account");
         }
         // 4. HIỂN THỊ FORM ĐỔI MẬT KHẨU
@@ -80,7 +95,8 @@ namespace DoAn_Pc_DACS.Controllers
         // ====================================================
         [Authorize]
         [HttpPost]
-        public IActionResult ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
         {
             // 1. Kiểm tra mật khẩu mới nhập lại có khớp không
             if (newPassword != confirmPassword)
@@ -89,17 +105,25 @@ namespace DoAn_Pc_DACS.Controllers
                 return View();
             }
 
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+            {
+                ViewBag.Error = "Mật khẩu mới phải có ít nhất 8 ký tự!";
+                return View();
+            }
+
             // 2. Lấy tên tài khoản của người đang đăng nhập hiện tại
-            string currentUsername = User.Identity.Name;
+            string? currentUsername = User.Identity?.Name;
 
             // 3. Tìm user trong Database
             var user = _context.Accounts.FirstOrDefault(u => u.Username == currentUsername);
 
-            if (user != null && user.Password == oldPassword)
+            if (user != null &&
+                _passwordHasher.VerifyHashedPassword(user, user.Password, oldPassword ?? string.Empty)
+                    != PasswordVerificationResult.Failed)
             {
                 // Nếu đúng mật khẩu cũ -> Cập nhật mật khẩu mới
-                user.Password = newPassword;
-                _context.SaveChanges(); // Lệnh này sẽ lưu thẳng xuống Database
+                user.Password = _passwordHasher.HashPassword(user, newPassword);
+                await _context.SaveChangesAsync();
 
                 ViewBag.Success = "Đổi mật khẩu thành công! Lần đăng nhập sau hãy dùng mật khẩu mới.";
                 return View();

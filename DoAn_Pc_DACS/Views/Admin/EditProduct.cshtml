@@ -13,6 +13,7 @@
 </div>
 
 <form asp-action="EditProduct" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="ExistingImageUrl" />
 
@@ -24,22 +25,27 @@
                 <div class="form-field full">
                     <label>Tên sản phẩm</label>
                     <input asp-for="Name" type="text" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Danh mục</label>
                     <select asp-for="CategoryId" asp-items="@Model.Categories"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Phần trăm giảm (%)</label>
                     <input asp-for="Discount" type="number" />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Giá bán (VNĐ)</label>
                     <input asp-for="Price" type="number" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Giá gốc (VNĐ)</label>
                     <input asp-for="OldPrice" type="number" />
+                    <span asp-validation-for="OldPrice" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Số lượng tồn kho</label>
@@ -56,24 +62,32 @@
                         <img src="@Model.ExistingImageUrl" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid var(--a-border);" />
                     }
                     <label style="margin-top: 10px;">Đổi ảnh đại diện mới (bỏ trống nếu giữ nguyên)</label>
-                    <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" style="padding: 6px;" />
+                    <input asp-for="ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" style="padding: 6px;" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
                 <div class="form-field full">
                     <label>Ảnh thư viện (Chọn lại từ đầu nếu muốn cập nhật)</label>
-                    <input asp-for="GalleryFiles" type="file" accept="image/*" multiple class="form-control" style="padding: 6px;" />
+                    <input asp-for="GalleryFiles" type="file" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control" style="padding: 6px;" />
+                    <span asp-validation-for="GalleryFiles" class="text-danger"></span>
                     <div style="margin-top: 10px;">
                         <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
                             <input asp-for="DeleteOldGallery" type="checkbox" style="width: auto;" /> Xóa tất cả ảnh thư viện cũ khi upload ảnh mới
                         </label>
                     </div>
                 </div>
+                <div class="form-field full">
+                    <label>Sản phẩm mua kèm (tối đa 5)</label>
+                    <select asp-for="RelatedProductIds" asp-items="Model.AvailableRelatedProducts" multiple size="8"></select>
+                    <small style="color:var(--a-muted);">Chọn tối đa một món cho mỗi danh mục (màn hình, bàn phím, chuột, tai nghe). Giữ Ctrl để chọn nhiều món.</small>
+                    <span asp-validation-for="RelatedProductIds" class="text-danger"></span>
+                </div>
             </div>
         </div>
 
         <!-- CỘT PHẢI: CẤU HÌNH -->
         <div class="panel">
-            <div class="panel-head"><h2>Cấu hình chi tiết (Bảng thông số)</h2></div>
+            <div class="panel-head"><h2>Cấu hình chi tiết (có thể để trống với phụ kiện)</h2></div>
             <div class="table-wrap">
                 <table class="admin-table">
                     <thead><tr><th>Linh kiện</th><th>Mô tả chi tiết</th><th style="width:60px;">SL</th><th style="width:100px;">Bảo hành</th></tr></thead>

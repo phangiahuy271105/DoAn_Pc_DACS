@@ -1,13 +1,32 @@
 ﻿using DoAn_Pc_DACS.Models;
 using System.Linq;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace DoAn_Pc_DACS.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(ApplicationDbContext context)
+        public static void Initialize(
+            ApplicationDbContext context,
+            Microsoft.AspNetCore.Identity.IPasswordHasher<Account> passwordHasher)
         {
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
+
+            // Tự chuyển mật khẩu chữ thường của dữ liệu demo cũ sang dạng băm.
+            var accountsWithPlainTextPassword = context.Accounts
+                .Where(account => account.Password.Length < 60)
+                .ToList();
+
+            foreach (var account in accountsWithPlainTextPassword)
+            {
+                account.Password = passwordHasher.HashPassword(account, account.Password);
+            }
+
+            if (accountsWithPlainTextPassword.Count > 0)
+            {
+                context.SaveChanges();
+            }
 
             if (context.Categories.Any())
             {

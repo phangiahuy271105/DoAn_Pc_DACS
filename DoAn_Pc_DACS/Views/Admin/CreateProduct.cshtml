@@ -13,6 +13,7 @@
 </div>
 
 <form asp-action="CreateProduct" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="two-col">
         <!-- CỘT TRÁI: THÔNG TIN CƠ BẢN -->
         <div class="panel">
@@ -26,18 +27,22 @@
                 <div class="form-field">
                     <label>Danh mục</label>
                     <select asp-for="CategoryId" asp-items="@Model.Categories"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Phần trăm giảm (%)</label>
                     <input asp-for="Discount" type="number" value="0" />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Giá bán (VNĐ)</label>
                     <input asp-for="Price" type="number" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Giá gốc (VNĐ)</label>
                     <input asp-for="OldPrice" type="number" />
+                    <span asp-validation-for="OldPrice" class="text-danger"></span>
                 </div>
                 <div class="form-field">
                     <label>Số lượng tồn kho</label>
@@ -50,18 +55,26 @@
                 </div>
                 <div class="form-field full">
                     <label>Ảnh đại diện (Bắt buộc)</label>
-                    <input asp-for="ImageFile" type="file" accept="image/*" required class="form-control" style="padding: 6px;" />
+                    <input asp-for="ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" required class="form-control" style="padding: 6px;" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
                 <div class="form-field full">
                     <label>Ảnh thư viện (Chọn nhiều ảnh)</label>
-                    <input asp-for="GalleryFiles" type="file" accept="image/*" multiple class="form-control" style="padding: 6px;" />
+                    <input asp-for="GalleryFiles" type="file" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control" style="padding: 6px;" />
+                    <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                </div>
+                <div class="form-field full">
+                    <label>Sản phẩm mua kèm (tối đa 5)</label>
+                    <select asp-for="RelatedProductIds" asp-items="Model.AvailableRelatedProducts" multiple size="8"></select>
+                    <small style="color:var(--a-muted);">Chọn tối đa một món cho mỗi danh mục (màn hình, bàn phím, chuột, tai nghe). Giữ Ctrl để chọn nhiều món.</small>
+                    <span asp-validation-for="RelatedProductIds" class="text-danger"></span>
                 </div>
             </div>
         </div>
 
         <!-- CỘT PHẢI: CẤU HÌNH CHI TIẾT -->
         <div class="panel">
-            <div class="panel-head"><h2>Cấu hình chi tiết (Bảng thông số)</h2></div>
+            <div class="panel-head"><h2>Cấu hình chi tiết (có thể để trống với phụ kiện)</h2></div>
             <div class="table-wrap">
                 <table class="admin-table">
                     <thead>

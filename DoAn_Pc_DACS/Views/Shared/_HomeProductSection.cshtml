@@ -1,0 +1,73 @@
+@model DoAn_Pc_DACS.Models.HomeProductSectionViewModel
+
+<section class="section home-accessory-section">
+    <div class="section-head">
+        <h2>@Model.Title</h2>
+        <a class="see-all" href="@Model.SeeAllUrl">Xem tất cả »</a>
+    </div>
+
+    @if (Model.Products.Any())
+    {
+        <div class="product-slider-wrapper">
+            <button type="button" class="slider-btn prev-btn" aria-label="Sản phẩm trước">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="product-slider-track">
+                @foreach (var item in Model.Products)
+                {
+                    <article class="pcard accessory-card">
+                        @if (item.Discount > 0)
+                        {
+                            <span class="badge">-@item.Discount%</span>
+                        }
+
+                        <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" class="accessory-card-link">
+                            <div class="thumb accessory-thumb">
+                                <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" />
+                            </div>
+                            <div class="accessory-category">@item.Category?.Name</div>
+                            <h3>@item.Name</h3>
+                            <div class="accessory-prices">
+                                <span class="price">@item.Price.ToString("N0") VNĐ</span>
+                                @if (item.OldPrice > item.Price)
+                                {
+                                    <span class="old-price">@item.OldPrice.ToString("N0") VNĐ</span>
+                                }
+                            </div>
+                        </a>
+
+                        <div class="accessory-card-footer">
+                            @if (item.StockQuantity > 0)
+                            {
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="accessory-add-cart">
+                                        <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ
+                                    </button>
+                                </form>
+                                <span class="accessory-stock @(item.StockQuantity <= 5 ? "low-stock" : "")">
+                                    @(item.StockQuantity <= 5 ? $"Còn {item.StockQuantity}" : "Còn hàng")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="accessory-out-of-stock"><i class="fa-solid fa-ban"></i> Hết hàng</span>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+            <button type="button" class="slider-btn next-btn" aria-label="Sản phẩm tiếp theo">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="home-empty-products">
+            <i class="fa-solid fa-box-open"></i>
+            <span>Chưa có sản phẩm. Bạn có thể thêm tại trang quản trị.</span>
+        </div>
+    }
+</section>

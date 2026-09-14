@@ -3,6 +3,7 @@ using DoAn_Pc_DACS.Data;
 using DoAn_Pc_DACS.Models;
 using DoAn_Pc_DACS.Helpers;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,30 +19,17 @@ namespace DoAn_Pc_DACS.Controllers
         }
 
         // Hiển thị Giỏ hàng
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
-
-            var productIds = cart.Select(x => x.ProductId).ToList();
-
-            var stockData = _context.Products
-                .Where(p => productIds.Contains(p.Id))
-                .ToDictionary(p => p.Id, p => p.StockQuantity);
-
-            foreach (var item in cart)
-            {
-                item.StockQuantity = stockData.ContainsKey(item.ProductId)
-                    ? stockData[item.ProductId]
-                    : 0;
-            }
-
-            HttpContext.Session.Set("Cart", cart);
+            await RefreshCartAsync(cart);
 
             return View(cart);
         }
 
         // Xử lý nút Thêm vào giỏ
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddToCart(int id, int quantity = 1)
         {
             var product = _context.Products.Find(id);
@@ -102,8 +90,115 @@ namespace DoAn_Pc_DACS.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddBundleToCart(int id, int[]? relationIds, int[]? relatedProductIds)
+        {
+            var selectedRelationIds = relationIds ?? [];
+            var selectedRelatedIds = (relatedProductIds ?? [])
+                .ToList();
+
+            if (selectedRelationIds.Length != selectedRelatedIds.Count ||
+                selectedRelationIds.Length > 5 ||
+                selectedRelationIds.Distinct().Count() != selectedRelationIds.Length ||
+                selectedRelatedIds.Distinct().Count() != selectedRelatedIds.Count)
+            {
+                TempData["CartError"] = "Danh sách sản phẩm mua kèm không hợp lệ.";
+                return RedirectToAction("Details", "Home", new { id });
+            }
+
+            var configuredRelations = await _context.ProductRelations
+                .AsNoTracking()
+                .Where(relation => relation.ProductId == id && selectedRelationIds.Contains(relation.Id))
+                .Select(relation => new
+                {
+                    relation.Id,
+                    AllowedCategoryId = relation.RelatedProduct.CategoryId
+                })
+                .ToListAsync();
+
+            if (configuredRelations.Count != selectedRelationIds.Length)
+            {
+                TempData["CartError"] = "Danh sách sản phẩm mua kèm không hợp lệ.";
+                return RedirectToAction("Details", "Home", new { id });
+            }
+
+            var productIds = selectedRelatedIds.Append(id).Distinct().ToList();
+            var products = await _context.Products
+                .AsNoTracking()
+                .Where(product => productIds.Contains(product.Id))
+                .ToDictionaryAsync(product => product.Id);
+
+            if (!products.ContainsKey(id))
+            {
+                return NotFound();
+            }
+
+            var relationCategories = configuredRelations.ToDictionary(relation => relation.Id, relation => relation.AllowedCategoryId);
+            for (int index = 0; index < selectedRelationIds.Length; index++)
+            {
+                int selectedProductId = selectedRelatedIds[index];
+                if (!products.TryGetValue(selectedProductId, out var selectedProduct) ||
+                    selectedProduct.CategoryId != relationCategories[selectedRelationIds[index]] ||
+                    selectedProductId == id)
+                {
+                    TempData["CartError"] = "Sản phẩm thay thế không thuộc đúng danh mục mua kèm.";
+                    return RedirectToAction("Details", "Home", new { id });
+                }
+            }
+
+            var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            foreach (int productId in productIds)
+            {
+                if (!products.TryGetValue(productId, out var product))
+                {
+                    TempData["CartError"] = "Có sản phẩm mua kèm không còn được bán.";
+                    return RedirectToAction("Details", "Home", new { id });
+                }
+
+                int currentQuantity = cart.FirstOrDefault(item => item.ProductId == productId)?.Quantity ?? 0;
+                if (product.StockQuantity <= currentQuantity)
+                {
+                    TempData["CartError"] = $"Sản phẩm \"{product.Name}\" không đủ tồn kho để thêm combo.";
+                    return RedirectToAction("Details", "Home", new { id });
+                }
+            }
+
+            foreach (int productId in productIds)
+            {
+                var product = products[productId];
+                var cartItem = cart.FirstOrDefault(item => item.ProductId == productId);
+
+                if (cartItem == null)
+                {
+                    cart.Add(new CartItem
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        ImageUrl = product.ImageUrl,
+                        Price = product.Price,
+                        Quantity = 1,
+                        StockQuantity = product.StockQuantity
+                    });
+                }
+                else
+                {
+                    cartItem.Quantity++;
+                    cartItem.ProductName = product.Name;
+                    cartItem.ImageUrl = product.ImageUrl;
+                    cartItem.Price = product.Price;
+                    cartItem.StockQuantity = product.StockQuantity;
+                }
+            }
+
+            HttpContext.Session.Set("Cart", cart);
+            return RedirectToAction("Index");
+        }
+
         // Cập nhật số lượng (+ / -) trực tiếp trong giỏ hàng
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult UpdateQuantity(int id, int quantity)
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart");
@@ -154,6 +249,8 @@ namespace DoAn_Pc_DACS.Controllers
         }
 
         // Xóa 1 sản phẩm khỏi giỏ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult RemoveFromCart(int id)
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart");
@@ -172,13 +269,20 @@ namespace DoAn_Pc_DACS.Controllers
 
         // 1. Giao diện trang Thanh toán (GET)
         [HttpGet]
-        public IActionResult Checkout()
+        public async Task<IActionResult> Checkout()
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
 
-            if (cart == null || cart.Count == 0)
+            if (cart.Count == 0)
             {
                 return RedirectToAction("Index", "Cart"); // Giỏ hàng trống thì đuổi về trang giỏ hàng
+            }
+
+            await RefreshCartAsync(cart);
+            if (cart.Any(item => item.StockQuantity <= 0 || item.Quantity > item.StockQuantity))
+            {
+                TempData["CartError"] = "Tồn kho đã thay đổi. Vui lòng kiểm tra lại giỏ hàng.";
+                return RedirectToAction("Index", "Cart");
             }
 
             ViewBag.Cart = cart;
@@ -194,61 +298,99 @@ namespace DoAn_Pc_DACS.Controllers
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
 
-            if (cart == null || cart.Count == 0)
+            if (cart.Count == 0)
             {
                 return RedirectToAction("Index", "Cart");
             }
 
-            // MẤU CHỐT LÀ 3 DÒNG NÀY: Bỏ qua kiểm tra các trường không nhập từ form
-            ModelState.Remove("OrderDetails");
-            ModelState.Remove("Status");
-            ModelState.Remove("Note");
-
             if (ModelState.IsValid)
             {
-                // Bước 1: Lưu thông tin Order (Đơn hàng)
-                order.OrderDate = DateTime.Now;
-                order.TotalAmount = cart.Sum(item => item.Price * item.Quantity);
-                order.Status = "Chờ xác nhận";
-
-                
-                if (order.Note == null)
+                await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+                try
                 {
-                    order.Note = ""; // Gán bằng chuỗi rỗng nếu khách không nhập gì
-                }
-               
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync(); // Lưu để sinh ID đơn hàng
+                    var productIds = cart.Select(item => item.ProductId).Distinct().ToList();
+                    var products = await _context.Products
+                        .Where(product => productIds.Contains(product.Id))
+                        .ToDictionaryAsync(product => product.Id);
 
-                // Bước 2: Lưu chi tiết vào OrderDetails
-                foreach (var item in cart)
-                {
-                    var orderDetail = new OrderDetail
+                    foreach (var item in cart)
                     {
-                        OrderId = order.Id,
-                        ProductId = item.ProductId, // Lấy đúng ProductId theo CartItem
-                        Quantity = item.Quantity,
-                        Price = item.Price          // Lấy đúng Price
-                    };
-                    _context.OrderDetails.Add(orderDetail);
+                        if (!products.TryGetValue(item.ProductId, out var product))
+                        {
+                            ModelState.AddModelError(string.Empty, $"Sản phẩm \"{item.ProductName}\" không còn được bán.");
+                            continue;
+                        }
+
+                        item.ProductName = product.Name;
+                        item.ImageUrl = product.ImageUrl;
+                        item.Price = product.Price;
+                        item.StockQuantity = product.StockQuantity;
+
+                        if (item.Quantity < 1 || item.Quantity > product.StockQuantity)
+                        {
+                            ModelState.AddModelError(string.Empty,
+                                $"Sản phẩm \"{product.Name}\" chỉ còn {product.StockQuantity} sản phẩm trong kho.");
+                        }
+                    }
+
+                    HttpContext.Session.Set("Cart", cart);
+
+                    if (!ModelState.IsValid)
+                    {
+                        await transaction.RollbackAsync();
+                        PrepareCheckoutView(cart);
+                        return View(order);
+                    }
+
+                    order.OrderDate = DateTime.Now;
+                    order.Status = "Chờ xác nhận";
+                    order.Note = order.Note?.Trim() ?? string.Empty;
+                    order.TotalAmount = cart.Sum(item => item.Price * item.Quantity);
+
+                    foreach (var item in cart)
+                    {
+                        var product = products[item.ProductId];
+                        product.StockQuantity -= item.Quantity;
+
+                        order.OrderDetails.Add(new OrderDetail
+                        {
+                            ProductId = product.Id,
+                            Quantity = item.Quantity,
+                            Price = product.Price
+                        });
+                    }
+
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    HttpContext.Session.Remove("Cart");
+                    HttpContext.Session.SetInt32("LastOrderId", order.Id);
+
+                    return RedirectToAction("CheckoutSuccess", new { id = order.Id });
                 }
-                await _context.SaveChangesAsync();
-
-                // Bước 3: Xóa giỏ hàng trong Session
-                HttpContext.Session.Remove("Cart");
-
-                return RedirectToAction("CheckoutSuccess", new { id = order.Id });
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync();
+                    _context.ChangeTracker.Clear();
+                    ModelState.AddModelError(string.Empty,
+                        "Không thể tạo đơn hàng do dữ liệu vừa thay đổi. Vui lòng kiểm tra lại giỏ hàng.");
+                }
             }
 
-            // Nếu người dùng nhập thiếu Tên, SĐT, Địa chỉ sẽ bị văng về lại form
-            ViewBag.Cart = cart;
-            ViewBag.Total = cart.Sum(item => item.Price * item.Quantity);
+            await RefreshCartAsync(cart);
+            PrepareCheckoutView(cart);
             return View(order);
         }
 
         // 3. Trang thông báo Đặt hàng thành công
         public IActionResult CheckoutSuccess(int id)
         {
+            if (HttpContext.Session.GetInt32("LastOrderId") != id)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             // Truy vấn lấy đơn hàng kèm theo chi tiết sản phẩm
             var order = _context.Orders
                 .Include(o => o.OrderDetails)
@@ -261,6 +403,37 @@ namespace DoAn_Pc_DACS.Controllers
             }
 
             return View(order);
+        }
+
+        private async Task RefreshCartAsync(List<CartItem> cart)
+        {
+            var productIds = cart.Select(item => item.ProductId).Distinct().ToList();
+            var products = await _context.Products
+                .Where(product => productIds.Contains(product.Id))
+                .ToDictionaryAsync(product => product.Id);
+
+            foreach (var item in cart)
+            {
+                if (products.TryGetValue(item.ProductId, out var product))
+                {
+                    item.ProductName = product.Name;
+                    item.ImageUrl = product.ImageUrl;
+                    item.Price = product.Price;
+                    item.StockQuantity = product.StockQuantity;
+                }
+                else
+                {
+                    item.StockQuantity = 0;
+                }
+            }
+
+            HttpContext.Session.Set("Cart", cart);
+        }
+
+        private void PrepareCheckoutView(List<CartItem> cart)
+        {
+            ViewBag.Cart = cart;
+            ViewBag.Total = cart.Sum(item => item.Price * item.Quantity);
         }
     }
 }

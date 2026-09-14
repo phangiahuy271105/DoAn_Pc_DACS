@@ -15,13 +15,39 @@ namespace DoAn_Pc_DACS.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ProductRelation> ProductRelations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>().Property(product => product.Price).HasPrecision(18, 2);
+            modelBuilder.Entity<Product>().Property(product => product.OldPrice).HasPrecision(18, 2);
+            modelBuilder.Entity<Order>().Property(order => order.TotalAmount).HasPrecision(18, 2);
+            modelBuilder.Entity<OrderDetail>().Property(detail => detail.Price).HasPrecision(18, 2);
+
+            modelBuilder.Entity<ProductRelation>()
+                .HasIndex(relation => new { relation.ProductId, relation.RelatedProductId })
+                .IsUnique();
+
+            modelBuilder.Entity<ProductRelation>()
+                .HasOne(relation => relation.Product)
+                .WithMany(product => product.RelatedProducts)
+                .HasForeignKey(relation => relation.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProductRelation>()
+                .HasOne(relation => relation.RelatedProduct)
+                .WithMany(product => product.RecommendedByProducts)
+                .HasForeignKey(relation => relation.RelatedProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 99, Name = "PC GAMING", Slug = "pc-gaming" },
-                new Category { Id = 100, Name = "PC WORKSTATION", Slug = "pc-workstation" }
+                new Category { Id = 100, Name = "PC WORKSTATION", Slug = "pc-workstation" },
+                new Category { Id = 101, Name = "MÀN HÌNH", Slug = "man-hinh" },
+                new Category { Id = 102, Name = "BÀN PHÍM", Slug = "ban-phim" },
+                new Category { Id = 103, Name = "CHUỘT", Slug = "chuot" },
+                new Category { Id = 104, Name = "TAI NGHE", Slug = "tai-nghe" }
             );
 
             modelBuilder.Entity<Account>().HasData(

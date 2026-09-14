@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -59,10 +67,6 @@
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\views\\admin\\editproduct.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\views\\admin\\editproduct.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -89,10 +93,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -137,6 +137,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\migrations\\20260912091506_addordertables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\migrations\\20260912091506_addordertables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\migrations\\20260913143315_addproductstockquantity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\migrations\\20260913143315_addproductstockquantity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -146,37 +150,25 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
-              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
-              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
-              "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAmwLEAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-13T15:12:28.252Z",
+              "DocumentIndex": 0,
+              "Title": "ProductImage.cs",
+              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ProductImage.cs",
+              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\ProductImage.cs",
+              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ProductImage.cs",
+              "RelativeToolTip": "DoAn_Pc_DACS\\Models\\ProductImage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-14T07:49:05.232Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
-              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
-              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
-              "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
-              "ViewState": "AgIAAGYAAAAAAAAAAAAmwH4AAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-13T14:26:34.375Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "CartItem.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\CartItem.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\CartItem.cs",
@@ -184,12 +176,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Models\\CartItem.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T14:48:47.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:48:47.819Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "ProductEditViewModel.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ProductEditViewModel.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\ProductEditViewModel.cs",
@@ -197,12 +188,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Models\\ProductEditViewModel.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAcwBgAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T14:28:20.175Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:28:20.175Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "ProductCreateViewModel.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ProductCreateViewModel.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\ProductCreateViewModel.cs",
@@ -210,12 +200,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Models\\ProductCreateViewModel.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T14:27:25.497Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:27:25.497Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "AdminController.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Controllers\\AdminController.cs",
@@ -223,25 +212,23 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Controllers\\AdminController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T14:07:32.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:07:32.291Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAADIAAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADwAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-07T15:31:21.849Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-07T15:31:21.849Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "site.js",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\wwwroot\\js\\site.js",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\wwwroot\\js\\site.js",
@@ -249,12 +236,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\wwwroot\\js\\site.js",
               "ViewState": "AgIAAMMBAAAAAAAAAAAkwNsBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-09-12T13:30:50.726Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T13:30:50.726Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "Details.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Home\\Details.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Home\\Details.cshtml",
@@ -262,12 +248,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Home\\Details.cshtml",
               "ViewState": "AgIAAOsAAAAAAAAAAAAAAPMAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-13T14:04:27.493Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:04:27.493Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "_AdminLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Shared\\_AdminLayout.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Shared\\_AdminLayout.cshtml",
@@ -275,12 +260,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Shared\\_AdminLayout.cshtml",
               "ViewState": "AgIAAEgAAAAAAAAAAAAAACUAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-08T05:37:33.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T05:37:33.903Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "Product.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\Product.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\Product.cs",
@@ -288,12 +272,35 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Models\\Product.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-08T06:05:49.587Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T06:05:49.587Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
+              "Title": "DbInitializer.cs",
+              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\DbInitializer.cs",
+              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Data\\DbInitializer.cs",
+              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\DbInitializer.cs",
+              "RelativeToolTip": "DoAn_Pc_DACS\\Data\\DbInitializer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-12T09:14:18.575Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
+              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
+              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
+              "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Cart\\Index.cshtml",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAmwH4AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-13T14:26:34.375Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Home\\Index.cshtml",
@@ -301,12 +308,23 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAIYBAAAAAAAAAAAswJ4BAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-11T15:38:49.824Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-11T15:38:49.824Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
+              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
+              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
+              "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Product\\Index.cshtml",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAmwLEAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-13T15:12:28.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
@@ -314,12 +332,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
               "ViewState": "AgIAAB8AAAAAAAAAAAAAADYAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-07T15:29:20.857Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-07T15:29:20.857Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 34,
               "Title": "20260913143315_AddProductStockQuantity.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs",
@@ -327,12 +344,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T14:33:15.229Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:33:15.229Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "CartController.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Controllers\\CartController.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Controllers\\CartController.cs",
@@ -340,12 +356,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Controllers\\CartController.cs",
               "ViewState": "AgIAAHgAAAAAAAAAAAAmwJkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T09:18:27.739Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T09:18:27.739Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "EditProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\EditProduct.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\EditProduct.cshtml",
@@ -353,12 +368,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Admin\\EditProduct.cshtml",
               "ViewState": "AgIAABMAAAAAAAAAAAAswDIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-08T05:40:09.025Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T05:40:09.025Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "CreateProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\CreateProduct.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\CreateProduct.cshtml",
@@ -366,12 +380,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Admin\\CreateProduct.cshtml",
               "ViewState": "AgIAABkAAAAAAAAAAAAmwCsAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-08T05:40:12.891Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T05:40:12.891Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Program.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Program.cs",
@@ -379,12 +392,11 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Program.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAAACAAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T13:30:09.301Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T13:30:09.301Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "Orders.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\Orders.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\Orders.cshtml",
@@ -392,8 +404,7 @@
               "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Admin\\Orders.cshtml",
               "ViewState": "AgIAAD0AAAAAAAAAAAAmwF4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-13T14:09:49.654Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T14:09:49.654Z"
             },
             {
               "$type": "Document",
@@ -421,18 +432,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "DbInitializer.cs",
-              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\DbInitializer.cs",
-              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Data\\DbInitializer.cs",
-              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\DbInitializer.cs",
-              "RelativeToolTip": "DoAn_Pc_DACS\\Data\\DbInitializer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T09:14:18.575Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 33,
               "Title": "20260912091506_AddOrderTables.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260912091506_AddOrderTables.cs",
@@ -445,7 +444,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "CheckoutSuccess.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\CheckoutSuccess.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\CheckoutSuccess.cshtml",
@@ -493,7 +492,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Checkout.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\Checkout.cshtml",
@@ -505,7 +504,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Data\\ApplicationDbContext.cs",

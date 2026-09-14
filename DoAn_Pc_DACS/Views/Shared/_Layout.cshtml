@@ -37,7 +37,9 @@
                         <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
                     </a>
                     <span class="text-white opacity-50">|</span>
-                    <a href="/Account/Logout" class="text-white ms-2 text-decoration-none text-warning">Đăng xuất</a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link text-warning ms-2 p-0 text-decoration-none border-0">Đăng xuất</button>
+                    </form>
                 }
             </div>
         </div>
@@ -54,9 +56,9 @@
             </a>
 
             <!-- Search -->
-            <div class="search-box flex-grow-1 me-4" style="position: relative;">
+            <form id="mySearchForm" action="/Product/Index" method="get" class="search-box flex-grow-1 me-4" style="position: relative;">
 
-                <select id="searchSlug">
+                <select id="searchSlug" name="slug">
                     <option value="">Tất cả danh mục</option>
                     <option value="pc-gaming">PC GAMING</option>
                     <option value="pc-workstation">PC WORKSTATION 2D 3D</option>
@@ -66,11 +68,9 @@
                 </select>
 
                 <!-- Đổi lại id="searchInput" để Javascript AJAX bên dưới nhận diện được -->
-                <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." autocomplete="off"
-                       onkeypress="if(event.key === 'Enter') { document.getElementById('btnForceSearch').click(); return false; }">
+                <input type="text" id="searchInput" name="keyword" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
 
-                <button type="button" id="btnForceSearch"
-                        onclick="window.location.href = '/Product/Index?slug=' + document.getElementById('searchSlug').value + '&keyword=' + document.getElementById('searchInput').value;">
+                <button type="submit" id="btnForceSearch">
                     <i class="fas fa-search"></i>
                 </button>
 
@@ -84,7 +84,7 @@
                         Xem tất cả <strong id="suggestTotal">0</strong> kết quả tìm được
                     </div>
                 </div>
-            </div>
+            </form>
 
             <!-- Actions Hộp Xám -->
             <div class="header-actions">
@@ -103,7 +103,7 @@
                     <div class="icon-circle"><i class="fas fa-shopping-cart text-danger"></i></div>
                     <div class="text-dark fw-bold" style="font-size: 13px;">Giỏ hàng</div>
                     @{
-                        var cart = HttpContextAccessor.HttpContext.Session.Get<List<DoAn_Pc_DACS.Models.CartItem>>("Cart");
+                        var cart = HttpContextAccessor.HttpContext?.Session.Get<List<DoAn_Pc_DACS.Models.CartItem>>("Cart");
                         int cartCount = cart != null ? cart.Sum(c => c.Quantity) : 0;
                     }
                     @if (cartCount > 0)
