@@ -5,6 +5,26 @@ namespace DoAn_Pc_DACS.Models
 {
     public class Product
     {
+        [StringLength(20)]
+        [RegularExpression("^(CPU|Mainboard|RAM|GPU|Storage|PSU|Case|Cooler)$", ErrorMessage = "Loại linh kiện không hợp lệ.")]
+        public string? ComponentType { get; set; }
+
+        [StringLength(20)]
+        [RegularExpression("^(LGA1700|LGA1851|LGA1200|LGA1151|AM4|AM5)$", ErrorMessage = "Socket không hợp lệ.")]
+        public string? BuildSocket { get; set; }
+
+        [StringLength(20)]
+        [RegularExpression("^(DDR3|DDR4|DDR5)$", ErrorMessage = "Chuẩn RAM không hợp lệ.")]
+        public string? BuildMemoryType { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public int DiscountPercent => CalculateDiscount(Price, OldPrice);
+
+        public static int CalculateDiscount(decimal price, decimal oldPrice) =>
+            oldPrice > price && price > 0
+                ? (int)Math.Round((oldPrice - price) / oldPrice * 100, MidpointRounding.AwayFromZero)
+                : 0;
+
         public int Id { get; set; }
 
         [Required]
@@ -20,6 +40,10 @@ namespace DoAn_Pc_DACS.Models
         [Range(0, int.MaxValue, ErrorMessage = "Tồn kho không được âm")]
         public int StockQuantity { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
+        [StringLength(2000)]
+        public string? Description { get; set; }
+        [StringLength(5000)]
+        public string? TechnicalSpecifications { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
         public ComponentSpec? ComponentSpec { get; set; }

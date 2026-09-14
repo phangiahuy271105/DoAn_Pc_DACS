@@ -38,7 +38,7 @@
                     @foreach (var item in gamingProds)
                     {
                         <div class="pcard">
-                            <span class="badge">-@item.Discount%</span>
+                            <span class="badge">-@item.DiscountPercent%</span>
 
                             <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
                                 <div class="thumb" style="background: none; padding: 0;">
@@ -185,7 +185,7 @@
                     @foreach (var item in workProds)
                     {
                         <div class="pcard">
-                            <span class="badge">-@item.Discount%</span>
+                            <span class="badge">-@item.DiscountPercent%</span>
 
                             <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
                                 <div class="thumb" style="background: none; padding: 0;">
@@ -331,7 +331,7 @@
                     @foreach (var item in linhkienProds)
                     {
                         <div class="pcard">
-                            <span class="badge">-@item.Discount%</span>
+                            <span class="badge">-@item.DiscountPercent%</span>
 
                             <a href="/Home/Details/@item.Id" style="display: block; text-decoration: none; color: inherit;">
                                 <div class="thumb" style="background: none; padding: 0;">
@@ -434,13 +434,16 @@
                                 <div class="tt-header">@item.Name</div>
                                 <div class="tt-body">
                                     <div class="tt-price-row"><span>Giá bán:</span> <span class="tt-price-val">@item.Price.ToString("N0") VNĐ</span></div>
-                                    <div class="tt-price-row"><span>Bảo hành:</span> <span>36 Tháng</span></div>
                                     <div style="background:#ff5636;color:#fff;padding:4px 8px;border-radius:4px;display:inline-block;font-weight:bold;margin-top:5px;font-size:12px;">Mô tả tóm tắt:</div>
                                     <ul class="tt-specs">
-                                        <li>Mainboard: @(item.ComponentSpec?.Mainboard ?? "Đang cập nhật")</li>
-                                        <li>CPU: @(item.ComponentSpec?.Socket ?? "Đang cập nhật")</li>
-                                        <li>RAM: @(item.ComponentSpec?.RamType ?? "Đang cập nhật")</li>
-                                        <li>VGA: @(item.ComponentSpec?.Vga ?? "Đang cập nhật")</li>
+                                        @foreach (var specification in (item.TechnicalSpecifications ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Take(4))
+                                        {
+                                            <li>@specification</li>
+                                        }
+                                        @if (string.IsNullOrWhiteSpace(item.TechnicalSpecifications))
+                                        {
+                                            <li>@(item.Description ?? "Thông số đang cập nhật")</li>
+                                        }
                                     </ul>
                                 </div>
                             </div>

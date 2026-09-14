@@ -63,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|c:\\users\\ben\\onedrive\\documents\\doan_pc\\doan_pc_dacs\\doan_pc_dacs\\views\\admin\\editproduct.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{E36B15E5-5740-DF35-E39A-0642C730EAAF}|DoAn_Pc_DACS\\DoAn_Pc_DACS.csproj|solutionrelative:doan_pc_dacs\\views\\admin\\editproduct.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -160,7 +156,7 @@
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\ProductImage.cs",
               "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ProductImage.cs",
               "RelativeToolTip": "DoAn_Pc_DACS\\Models\\ProductImage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-14T07:49:05.232Z",
               "IsPinned": true,
@@ -324,19 +320,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
-              "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
-              "ToolTip": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
-              "RelativeToolTip": "DoAn_Pc_DACS\\Views\\Admin\\Index.cshtml",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAAADYAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-07T15:29:20.857Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 33,
               "Title": "20260913143315_AddProductStockQuantity.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Migrations\\20260913143315_AddProductStockQuantity.cs",
@@ -360,7 +344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 15,
               "Title": "EditProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\EditProduct.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\EditProduct.cshtml",
@@ -372,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 16,
               "Title": "CreateProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\CreateProduct.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\CreateProduct.cshtml",
@@ -384,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 17,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Program.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Program.cs",
@@ -396,7 +380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 18,
               "Title": "Orders.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Admin\\Orders.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Admin\\Orders.cshtml",
@@ -408,7 +392,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 23,
               "Title": "OrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\OrderDetail.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\OrderDetail.cs",
@@ -420,7 +404,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "ErrorViewModel.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\ErrorViewModel.cs",
@@ -432,7 +416,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 32,
               "Title": "20260912091506_AddOrderTables.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260912091506_AddOrderTables.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Migrations\\20260912091506_AddOrderTables.cs",
@@ -444,7 +428,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 19,
               "Title": "CheckoutSuccess.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\CheckoutSuccess.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\CheckoutSuccess.cshtml",
@@ -456,7 +440,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 22,
               "Title": "Order.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\Order.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\Order.cs",
@@ -468,7 +452,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 27,
               "Title": "admin.css",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\wwwroot\\css\\admin.css",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\wwwroot\\css\\admin.css",
@@ -480,7 +464,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 25,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Account\\Login.cshtml",
@@ -492,7 +476,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 20,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Cart\\Checkout.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Cart\\Checkout.cshtml",
@@ -504,7 +488,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 21,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Data\\ApplicationDbContext.cs",
@@ -516,7 +500,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 26,
               "Title": "ChangePassword.cshtml",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Views\\Account\\ChangePassword.cshtml",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Views\\Account\\ChangePassword.cshtml",
@@ -528,7 +512,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 31,
               "Title": "20260907152547_SeedAdmin.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260907152547_SeedAdmin.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Migrations\\20260907152547_SeedAdmin.cs",
@@ -540,7 +524,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 29,
               "Title": "20260907151805_AddAccountTable.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Migrations\\20260907151805_AddAccountTable.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Migrations\\20260907151805_AddAccountTable.cs",
@@ -552,7 +536,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 30,
               "Title": "Account.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Models\\Account.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Models\\Account.cs",
@@ -564,7 +548,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 28,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\BEN\\OneDrive\\Documents\\DoAn_Pc\\DoAn_Pc_DACS\\DoAn_Pc_DACS\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "DoAn_Pc_DACS\\Controllers\\AccountController.cs",

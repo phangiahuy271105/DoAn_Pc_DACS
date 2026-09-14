@@ -10,6 +10,25 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("order-tracking", context =>
+        System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+        context.HttpContext.Response.ContentType = "text/plain; charset=utf-8";
+        await context.HttpContext.Response.WriteAsync(
+            "Bạn tra cứu quá nhiều lần. Vui lòng đợi một phút rồi thử lại.", cancellationToken);
+    };
+});
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
 builder.Services.AddDistributedMemoryCache();
@@ -36,7 +55,19 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
     var passwordHasher = services.GetRequiredService<IPasswordHasher<Account>>();
-    DbInitializer.Initialize(context, passwordHasher);
+    try
+    {
+        DbInitializer.Initialize(context, passwordHasher);
+    }
+    catch (Microsoft.Data.SqlClient.SqlException exception)
+    {
+        app.Logger.LogCritical(exception,
+            "Khong the khoi tao co so du lieu. Kiem tra SQL Server/LocalDB va ConnectionStrings:DefaultConnection. " +
+            "Voi LocalDB, chay 'sqllocaldb info MSSQLLocalDB' va 'sqllocaldb start MSSQLLocalDB' " +
+            "bang tai khoan Windows dang dung Visual Studio. Xem HUONG_DAN_CHAY.md tai thu muc solution. " +
+            "Khong xoa instance hoac tao lai database khi chua sao luu du lieu.");
+        throw;
+    }
 }
 
 if (!app.Environment.IsDevelopment())
@@ -47,6 +78,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseRateLimiter();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -17,17 +17,11 @@
     <div class="top-bar d-none d-md-block">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <a href="#" class="pill-btn text-white"><i class="fas fa-map-marker-alt"></i> Hệ thống showroom</a>
-                <a href="#" class="pill-btn text-white"><i class="fas fa-phone-alt"></i> Bán hàng trực tuyến</a>
-                <a href="#" class="text-white">Trang tin công nghệ</a>
-                <a href="#" class="pill-btn text-white"><i class="fas fa-tools"></i> TƯ VẤN BUILD PC</a>
-                <a href="#" class="text-white">Phần mềm hay</a>
+                <a href="#showrooms" class="pill-btn text-white"><i class="fas fa-map-marker-alt"></i> Hệ thống showroom</a>
+                <a href="tel:0986552233" class="pill-btn text-white"><i class="fas fa-phone-alt"></i> Liên hệ cửa hàng</a>
             </div>
             <div>
                 <!-- Nút của Khách Hàng (Hiện tại để #, sau này ông làm form Login khách hàng thì gắn link vào) -->
-                <a href="#" class="text-white me-2 text-decoration-none">Đăng ký</a>
-                <span class="text-white opacity-50">|</span>
-                <a href="#" class="text-white ms-2 text-decoration-none">Đăng nhập</a>
 
                 <!-- DÒNG LỆNH BÍ MẬT: Chỉ khi nào ông gõ link ẩn đăng nhập thành công, nó mới hiện nút này lên -->
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
@@ -45,6 +39,9 @@
         </div>
     </div>
 
+    <div class="container py-2 text-end">
+        <a asp-controller="Order" asp-action="Track" class="text-decoration-none fw-bold text-dark"><i class="fa-solid fa-truck-fast me-1"></i> Tra cứu đơn hàng</a>
+    </div>
     <!-- Header -->
     <header class="header-main">
         <div class="container d-flex align-items-center justify-content-between">
@@ -62,7 +59,7 @@
                     <option value="">Tất cả danh mục</option>
                     <option value="pc-gaming">PC GAMING</option>
                     <option value="pc-workstation">PC WORKSTATION 2D 3D</option>
-                    <option value="gear-gaming">GEAR GAMING</option>
+                    <option value="gear">GEAR GAMING</option>
                     <option value="linh-kien">Linh kiện máy tính</option>
                     <option value="man-hinh">Màn hình máy tính</option>
                 </select>
@@ -80,24 +77,24 @@
                     </ul>
 
                     <!-- Sửa lại chỗ này: Bấm vào thì bắt nó click cái nút Kính lúp -->
-                    <div class="suggest-footer text-center p-2" onclick="document.getElementById('btnForceSearch').click();">
+                    <button type="submit" class="suggest-footer text-center p-2">
                         Xem tất cả <strong id="suggestTotal">0</strong> kết quả tìm được
-                    </div>
+                    </button>
                 </div>
             </form>
 
             <!-- Actions Hộp Xám -->
             <div class="header-actions">
-                <a href="#" class="action-item">
+                <a href="tel:0986552233" class="action-item">
                     <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
                     <div class="text-dark">
                         <span class="d-block" style="font-size: 11px;">Hotline mua hàng</span>
                         <span class="d-block fw-bold" style="font-size: 14px;">098.655.2233</span>
                     </div>
                 </a>
-                <a href="#" class="action-item">
+                <a asp-controller="PcBuilder" asp-action="Index" class="action-item">
                     <div class="icon-circle"><i class="fas fa-desktop"></i></div>
-                    <div class="text-dark fw-bold" style="font-size: 12px; line-height: 1.4;">Xây dựng<br>Cấu hình PC</div>
+                    <div class="text-dark fw-bold" style="font-size:12px;line-height:1.4;">Xây dựng<br />Cấu hình PC</div>
                 </a>
                 <a href="/Cart/Index" class="action-item position-relative">
                     <div class="icon-circle"><i class="fas fa-shopping-cart text-danger"></i></div>
@@ -120,47 +117,17 @@
     <!-- Menu Nền Trắng -->
     <div class="menu-wrapper">
         <div class="container d-flex align-items-center py-2">
-            <div class="cat-btn mb-0">
+            <div class="cat-btn mb-0" tabindex="0">
                 <i class="fas fa-bars"></i> DANH MỤC SẢN PHẨM
                 <div class="cat-menu-dropdown">
-                    <div class="cat-item">
-                        <span>PC GAMING</span> <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="cat-item">
-                        <span>PC WORKSTATION 2D 3D</span> <i class="fas fa-chevron-right"></i>
-                        <div class="mega-menu">
-                            <div class="mega-col">
-                                <a href="#">PC VIDEO EDITING</a>
-                                <a href="#">PC RENDERING</a>
-                            </div>
-                            <div class="mega-col">
-                                <a href="#">PC PHOTO EDITING</a>
-                                <a href="#">PC Architecture - CAD</a>
-                            </div>
-                            <div class="mega-col">
-                                <a href="#">PC 3D DESIGN - Animation</a>
-                                <a href="#">PC Machine Learning / AI</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="cat-item">
-                        <span>PC AMD GAMING</span> <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="cat-item">
-                        <span>Màn hình máy tính</span> <i class="fas fa-chevron-right"></i>
-                        <div class="mega-menu">
-                            <div class="mega-col">
-                                <span style="color:var(--primary);font-weight:bold;">Màn Hình Theo Nhu Cầu</span>
-                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Cong</a>
-                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Văn Phòng</a>
-                            </div>
-                            <div class="mega-col">
-                                <span style="color:var(--primary);font-weight:bold;">Màn Hình Theo Hãng</span>
-                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình Gigabyte</a>
-                                <a href="#" style="color:#333!important;font-weight:normal!important;">Màn Hình MSI</a>
-                            </div>
-                        </div>
-                    </div>
+                    <a class="cat-item" href="/Product/Index?slug=pc-gaming">PC Gaming</a>
+                    <a class="cat-item" href="/Product/Index?slug=pc-workstation">PC Workstation</a>
+                    <a class="cat-item" href="/Product/Index?slug=linh-kien-may-tinh">Linh kiện máy tính</a>
+                    <a class="cat-item" href="/Product/Index?slug=man-hinh">Màn hình máy tính</a>
+                    <a class="cat-item" href="/Product/Index?slug=gear">Gaming Gear</a>
+                    <a class="cat-item" href="/Product/Index?slug=ban-phim">Bàn phím</a>
+                    <a class="cat-item" href="/Product/Index?slug=chuot">Chuột</a>
+                    <a class="cat-item" href="/Product/Index?slug=tai-nghe">Tai nghe</a>
                 </div>
             </div>
 
@@ -178,11 +145,11 @@
                     <div class="icon-bg"><i class="fas fa-microchip"></i></div> Linh kiện Máy Tính
                 </a>
 
-                <a href="/Product/Index?slug=pc-mini">
+                <a href="/Product/Index?slug=man-hinh">
                     <div class="icon-bg"><i class="fa-vellum fa-solid fa-desktop"></i></div> Màn Hình
                 </a>
 
-                <a href="/Product/Index?slug=pc-van-phong">
+                <a href="/Product/Index?slug=gear">
                     <div class="icon-bg"><i class="fa-solid fa-keyboard"></i></div> GEAR
                 </a>
             </div>
@@ -198,7 +165,7 @@
         <div class="features__wrap">
             <div class="feature"><i class="fa-solid fa-truck-fast"></i><div><h4>GIAO HÀNG TOÀN QUỐC</h4><p>Giao hàng trước, trả tiền sau COD</p></div></div>
             <div class="feature"><i class="fa-solid fa-rotate-left"></i><div><h4>ĐỔI TRẢ DỄ DÀNG</h4><p>Đổi mới trong 30 ngày đầu</p></div></div>
-            <div class="feature"><i class="fa-solid fa-wallet"></i><div><h4>THANH TOÁN TIỆN LỢI</h4><p>Trả tiền mặt, chuyển khoản, trả góp 0%</p></div></div>
+            <div class="feature"><i class="fa-solid fa-wallet"></i><div><h4>THANH TOÁN KHI NHẬN HÀNG</h4><p>Kiểm tra thông tin đơn trước khi đặt</p></div></div>
             <div class="feature"><i class="fa-solid fa-headset"></i><div><h4>HỖ TRỢ NHIỆT TÌNH</h4><p>Tư vấn tổng đài miễn phí 24/7</p></div></div>
         </div>
     </section>
@@ -215,7 +182,7 @@
         </div>
     </section>
     <!-- Showrooms Footer -->
-    <div class="showrooms">
+    <div class="showrooms" id="showrooms">
         <div class="container">
             <h2>HỆ THỐNG SHOWROOM PGH</h2>
             <div class="grid2">

@@ -16,9 +16,9 @@
                 @foreach (var item in Model.Products)
                 {
                     <article class="pcard accessory-card">
-                        @if (item.Discount > 0)
+                        @if (item.DiscountPercent > 0)
                         {
-                            <span class="badge">-@item.Discount%</span>
+                            <span class="badge">-@item.DiscountPercent%</span>
                         }
 
                         <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" class="accessory-card-link">

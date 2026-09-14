@@ -1,0 +1,77 @@
+@model DoAn_Pc_DACS.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Active"] = "dashboard";
+    Layout = "_AdminLayout";
+}
+<div class="content-head">
+    <div><h1>Tổng quan cửa hàng</h1><div class="breadcrumb-sm">Số liệu toàn bộ thời gian · Cập nhật khi mở hoặc tải lại trang</div></div>
+    <a asp-action="Dashboard" class="btn btn-outline"><i class="fa-solid fa-rotate"></i> Làm mới</a>
+</div>
+<div class="stat-grid">
+    <a asp-action="Index" class="stat-card products">
+        <div class="stat-top"><span class="stat-label">Tổng sản phẩm</span><span class="stat-icon"><i class="fa-solid fa-box"></i></span></div>
+        <div class="stat-value">@Model.ProductCount.ToString("N0")</div><div class="cell-sub">Số mẫu sản phẩm trong danh mục</div>
+    </a>
+    <a asp-action="Orders" class="stat-card orders">
+        <div class="stat-top"><span class="stat-label">Tổng đơn hàng</span><span class="stat-icon"><i class="fa-solid fa-receipt"></i></span></div>
+        <div class="stat-value">@Model.OrderCount.ToString("N0")</div><div class="cell-sub">Bao gồm mọi trạng thái</div>
+    </a>
+    <a asp-action="Orders" class="stat-card customers">
+        <div class="stat-top"><span class="stat-label">Đơn chờ xác nhận</span><span class="stat-icon"><i class="fa-solid fa-clock"></i></span></div>
+        <div class="stat-value">@Model.PendingOrderCount.ToString("N0")</div><div class="cell-sub">Cần kiểm tra và xử lý</div>
+    </a>
+    <div class="stat-card revenue">
+        <div class="stat-top"><span class="stat-label">Doanh thu hoàn tất</span><span class="stat-icon"><i class="fa-solid fa-coins"></i></span></div>
+        <div class="stat-value" style="font-size:clamp(18px,2vw,28px);overflow-wrap:anywhere;">@Model.CompletedRevenue.ToString("N0")₫</div><div class="cell-sub">Chỉ tính các đơn có trạng thái Hoàn tất</div>
+    </div>
+</div>
+<section class="panel" style="margin-top:20px;">
+    <div class="panel-head"><h2>10 đơn hàng mới nhất</h2><a asp-action="Orders" class="btn btn-outline">Xem tất cả đơn hàng</a></div>
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Chi tiết</th></tr></thead>
+            <tbody>
+                @if (Model.RecentOrders.Count == 0)
+                {
+                    <tr><td colspan="6" class="admin-empty-state">Chưa có đơn hàng nào.</td></tr>
+                }
+                @foreach (var order in Model.RecentOrders)
+                {
+                    var statusClass = order.Status switch { "Hoàn tất" => "pill-success", "Đã hủy" => "pill-danger", "Đang giao" => "pill-info", _ => "pill-warning" };
+                    <tr>
+                        <td class="cell-title">#@order.Id</td>
+                        <td><div class="cell-title">@order.CustomerName</div><div class="cell-sub">@order.PhoneNumber</div></td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="cell-title">@order.TotalAmount.ToString("N0")₫</td>
+                        <td><span class="pill @statusClass">@order.Status</span></td>
+                        <td><a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-outline" aria-label="Xem đơn hàng @order.Id">Xem đơn</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+<section class="panel" style="margin-top:20px;">
+    <div class="panel-head"><h2>Sản phẩm sắp hết hàng (@Model.LowStockProducts.Count)</h2><a asp-action="Index" class="btn btn-outline">Quản lý sản phẩm</a></div>
+    <p style="padding:0 20px;color:var(--a-muted);">Danh sách sản phẩm còn từ 1–5 chiếc. Có thêm @Model.OutOfStockCount sản phẩm đã hết hàng.</p>
+    <div class="table-wrap" style="max-height:450px;overflow:auto;">
+        <table class="admin-table">
+            <thead><tr><th>Sản phẩm</th><th>Danh mục</th><th>Tồn kho</th><th>Thao tác</th></tr></thead>
+            <tbody>
+                @if (Model.LowStockProducts.Count == 0)
+                {
+                    <tr><td colspan="4">Không có sản phẩm nào còn từ 1–5 chiếc.</td></tr>
+                }
+                @foreach (var product in Model.LowStockProducts)
+                {
+                    <tr>
+                        <td><div style="display:flex;align-items:center;gap:12px;"><img src="@product.ImageUrl" alt="" width="48" height="48" style="object-fit:contain;" /><span class="cell-title">@product.Name</span></div></td>
+                        <td>@product.Category?.Name</td><td><span class="pill pill-warning">Còn @product.StockQuantity</span></td>
+                        <td><a asp-action="EditProduct" asp-route-id="@product.Id" class="btn btn-outline">Cập nhật</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

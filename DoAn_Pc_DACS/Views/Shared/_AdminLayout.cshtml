@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - PGHSHOP Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/admin.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 </head>
 <body class="admin-body">
     <div class="admin-shell">
@@ -16,7 +16,7 @@
 
             <nav class="admin-nav">
                 <div class="nav-label">TỔNG QUAN</div>
-                <a href="#" class="@(ViewData["Active"] as string == "dashboard" ? "active" : "")">
+                <a asp-controller="Admin" asp-action="Dashboard" class="@(ViewData["Active"] as string == "dashboard" ? "active" : "")">
                     <i class="fa-solid fa-gauge"></i> Dashboard
                 </a>
 
@@ -26,9 +26,6 @@
                 </a>
                 <a href="/Admin/Orders" class="@(ViewData["Active"] as string == "orders" ? "active" : "")">
                     <i class="fa-solid fa-file-invoice"></i> Đơn hàng &amp; Hóa đơn
-                </a>
-                <a href="#" class="@(ViewData["Active"] as string == "customers" ? "active" : "")">
-                    <i class="fa-solid fa-users"></i> Khách hàng
                 </a>
 
                 <div class="nav-label">HỆ THỐNG</div>

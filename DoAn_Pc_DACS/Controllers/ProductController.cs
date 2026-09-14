@@ -23,7 +23,11 @@ namespace DoAn_Pc_DACS.Controllers
                                 .AsQueryable();
 
             // 1. Xử lý Lọc theo Danh mục (Slug)
-            if (string.Equals(group, "gear", StringComparison.OrdinalIgnoreCase))
+            slug = slug?.Trim().ToLowerInvariant() ?? "";
+            if (group == "gear" || slug == "gear-gaming" || slug == "pc-van-phong") slug = "gear";
+            if (slug == "pc-mini") slug = "man-hinh";
+            if (slug == "linh-kien") slug = "linh-kien-may-tinh";
+            if (slug == "gear")
             {
                 string[] gearSlugs = ["ban-phim", "chuot", "tai-nghe"];
                 query = query.Where(product => product.Category != null && gearSlugs.Contains(product.Category.Slug));
@@ -48,6 +52,7 @@ namespace DoAn_Pc_DACS.Controllers
             }
 
             // 3. Xử lý Lọc theo Dòng CPU
+            if (new[] { "man-hinh", "gear", "ban-phim", "chuot", "tai-nghe" }.Contains(slug)) cpuBrand = [];
             if (cpuBrand != null && cpuBrand.Length > 0)
             {
                 bool hasIntel = cpuBrand.Contains("Intel");
@@ -101,15 +106,22 @@ namespace DoAn_Pc_DACS.Controllers
         // ==========================================
         // HÀM LIVE SEARCH (Nằm hoàn toàn bên ngoài hàm Index, không bị lỗi vặt)
         [HttpGet]
-        public IActionResult SearchSuggest(string keyword)
+        public IActionResult SearchSuggest(string keyword, string? slug)
         {
             if (string.IsNullOrWhiteSpace(keyword))
             {
                 return Json(new { success = false });
             }
 
-            string kw = keyword.ToLower();
+            string kw = keyword.Trim().ToLower();
             var query = _context.Products.Where(p => p.Name.ToLower().Contains(kw));
+            if (slug == "gear" || slug == "gear-gaming")
+                query = query.Where(p => new[] { "ban-phim", "chuot", "tai-nghe" }.Contains(p.Category.Slug));
+            else if (!string.IsNullOrWhiteSpace(slug))
+            {
+                if (slug == "linh-kien") slug = "linh-kien-may-tinh";
+                query = query.Where(p => p.Category.Slug == slug);
+            }
             int totalCount = query.Count();
 
             var products = query.OrderByDescending(p => p.Id).Select(p => new

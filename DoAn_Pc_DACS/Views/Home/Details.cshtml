@@ -1,6 +1,11 @@
 ﻿@model DoAn_Pc_DACS.Models.Product
 @{
     ViewData["Title"] = Model.Name;
+    bool isPcProduct = Model.Category?.Slug is "pc-gaming" or "pc-workstation" or "pc-workstation-2d-3d";
+    string[] descriptionLines = (Model.Description ?? string.Empty)
+        .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    string[] accessorySpecLines = (Model.TechnicalSpecifications ?? string.Empty)
+        .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -10,7 +15,7 @@
     <!-- CÂY THƯ MỤC BREADCRUMB -->
     <div class="breadcrumb-dt mb-4 fw-bold" style="font-size: 13px;">
         <a href="/" class="text-decoration-none text-secondary">Trang chủ</a> <span class="mx-2 text-muted">›</span>
-        <a href="#" class="text-decoration-none text-secondary">@(Model.Category != null ? Model.Category.Name : "Sản phẩm")</a> <span class="mx-2 text-muted">›</span>
+        <a asp-controller="Product" asp-action="Index" asp-route-slug="@Model.Category?.Slug" class="text-decoration-none text-secondary">@(Model.Category != null ? Model.Category.Name : "Sản phẩm")</a> <span class="mx-2 text-muted">›</span>
         <span class="text-dark">@Model.Name</span>
     </div>
 
@@ -145,14 +150,21 @@
             </div>
 
             <div class="badges-row mb-4">
-                <span class="badge-warranty"><i class="fa-solid fa-shield-halved me-1"></i> Bảo hành: 36 Tháng</span>
-                <button class="badge-upgrade"><i class="fa-solid fa-share-nodes"></i> TƯ VẤN NÂNG CẤP</button>
+                <span class="badge-warranty"><i class="fa-solid fa-shield-halved me-1"></i> @(isPcProduct ? "Bảo hành: 36 Tháng" : "Bảo hành chính hãng")</span>
+                <a href="tel:0986552233" class="badge-upgrade"><i class="fa-solid fa-headset"></i> TƯ VẤN SẢN PHẨM</a>
             </div>
 
             <div class="desc-block mb-4">
                 <h3 class="border-bottom pb-2 mb-3"><i class="fa-solid fa-microchip text-primary"></i> Mô tả sản phẩm</h3>
                 <ul class="lh-lg text-dark fw-medium">
-                    @if (Model.ComponentSpec != null)
+                    @if (descriptionLines.Length > 0)
+                    {
+                        foreach (string line in descriptionLines)
+                        {
+                            <li><i class="fa-solid fa-circle-check text-success"></i> @line</li>
+                        }
+                    }
+                    else if (isPcProduct && Model.ComponentSpec != null)
                     {
                         if (!string.IsNullOrEmpty(Model.ComponentSpec.Socket)) { <li><i class="fa-solid fa-circle-check text-success"></i> @Model.ComponentSpec.Socket</li> }
                         if (!string.IsNullOrEmpty(Model.ComponentSpec.Mainboard)) { <li><i class="fa-solid fa-circle-check text-success"></i> @Model.ComponentSpec.Mainboard</li> }
@@ -163,13 +175,32 @@
                         if (!string.IsNullOrEmpty(Model.ComponentSpec.FormFactor)) { <li><i class="fa-solid fa-circle-check text-success"></i> @Model.ComponentSpec.FormFactor</li> }
                         if (!string.IsNullOrEmpty(Model.ComponentSpec.Cooler)) { <li><i class="fa-solid fa-circle-check text-success"></i> @Model.ComponentSpec.Cooler</li> }
                     }
+                    else if (!isPcProduct && accessorySpecLines.Length > 0)
+                    {
+                        foreach (string line in accessorySpecLines.Take(4))
+                        {
+                            <li><i class="fa-solid fa-circle-check text-success"></i> @line</li>
+                        }
+                    }
+                    else
+                    {
+                        <li>Thông tin sản phẩm đang được cập nhật.</li>
+                    }
                 </ul>
             </div>
 
             <div class="promo-box mb-4">
                 <div class="promo-title"><i class="fa-solid fa-gift"></i> KHUYẾN MÃI</div>
-                <p><i class="fa-solid fa-flag"></i> *** Lưu ý về Hệ điều hành: Máy ráp sẵn tại TTG đã bao gồm <a href="#">Windows 10/11 bản dùng thử trong 30 ngày</a>.</p>
-                <p><i class="fa-solid fa-flag"></i> Bộ PC này đã áp dụng CTKM SHOCK nên sẽ không được Áp dụng <a href="#">CTKM Chung</a>.</p>
+                @if (isPcProduct)
+                {
+                    <p><i class="fa-solid fa-flag"></i> Máy ráp sẵn đã bao gồm Windows 10/11 bản dùng thử trong 30 ngày.</p>
+                    <p><i class="fa-solid fa-flag"></i> Sản phẩm được kiểm tra cấu hình trước khi giao hàng.</p>
+                }
+                else
+                {
+                    <p><i class="fa-solid fa-flag"></i> Sản phẩm chính hãng, được kiểm tra trước khi giao hàng.</p>
+                    <p><i class="fa-solid fa-flag"></i> Hỗ trợ đổi trả và bảo hành theo chính sách của nhà sản xuất.</p>
+                }
             </div>
 
             <!-- FORM ĐẶT HÀNG (LẤY 100% CẤU TRÚC VÀ CLASS CỦA ÔNG) -->
@@ -226,25 +257,6 @@
                         THÊM VÀO GIỎ
                     </button>
 
-                    <div class="btn-row2">
-                        <button type="button" class="btn-blue">
-                            TRẢ GÓP QUA HỒ SƠ
-                            <br />
-                            <small>Duyệt cực nhanh</small>
-                        </button>
-
-                        <button type="button" class="btn-cardpay">
-                            TRẢ GÓP QUA THẺ
-                            <br />
-                            <small>Visa, Master, JCB</small>
-                        </button>
-                    </div>
-
-                    <div class="btn-row2">
-                        <button type="button" class="btn-yellow">
-                            MUA NGAY - TRẢ SAU
-                        </button>
-                    </div>
                 </form>
             }
             else
@@ -278,11 +290,12 @@
         </div>
     </div>
 </div>
-<!-- ================= BẢNG THÔNG SỐ (LẤY 100% CẤU TRÚC GỐC CỦA ÔNG) ================= -->
 <section class="section-dt">
     <div class="panel-dt">
         <h2>THÔNG SỐ KỸ THUẬT</h2>
-        <table class="specs-tb table table-bordered mt-3 align-middle text-center fw-bold">
+        @if (isPcProduct)
+        {
+            <table class="specs-tb table table-bordered mt-3 align-middle text-center fw-bold">
             <thead class="table-light">
                 <tr>
                     <th style="width: 80px;" class="text-center">STT</th>
@@ -305,8 +318,38 @@
                     if (!string.IsNullOrEmpty(Model.ComponentSpec.Cooler)) { <tr><td>@(stt++)</td><td class="text-center">@Model.ComponentSpec.Cooler</td><td>@Model.ComponentSpec.CoolerSl</td><td>@Model.ComponentSpec.CoolerBh</td></tr> }
                 }
             </tbody>
-        </table>
-        <a class="see-more" id="btn-see-more">Xem thêm ⌄</a>
+            </table>
+            <a class="see-more" id="btn-see-more">Xem thêm ⌄</a>
+        }
+        else if (accessorySpecLines.Length > 0)
+        {
+            <table class="specs-tb table table-bordered mt-3 align-middle">
+                <thead class="table-light">
+                    <tr><th style="width:35%;">Thông số</th><th>Chi tiết</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (string line in accessorySpecLines)
+                    {
+                        int separatorIndex = line.IndexOf(':');
+                        if (separatorIndex > 0)
+                        {
+                            <tr>
+                                <td class="fw-bold">@line[..separatorIndex].Trim()</td>
+                                <td>@line[(separatorIndex + 1)..].Trim()</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr><td colspan="2">@line</td></tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border mt-3 mb-0">Thông số kỹ thuật đang được cập nhật.</div>
+        }
     </div>
 </section>
 
@@ -339,9 +382,9 @@
                                     <span class="old-price-card">@item.OldPrice.ToString("N0") VNĐ</span>
                                 }
                             </div>
-                            @if (item.Discount > 0)
+                            @if (item.DiscountPercent > 0)
                             {
-                                <span class="discount-badge">-@item.Discount%</span>
+                                <span class="discount-badge">-@item.DiscountPercent%</span>
                             }
                         </div>
                     </a>

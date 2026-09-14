@@ -34,7 +34,8 @@
                 </div>
                 <div class="form-field">
                     <label>Phần trăm giảm (%)</label>
-                    <input asp-for="Discount" type="number" />
+                    <input asp-for="Discount" type="number" readonly />
+                    <small>Tự tính từ giá gốc và giá bán.</small>
                     <span asp-validation-for="Discount" class="text-danger"></span>
                 </div>
                 <div class="form-field">
@@ -54,6 +55,11 @@
                            min="0" />
                     <span asp-validation-for="StockQuantity"
                           style="font-size:12px; color:var(--a-danger);"></span>
+                </div>
+                <div class="form-field full">
+                    <label>Mô tả sản phẩm</label>
+                    <textarea asp-for="Description" rows="4" placeholder="Nhập điểm nổi bật, công dụng hoặc thông tin bảo hành..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-field full">
                     <label>Ảnh đại diện hiện tại</label>
@@ -76,8 +82,8 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-field full">
-                    <label>Sản phẩm mua kèm (tối đa 5)</label>
+                <div class="form-field full" id="relatedProductsPanel">
+                    <label>Sản phẩm mua kèm (tối đa 4 danh mục)</label>
                     <select asp-for="RelatedProductIds" asp-items="Model.AvailableRelatedProducts" multiple size="8"></select>
                     <small style="color:var(--a-muted);">Chọn tối đa một món cho mỗi danh mục (màn hình, bàn phím, chuột, tai nghe). Giữ Ctrl để chọn nhiều món.</small>
                     <span asp-validation-for="RelatedProductIds" class="text-danger"></span>
@@ -85,9 +91,45 @@
             </div>
         </div>
 
+        <div class="panel" id="buildMetadataPanel" hidden>
+            <div class="panel-head"><h2>Phân loại linh kiện cho Build PC</h2></div>
+            <div class="form-grid">
+                <div class="form-field full">
+                    <label asp-for="ComponentType">Loại linh kiện</label>
+                    <select asp-for="ComponentType">
+                        <option value="">Chưa phân loại</option>
+                        <option value="CPU">CPU</option><option value="Mainboard">Mainboard</option>
+                        <option value="RAM">RAM</option><option value="GPU">Card đồ họa</option>
+                        <option value="Storage">Ổ cứng SSD / HDD</option><option value="PSU">Nguồn</option>
+                        <option value="Case">Vỏ case</option><option value="Cooler">Tản nhiệt</option>
+                    </select>
+                    <span asp-validation-for="ComponentType" class="text-danger"></span>
+                </div>
+                <div class="form-field full" id="buildSocketField">
+                    <label asp-for="BuildSocket">Socket CPU / Mainboard</label>
+                    <select asp-for="BuildSocket">
+                        <option value="">Chưa xác định / chưa hỗ trợ</option>
+                        @foreach (var socket in new[] { "LGA1700", "LGA1851", "LGA1200", "LGA1151", "AM4", "AM5" })
+                        {
+                            <option value="@socket">@socket</option>
+                        }
+                    </select>
+                    <span asp-validation-for="BuildSocket" class="text-danger"></span>
+                </div>
+                <div class="form-field full" id="buildMemoryField">
+                    <label asp-for="BuildMemoryType">Chuẩn RAM của Mainboard / RAM</label>
+                    <select asp-for="BuildMemoryType">
+                        <option value="">Chưa xác định / chưa hỗ trợ</option>
+                        <option value="DDR3">DDR3</option><option value="DDR4">DDR4</option><option value="DDR5">DDR5</option>
+                    </select>
+                    <span asp-validation-for="BuildMemoryType" class="text-danger"></span>
+                </div>
+                <p class="form-field full">Đối chiếu thông số sản phẩm trước khi chọn. Nếu chưa chắc, để “Chưa xác định”; hệ thống không coi dữ liệu thiếu là tương thích.</p>
+            </div>
+        </div>
         <!-- CỘT PHẢI: CẤU HÌNH -->
-        <div class="panel">
-            <div class="panel-head"><h2>Cấu hình chi tiết (có thể để trống với phụ kiện)</h2></div>
+        <div class="panel" id="pcSpecPanel">
+            <div class="panel-head"><h2>Cấu hình bộ PC</h2></div>
             <div class="table-wrap">
                 <table class="admin-table">
                     <thead><tr><th>Linh kiện</th><th>Mô tả chi tiết</th><th style="width:60px;">SL</th><th style="width:100px;">Bảo hành</th></tr></thead>
@@ -104,6 +146,15 @@
                 </table>
             </div>
         </div>
+        <div class="panel" id="accessorySpecPanel" hidden>
+            <div class="panel-head"><h2>Thông số kỹ thuật sản phẩm</h2></div>
+            <div class="form-field" style="padding:20px;">
+                <label>Nhập mỗi thông số trên một dòng</label>
+                <textarea asp-for="TechnicalSpecifications" rows="20" placeholder="Ví dụ:&#10;Kích thước: 27 inch&#10;Độ phân giải: 2560 x 1440&#10;Tần số quét: 180Hz&#10;Kết nối: USB / Bluetooth"></textarea>
+                <small style="color:var(--a-muted);">Định dạng: Tên thông số: Giá trị.</small>
+                <span asp-validation-for="TechnicalSpecifications" class="text-danger"></span>
+            </div>
+        </div>
     </div>
 
     <div style="margin-top: 15px; text-align: right;">
@@ -112,3 +163,26 @@
         </button>
     </div>
 </form>
+
+@section Scripts {
+    <script src="~/js/admin-build-metadata.js" asp-append-version="true"></script>
+    <script src="~/js/admin-product-price.js" asp-append-version="true"></script>
+    <script>
+        (() => {
+            const category = document.getElementById('CategoryId');
+            const pcPanel = document.getElementById('pcSpecPanel');
+            const accessoryPanel = document.getElementById('accessorySpecPanel');
+            const relatedPanel = document.getElementById('relatedProductsPanel');
+            const updatePanels = () => {
+                const text = category.options[category.selectedIndex]?.text?.toUpperCase() || '';
+                const isPc = text.includes('PC GAMING') || text.includes('PC WORKSTATION');
+                pcPanel.hidden = !isPc;
+                accessoryPanel.hidden = isPc;
+                relatedPanel.hidden = !isPc;
+                relatedPanel.querySelectorAll('select').forEach(input => input.disabled = !isPc);
+            };
+            category.addEventListener('change', updatePanels);
+            updatePanels();
+        })();
+    </script>
+}

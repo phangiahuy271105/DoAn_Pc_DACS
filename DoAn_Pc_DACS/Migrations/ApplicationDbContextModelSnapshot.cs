@@ -115,6 +115,12 @@ namespace DoAn_Pc_DACS.Migrations
                             Id = 104,
                             Name = "TAI NGHE",
                             Slug = "tai-nghe"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            Name = "LINH KIỆN MÁY TÍNH",
+                            Slug = "linh-kien-may-tinh"
                         });
                 });
 
@@ -347,6 +353,10 @@ namespace DoAn_Pc_DACS.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
@@ -369,6 +379,14 @@ namespace DoAn_Pc_DACS.Migrations
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("TechnicalSpecifications")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ComponentType").HasMaxLength(20).HasColumnType("nvarchar(20)");
+                    b.Property<string>("BuildSocket").HasMaxLength(20).HasColumnType("nvarchar(20)");
+                    b.Property<string>("BuildMemoryType").HasMaxLength(20).HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 

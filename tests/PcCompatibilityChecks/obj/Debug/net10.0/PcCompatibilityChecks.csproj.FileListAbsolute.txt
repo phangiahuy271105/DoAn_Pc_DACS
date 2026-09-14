@@ -1,0 +1,15 @@
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\bin\Debug\net10.0\PcCompatibilityChecks.exe
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\bin\Debug\net10.0\PcCompatibilityChecks.deps.json
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\bin\Debug\net10.0\PcCompatibilityChecks.runtimeconfig.json
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\bin\Debug\net10.0\PcCompatibilityChecks.dll
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\bin\Debug\net10.0\PcCompatibilityChecks.pdb
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.AssemblyInfoInputs.cache
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.AssemblyInfo.cs
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.csproj.CoreCompileInputs.cache
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.sourcelink.json
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.dll
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\refint\PcCompatibilityChecks.dll
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.pdb
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\PcCompatibilityChecks.genruntimeconfig.cache
+C:\Users\BEN\OneDrive\Documents\DoAn_Pc\DoAn_Pc_DACS\tests\PcCompatibilityChecks\obj\Debug\net10.0\ref\PcCompatibilityChecks.dll

@@ -8,6 +8,18 @@ namespace DoAn_Pc_DACS.Models
 {
     public class ProductCreateViewModel
     {
+        [StringLength(20)]
+        [RegularExpression("^(CPU|Mainboard|RAM|GPU|Storage|PSU|Case|Cooler)$", ErrorMessage = "Loại linh kiện không hợp lệ.")]
+        public string ComponentType { get; set; }
+
+        [StringLength(20)]
+        [RegularExpression("^(LGA1700|LGA1851|LGA1200|LGA1151|AM4|AM5)$", ErrorMessage = "Socket không hợp lệ.")]
+        public string BuildSocket { get; set; }
+
+        [StringLength(20)]
+        [RegularExpression("^(DDR3|DDR4|DDR5)$", ErrorMessage = "Chuẩn RAM không hợp lệ.")]
+        public string BuildMemoryType { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập tên sản phẩm")]
         [StringLength(255)]
         public string Name { get; set; }
@@ -34,6 +46,12 @@ namespace DoAn_Pc_DACS.Models
         public int CategoryId { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Mô tả tối đa 2000 ký tự")]
+        public string Description { get; set; }
+
+        [StringLength(5000, ErrorMessage = "Thông số kỹ thuật tối đa 5000 ký tự")]
+        public string TechnicalSpecifications { get; set; }
 
         public List<int> RelatedProductIds { get; set; } = new();
         public IEnumerable<SelectListItem> AvailableRelatedProducts { get; set; } = new List<SelectListItem>();

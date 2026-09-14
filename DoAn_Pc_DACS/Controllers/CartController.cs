@@ -11,6 +11,7 @@ namespace DoAn_Pc_DACS.Controllers
 {
     public class CartController : Controller
     {
+        private static readonly string[] BundleCategorySlugs = ["man-hinh", "ban-phim", "chuot", "tai-nghe"];
         private readonly ApplicationDbContext _context;
 
         public CartController(ApplicationDbContext context)
@@ -109,7 +110,9 @@ namespace DoAn_Pc_DACS.Controllers
 
             var configuredRelations = await _context.ProductRelations
                 .AsNoTracking()
-                .Where(relation => relation.ProductId == id && selectedRelationIds.Contains(relation.Id))
+                .Where(relation => relation.ProductId == id &&
+                                   selectedRelationIds.Contains(relation.Id) &&
+                                   BundleCategorySlugs.Contains(relation.RelatedProduct.Category.Slug))
                 .Select(relation => new
                 {
                     relation.Id,
@@ -294,7 +297,7 @@ namespace DoAn_Pc_DACS.Controllers
         // 2. Xử lý lưu Đơn hàng vào CSDL (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(Order order)
+        public async Task<IActionResult> Checkout([Bind("CustomerName,PhoneNumber,Address,Note")] Order order)
         {
             var cart = HttpContext.Session.Get<List<CartItem>>("Cart") ?? new List<CartItem>();
 

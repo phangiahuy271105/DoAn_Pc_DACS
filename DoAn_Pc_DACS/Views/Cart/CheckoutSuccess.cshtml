@@ -7,10 +7,7 @@
 
     <!-- Lời cảm ơn -->
     <div class="text-center mb-4">
-        <p class="mb-2" style="font-size: 15px;">Cảm ơn Quý khách hàng đã chọn mua hàng tại PGHSHOP. Trong 15 phút, PGHSHOP sẽ SMS hoặc gọi để xác nhận đơn hàng.</p>
-        <p class="fst-italic text-muted" style="font-size: 14px;">
-            * Các đơn hàng từ 21h30 tới 8h sáng hôm sau. PGHSHOP sẽ liên hệ với Quý khách trước 10h trưa cùng ngày.
-        </p>
+        <p class="mb-2" style="font-size: 15px;">Cảm ơn bạn đã đặt hàng tại PGHSHOP. Đơn hàng đã được ghi nhận và đang chờ cửa hàng xác nhận.</p>
     </div>
 
     <!-- Khối thông tin đơn hàng (Nền xanh lá) -->
@@ -61,6 +58,8 @@
 
     <!-- Nút Tiếp tục mua hàng -->
     <div class="text-center mt-4">
+        <p>Hãy lưu mã đơn <strong>#@Model.Id</strong> để tra cứu cùng số điện thoại đặt hàng.</p>
+        <a asp-controller="Order" asp-action="Track" asp-route-code="@Model.Id" class="btn btn-outline-danger w-100 mb-3">Tra cứu trạng thái đơn hàng</a>
         <a href="/" class="btn w-100 fw-bold text-white shadow-sm" style="background-color: #dc3545; font-size: 16px; padding: 12px; border-radius: 8px;">
             Tiếp tục mua hàng <i class="fa-solid fa-cart-shopping ms-1"></i>
         </a>

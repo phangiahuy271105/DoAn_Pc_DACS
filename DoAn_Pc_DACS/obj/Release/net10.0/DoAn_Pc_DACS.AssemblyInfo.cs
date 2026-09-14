@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ff6c2d3f9ddc65dc95c195cf09d8970ec50b50e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+467a76742f89bc998731b305c707217f66007d07")]
 [assembly: System.Reflection.AssemblyProductAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DoAn_Pc_DACS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

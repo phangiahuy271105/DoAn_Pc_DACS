@@ -16,6 +16,8 @@ namespace DoAn_Pc_DACS.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
+        private static readonly string[] PcCategorySlugs = ["pc-gaming", "pc-workstation", "pc-workstation-2d-3d"];
+        private static readonly string[] BundleCategorySlugs = ["man-hinh", "ban-phim", "chuot", "tai-nghe"];
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -25,25 +27,91 @@ namespace DoAn_Pc_DACS.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> Dashboard()
         {
-            var products = _context.Products
-                       .Include(p => p.Category)
-                       .Include(p => p.ComponentSpec)
-                       .Include(p => p.ProductImages)
-                       .ToList();
-            return View(products);
+            var products = _context.Products.AsNoTracking();
+            var orders = _context.Orders.AsNoTracking();
+            var model = new AdminDashboardViewModel
+            {
+                ProductCount = await products.CountAsync(),
+                OrderCount = await orders.CountAsync(),
+                PendingOrderCount = await orders.CountAsync(order => order.Status == "Chờ xác nhận"),
+                CompletedRevenue = await orders.Where(order => order.Status == "Hoàn tất")
+                    .SumAsync(order => (decimal?)order.TotalAmount) ?? 0,
+                OutOfStockCount = await products.CountAsync(product => product.StockQuantity <= 0),
+                LowStockProducts = await products.Where(product => product.StockQuantity > 0 && product.StockQuantity <= 5)
+                    .Include(product => product.Category)
+                    .OrderBy(product => product.StockQuantity).ThenBy(product => product.Name).ToListAsync(),
+                RecentOrders = await orders.OrderByDescending(order => order.OrderDate)
+                    .ThenByDescending(order => order.Id).Take(10).ToListAsync()
+            };
+            return View(model);
+        }
+
+        public async Task<IActionResult> Index(string group = "all", string? q = null)
+        {
+            string[] validGroups =
+            [
+                "all", "gaming", "workstation", "components", "monitor", "keyboard", "mouse", "headset"
+            ];
+            group = validGroups.Contains(group) ? group : "all";
+            q = q?.Trim();
+
+            var baseQuery = _context.Products
+                .AsNoTracking()
+                .Include(product => product.Category)
+                .Include(product => product.ComponentSpec)
+                .Include(product => product.ProductImages)
+                .AsSplitQuery();
+
+            var counts = new Dictionary<string, int>
+            {
+                ["all"] = await baseQuery.CountAsync(),
+                ["gaming"] = await baseQuery.CountAsync(product => product.Category.Slug == "pc-gaming"),
+                ["workstation"] = await baseQuery.CountAsync(product =>
+                    product.Category.Slug == "pc-workstation" || product.Category.Slug == "pc-workstation-2d-3d"),
+                ["components"] = await baseQuery.CountAsync(product => product.Category.Slug == "linh-kien-may-tinh"),
+                ["monitor"] = await baseQuery.CountAsync(product => product.Category.Slug == "man-hinh"),
+                ["keyboard"] = await baseQuery.CountAsync(product => product.Category.Slug == "ban-phim"),
+                ["mouse"] = await baseQuery.CountAsync(product => product.Category.Slug == "chuot"),
+                ["headset"] = await baseQuery.CountAsync(product => product.Category.Slug == "tai-nghe")
+            };
+
+            IQueryable<Product> productsQuery = group switch
+            {
+                "gaming" => baseQuery.Where(product => product.Category.Slug == "pc-gaming"),
+                "workstation" => baseQuery.Where(product =>
+                    product.Category.Slug == "pc-workstation" || product.Category.Slug == "pc-workstation-2d-3d"),
+                "components" => baseQuery.Where(product => product.Category.Slug == "linh-kien-may-tinh"),
+                "monitor" => baseQuery.Where(product => product.Category.Slug == "man-hinh"),
+                "keyboard" => baseQuery.Where(product => product.Category.Slug == "ban-phim"),
+                "mouse" => baseQuery.Where(product => product.Category.Slug == "chuot"),
+                "headset" => baseQuery.Where(product => product.Category.Slug == "tai-nghe"),
+                _ => baseQuery
+            };
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                productsQuery = productsQuery.Where(product => product.Name.Contains(q));
+            }
+
+            var viewModel = new AdminProductIndexViewModel
+            {
+                Products = await productsQuery.OrderByDescending(product => product.Id).ToListAsync(),
+                GroupCounts = counts,
+                CurrentGroup = group,
+                SearchTerm = q ?? string.Empty
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> CreateProduct()
         {
             var viewModel = new ProductCreateViewModel
             {
-                Categories = await _context.Categories.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToListAsync(),
+                Categories = await GetCategoryOptionsAsync(),
                 AvailableRelatedProducts = await GetRelatedProductOptionsAsync()
             };
             return View(viewModel);
@@ -55,6 +123,12 @@ namespace DoAn_Pc_DACS.Controllers
         {
             await ValidateProductImagesAsync(model.ImageFile, model.GalleryFiles);
             ValidateProductData(model.Price, model.OldPrice, model.CategoryId);
+            if (!await _context.Categories.AnyAsync(c => c.Id == model.CategoryId && c.Slug == "linh-kien-may-tinh"))
+                model.ComponentType = null;
+            if (model.ComponentType is not ("CPU" or "Mainboard")) model.BuildSocket = null;
+            if (model.ComponentType is not ("RAM" or "Mainboard")) model.BuildMemoryType = null;
+            bool isPcCategory = await IsPcCategoryAsync(model.CategoryId);
+            if (!isPcCategory) model.RelatedProductIds.Clear();
             model.RelatedProductIds = model.RelatedProductIds.Distinct().ToList();
             await ValidateRelatedProductsAsync(0, model.CategoryId, model.RelatedProductIds);
 
@@ -71,11 +145,16 @@ namespace DoAn_Pc_DACS.Controllers
                         Name = model.Name.Trim(),
                         Price = model.Price,
                         OldPrice = model.OldPrice,
-                        Discount = model.Discount,
+                        Discount = Product.CalculateDiscount(model.Price, model.OldPrice),
                         StockQuantity = model.StockQuantity,
                         CategoryId = model.CategoryId,
+                        ComponentType = NormalizeOptionalText(model.ComponentType),
+                        BuildSocket = NormalizeOptionalText(model.BuildSocket),
+                        BuildMemoryType = NormalizeOptionalText(model.BuildMemoryType),
                         ImageUrl = mainImageUrl,
-                        ComponentSpec = CreateComponentSpec(model),
+                        Description = NormalizeOptionalText(model.Description),
+                        TechnicalSpecifications = NormalizeOptionalText(model.TechnicalSpecifications),
+                        ComponentSpec = isPcCategory ? CreateComponentSpec(model) : null,
                         ProductImages = new List<ProductImage>(),
                         RelatedProducts = model.RelatedProductIds.Select((relatedId, index) => new ProductRelation
                         {
@@ -103,11 +182,7 @@ namespace DoAn_Pc_DACS.Controllers
                 }
             }
 
-            model.Categories = _context.Categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
+            model.Categories = await GetCategoryOptionsAsync();
             model.AvailableRelatedProducts = await GetRelatedProductOptionsAsync();
 
             return View(model);
@@ -136,6 +211,11 @@ namespace DoAn_Pc_DACS.Controllers
                 Discount = product.Discount,
                 StockQuantity = product.StockQuantity,
                 CategoryId = product.CategoryId,
+                ComponentType = product.ComponentType,
+                BuildSocket = product.BuildSocket,
+                BuildMemoryType = product.BuildMemoryType,
+                Description = product.Description,
+                TechnicalSpecifications = product.TechnicalSpecifications,
                 ExistingImageUrl = product.ImageUrl,
                 ExistingGalleryImages = product.ProductImages.ToList(),
                 RelatedProductIds = product.RelatedProducts
@@ -168,11 +248,7 @@ namespace DoAn_Pc_DACS.Controllers
                 CoolerSl = product.ComponentSpec?.CoolerSl ?? 1,
                 CoolerBh = product.ComponentSpec?.CoolerBh ?? "12 Tháng",
 
-                Categories = await _context.Categories.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToListAsync(),
+                Categories = await GetCategoryOptionsAsync(),
                 AvailableRelatedProducts = await GetRelatedProductOptionsAsync(product.Id)
             };
 
@@ -185,6 +261,12 @@ namespace DoAn_Pc_DACS.Controllers
         {
             await ValidateProductImagesAsync(model.ImageFile, model.GalleryFiles, requireMainImage: false);
             ValidateProductData(model.Price, model.OldPrice, model.CategoryId);
+            if (!await _context.Categories.AnyAsync(c => c.Id == model.CategoryId && c.Slug == "linh-kien-may-tinh"))
+                model.ComponentType = null;
+            if (model.ComponentType is not ("CPU" or "Mainboard")) model.BuildSocket = null;
+            if (model.ComponentType is not ("RAM" or "Mainboard")) model.BuildMemoryType = null;
+            bool isPcCategory = await IsPcCategoryAsync(model.CategoryId);
+            if (!isPcCategory) model.RelatedProductIds.Clear();
             model.RelatedProductIds = model.RelatedProductIds.Distinct().ToList();
             await ValidateRelatedProductsAsync(model.Id, model.CategoryId, model.RelatedProductIds);
 
@@ -230,21 +312,25 @@ namespace DoAn_Pc_DACS.Controllers
                     product.Name = model.Name.Trim();
                     product.Price = model.Price;
                     product.OldPrice = model.OldPrice;
-                    product.Discount = model.Discount;
+                    product.Discount = Product.CalculateDiscount(model.Price, model.OldPrice);
                     product.StockQuantity = model.StockQuantity;
                     product.CategoryId = model.CategoryId;
+                    product.ComponentType = NormalizeOptionalText(model.ComponentType);
+                    product.BuildSocket = NormalizeOptionalText(model.BuildSocket);
+                    product.BuildMemoryType = NormalizeOptionalText(model.BuildMemoryType);
+                    product.Description = NormalizeOptionalText(model.Description);
+                    product.TechnicalSpecifications = NormalizeOptionalText(model.TechnicalSpecifications);
 
-                    if (product.ComponentSpec == null) product.ComponentSpec = new ComponentSpec();
-
-                    product.ComponentSpec.Socket = model.Socket; product.ComponentSpec.SocketSl = model.SocketSl; product.ComponentSpec.SocketBh = model.SocketBh;
-                    product.ComponentSpec.Mainboard = model.Mainboard; product.ComponentSpec.MainboardSl = model.MainboardSl; product.ComponentSpec.MainboardBh = model.MainboardBh;
-                    product.ComponentSpec.RamType = model.RamType; product.ComponentSpec.RamSl = model.RamSl; product.ComponentSpec.RamBh = model.RamBh;
-                    product.ComponentSpec.Storage = model.Storage; product.ComponentSpec.StorageSl = model.StorageSl; product.ComponentSpec.StorageBh = model.StorageBh;
-                    product.ComponentSpec.PowerSupply = model.PowerSupply; product.ComponentSpec.PowerSupplySl = model.PowerSupplySl; product.ComponentSpec.PowerSupplyBh = model.PowerSupplyBh;
-                    product.ComponentSpec.Vga = model.Vga; product.ComponentSpec.VgaSl = model.VgaSl; product.ComponentSpec.VgaBh = model.VgaBh;
-                    product.ComponentSpec.FormFactor = model.FormFactor; product.ComponentSpec.FormFactorSl = model.FormFactorSl; product.ComponentSpec.FormFactorBh = model.FormFactorBh;
-                    product.ComponentSpec.Cooler = model.Cooler; product.ComponentSpec.CoolerSl = model.CoolerSl; product.ComponentSpec.CoolerBh = model.CoolerBh;
-                    product.ComponentSpec.Wattage = model.Wattage;
+                    if (isPcCategory)
+                    {
+                        product.ComponentSpec ??= new ComponentSpec();
+                        ApplyComponentSpec(product.ComponentSpec, model);
+                    }
+                    else if (product.ComponentSpec != null)
+                    {
+                        _context.ComponentSpecs.Remove(product.ComponentSpec);
+                        product.ComponentSpec = null;
+                    }
 
                     _context.ProductRelations.RemoveRange(product.RelatedProducts);
                     product.RelatedProducts = model.RelatedProductIds.Select((relatedId, index) => new ProductRelation
@@ -422,12 +508,17 @@ namespace DoAn_Pc_DACS.Controllers
             var relatedProducts = await _context.Products
                 .AsNoTracking()
                 .Where(product => relatedProductIds.Contains(product.Id))
-                .Select(product => new { product.Id, product.CategoryId })
+                .Select(product => new { product.Id, product.CategoryId, CategorySlug = product.Category.Slug })
                 .ToListAsync();
 
             if (relatedProducts.Count != relatedProductIds.Count)
             {
                 ModelState.AddModelError("RelatedProductIds", "Có sản phẩm mua kèm không còn tồn tại.");
+            }
+
+            if (relatedProducts.Any(product => !BundleCategorySlugs.Contains(product.CategorySlug)))
+            {
+                ModelState.AddModelError("RelatedProductIds", "Sản phẩm mua kèm chỉ gồm màn hình, bàn phím, chuột hoặc tai nghe.");
             }
 
             if (relatedProducts.Any(product => product.CategoryId == productCategoryId))
@@ -445,7 +536,7 @@ namespace DoAn_Pc_DACS.Controllers
         {
             return await _context.Products
                 .AsNoTracking()
-                .Where(product => product.Id != excludedProductId)
+                .Where(product => product.Id != excludedProductId && BundleCategorySlugs.Contains(product.Category.Slug))
                 .OrderBy(product => product.Category.Name)
                 .ThenBy(product => product.Name)
                 .Select(product => new SelectListItem
@@ -454,6 +545,37 @@ namespace DoAn_Pc_DACS.Controllers
                     Text = product.Category.Name + " — " + product.Name
                 })
                 .ToListAsync();
+        }
+
+        private Task<bool> IsPcCategoryAsync(int categoryId)
+        {
+            return _context.Categories
+                .AnyAsync(category => category.Id == categoryId && PcCategorySlugs.Contains(category.Slug));
+        }
+
+        private async Task<List<SelectListItem>> GetCategoryOptionsAsync()
+        {
+            var categories = await _context.Categories.AsNoTracking().ToListAsync();
+            string[] displayOrder =
+            [
+                "pc-gaming", "pc-workstation", "pc-workstation-2d-3d",
+                "linh-kien-may-tinh", "man-hinh", "ban-phim", "chuot", "tai-nghe"
+            ];
+
+            return categories
+                .OrderBy(category => Array.IndexOf(displayOrder, category.Slug) is int index && index >= 0 ? index : int.MaxValue)
+                .ThenBy(category => category.Name)
+                .Select(category => new SelectListItem
+                {
+                    Value = category.Id.ToString(),
+                    Text = category.Name
+                })
+                .ToList();
+        }
+
+        private static string? NormalizeOptionalText(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
 
         private async Task ValidateProductImagesAsync(
@@ -559,11 +681,7 @@ namespace DoAn_Pc_DACS.Controllers
 
         private async Task PopulateEditViewModelAsync(ProductEditViewModel model)
         {
-            model.Categories = await _context.Categories.Select(category => new SelectListItem
-            {
-                Value = category.Id.ToString(),
-                Text = category.Name
-            }).ToListAsync();
+            model.Categories = await GetCategoryOptionsAsync();
             model.AvailableRelatedProducts = await GetRelatedProductOptionsAsync(model.Id);
 
             var existingProduct = await _context.Products
@@ -576,6 +694,35 @@ namespace DoAn_Pc_DACS.Controllers
                 model.ExistingImageUrl = existingProduct.ImageUrl;
                 model.ExistingGalleryImages = existingProduct.ProductImages.ToList();
             }
+        }
+
+        private static void ApplyComponentSpec(ComponentSpec componentSpec, ProductEditViewModel model)
+        {
+            componentSpec.Socket = model.Socket;
+            componentSpec.SocketSl = model.SocketSl;
+            componentSpec.SocketBh = model.SocketBh;
+            componentSpec.Mainboard = model.Mainboard;
+            componentSpec.MainboardSl = model.MainboardSl;
+            componentSpec.MainboardBh = model.MainboardBh;
+            componentSpec.RamType = model.RamType;
+            componentSpec.RamSl = model.RamSl;
+            componentSpec.RamBh = model.RamBh;
+            componentSpec.Storage = model.Storage;
+            componentSpec.StorageSl = model.StorageSl;
+            componentSpec.StorageBh = model.StorageBh;
+            componentSpec.PowerSupply = model.PowerSupply;
+            componentSpec.PowerSupplySl = model.PowerSupplySl;
+            componentSpec.PowerSupplyBh = model.PowerSupplyBh;
+            componentSpec.Vga = model.Vga;
+            componentSpec.VgaSl = model.VgaSl;
+            componentSpec.VgaBh = model.VgaBh;
+            componentSpec.FormFactor = model.FormFactor;
+            componentSpec.FormFactorSl = model.FormFactorSl;
+            componentSpec.FormFactorBh = model.FormFactorBh;
+            componentSpec.Cooler = model.Cooler;
+            componentSpec.CoolerSl = model.CoolerSl;
+            componentSpec.CoolerBh = model.CoolerBh;
+            componentSpec.Wattage = model.Wattage;
         }
 
         private static ComponentSpec CreateComponentSpec(ProductCreateViewModel model)

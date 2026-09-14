@@ -22,6 +22,8 @@ namespace DoAn_Pc_DACS.Data
 
             modelBuilder.Entity<Product>().Property(product => product.Price).HasPrecision(18, 2);
             modelBuilder.Entity<Product>().Property(product => product.OldPrice).HasPrecision(18, 2);
+            modelBuilder.Entity<Product>().Property(product => product.Description).HasMaxLength(2000);
+            modelBuilder.Entity<Product>().Property(product => product.TechnicalSpecifications).HasMaxLength(5000);
             modelBuilder.Entity<Order>().Property(order => order.TotalAmount).HasPrecision(18, 2);
             modelBuilder.Entity<OrderDetail>().Property(detail => detail.Price).HasPrecision(18, 2);
 
@@ -47,7 +49,8 @@ namespace DoAn_Pc_DACS.Data
                 new Category { Id = 101, Name = "MÀN HÌNH", Slug = "man-hinh" },
                 new Category { Id = 102, Name = "BÀN PHÍM", Slug = "ban-phim" },
                 new Category { Id = 103, Name = "CHUỘT", Slug = "chuot" },
-                new Category { Id = 104, Name = "TAI NGHE", Slug = "tai-nghe" }
+                new Category { Id = 104, Name = "TAI NGHE", Slug = "tai-nghe" },
+                new Category { Id = 105, Name = "LINH KIỆN MÁY TÍNH", Slug = "linh-kien-may-tinh" }
             );
 
             modelBuilder.Entity<Account>().HasData(

@@ -9,6 +9,7 @@ namespace DoAn_Pc_DACS.Controllers
 {
     public class HomeController : Controller
     {
+        private static readonly string[] BundleCategorySlugs = ["man-hinh", "ban-phim", "chuot", "tai-nghe"];
         private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
@@ -62,7 +63,8 @@ namespace DoAn_Pc_DACS.Controllers
 
             var bundleProducts = await _context.ProductRelations
                 .AsNoTracking()
-                .Where(relation => relation.ProductId == product.Id)
+                .Where(relation => relation.ProductId == product.Id &&
+                                   BundleCategorySlugs.Contains(relation.RelatedProduct.Category.Slug))
                 .OrderBy(relation => relation.DisplayOrder)
                 .Select(relation => new BundleProductViewModel
                 {
@@ -90,6 +92,7 @@ namespace DoAn_Pc_DACS.Controllers
             var relation = await _context.ProductRelations
                 .AsNoTracking()
                 .Where(item => item.Id == relationId)
+                .Where(item => BundleCategorySlugs.Contains(item.RelatedProduct.Category.Slug))
                 .Select(item => new
                 {
                     item.ProductId,

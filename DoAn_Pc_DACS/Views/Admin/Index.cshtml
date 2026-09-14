@@ -1,29 +1,75 @@
-﻿@model IEnumerable<DoAn_Pc_DACS.Models.Product>
+@model DoAn_Pc_DACS.Models.AdminProductIndexViewModel
 
 @{
     ViewData["Title"] = "Quản lý Sản phẩm";
     ViewData["Active"] = "products";
     Layout = "_AdminLayout";
+
+    var groups = new[]
+    {
+        (Key: "all", Label: "Tất cả", Icon: "fa-boxes-stacked"),
+        (Key: "gaming", Label: "PC Gaming", Icon: "fa-gamepad"),
+        (Key: "workstation", Label: "PC Workstation", Icon: "fa-computer"),
+        (Key: "components", Label: "Linh kiện", Icon: "fa-microchip"),
+        (Key: "monitor", Label: "Màn hình", Icon: "fa-display"),
+        (Key: "keyboard", Label: "Bàn phím", Icon: "fa-keyboard"),
+        (Key: "mouse", Label: "Chuột", Icon: "fa-computer-mouse"),
+        (Key: "headset", Label: "Tai nghe", Icon: "fa-headphones")
+    };
 }
 
 <div class="content-head">
     <div>
         <h1>Sản phẩm</h1>
-        <div class="breadcrumb-sm">Danh sách các sản phẩm đang bán trên PGHSHOP</div>
+        <div class="breadcrumb-sm">Quản lý sản phẩm theo từng nhóm trên PGHSHOP</div>
     </div>
-    <!-- Nút bấm gọi Action CreateProduct thật của anh em mình -->
-    <a href="/Admin/CreateProduct" class="btn btn-accent">
+    <a asp-controller="Admin" asp-action="CreateProduct" class="btn btn-accent">
         <i class="fa-solid fa-plus"></i> Thêm sản phẩm
     </a>
 </div>
 
+@if (TempData["AdminError"] is string errorMessage)
+{
+    <div class="admin-alert admin-alert-danger">@errorMessage</div>
+}
+
+<div class="product-group-tabs" aria-label="Nhóm sản phẩm">
+    @foreach (var item in groups)
+    {
+        <a asp-controller="Admin" asp-action="Index" asp-route-group="@item.Key" asp-route-q="@Model.SearchTerm"
+           class="product-group-tab @(Model.CurrentGroup == item.Key ? "active" : "")">
+            <i class="fa-solid @item.Icon"></i>
+            <span>@item.Label</span>
+            <strong>@Model.GroupCounts.GetValueOrDefault(item.Key)</strong>
+        </a>
+    }
+</div>
+
 <div class="panel">
+    <div class="product-admin-toolbar">
+        <div>
+            <strong>@groups.First(item => item.Key == Model.CurrentGroup).Label</strong>
+            <span>@Model.Products.Count sản phẩm</span>
+        </div>
+        <form asp-controller="Admin" asp-action="Index" method="get" class="product-admin-search">
+            <input type="hidden" name="group" value="@Model.CurrentGroup" />
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" name="q" value="@Model.SearchTerm" placeholder="Tìm theo tên sản phẩm..." />
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+            {
+                <a asp-controller="Admin" asp-action="Index" asp-route-group="@Model.CurrentGroup" title="Xóa từ khóa">
+                    <i class="fa-solid fa-xmark"></i>
+                </a>
+            }
+        </form>
+    </div>
+
     <div class="table-wrap">
         <table class="admin-table">
             <thead>
                 <tr>
                     <th>Hình ảnh</th>
-                    <th>Tên Sản phẩm</th>
+                    <th>Tên sản phẩm</th>
                     <th>Danh mục</th>
                     <th>Giá bán</th>
                     <th>Giá gốc</th>
@@ -32,59 +78,53 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- LÒNG GHÉP CODE C# LẤY DATABASE Ở ĐÂY -->
-                @foreach (var p in Model)
+                @if (Model.Products.Count == 0)
                 {
                     <tr>
-                        <td>
-                            <div class="cell-thumb">
-                                <img src="@p.ImageUrl" alt="@p.Name" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="cell-title">@p.Name</div>
-                            <div class="cell-sub">ID: #@p.Id</div>
-                        </td>
-                        <td><span class="pill pill-info">@(p.Category?.Name ?? "Chưa có")</span></td>
-                        <td class="cell-title" style="color: var(--a-danger);">@p.Price.ToString("N0")₫</td>
-                        <td style="text-decoration: line-through; color: var(--a-muted);">@p.OldPrice.ToString("N0")₫</td>
-                        <td>
-                            @if (p.StockQuantity <= 0)
-                            {
-                                <span class="pill pill-danger">
-                                    Hết hàng
-                                </span>
-                            }
-                            else if (p.StockQuantity <= 5)
-                            {
-                                <span class="pill pill-warning">
-                                    Còn @p.StockQuantity
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="pill pill-success">
-                                    @p.StockQuantity sản phẩm
-                                </span>
-                            }
-                        </td>
-
-                        <td>
-                            <div class="row-actions">
-                                <!-- Nút Sửa gọi Action thật -->
-                                <a href="/Admin/EditProduct/@p.Id" class="btn btn-outline btn-icon" title="Sửa">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <!-- Nút Xóa gọi Action thật -->
-                                <form action="/Admin/DeleteProduct" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xoá sản phẩm này?');" style="display:inline;">
-                                    <input type="hidden" name="id" value="@p.Id" />
-                                    <button type="submit" class="btn btn-outline btn-icon" title="Xoá" style="color:var(--a-danger);">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </form>
+                        <td colspan="7">
+                            <div class="admin-empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <strong>Chưa có sản phẩm phù hợp</strong>
+                                <span>Hãy đổi nhóm, từ khóa hoặc thêm sản phẩm mới.</span>
                             </div>
                         </td>
                     </tr>
+                }
+                else
+                {
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td><div class="cell-thumb"><img src="@product.ImageUrl" alt="@product.Name" style="width:40px;height:40px;object-fit:cover;border-radius:6px;" /></div></td>
+                            <td><div class="cell-title">@product.Name</div><div class="cell-sub">ID: #@product.Id</div></td>
+                            <td><span class="pill pill-info">@(product.Category?.Name ?? "Chưa có")</span></td>
+                            <td class="cell-title" style="color:var(--a-danger);">@product.Price.ToString("N0")₫</td>
+                            <td style="text-decoration:line-through;color:var(--a-muted);">@product.OldPrice.ToString("N0")₫</td>
+                            <td>
+                                @if (product.StockQuantity <= 0)
+                                {
+                                    <span class="pill pill-danger">Hết hàng</span>
+                                }
+                                else if (product.StockQuantity <= 5)
+                                {
+                                    <span class="pill pill-warning">Còn @product.StockQuantity</span>
+                                }
+                                else
+                                {
+                                    <span class="pill pill-success">@product.StockQuantity sản phẩm</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@product.Id" class="btn btn-outline btn-icon" title="Sửa"><i class="fa-solid fa-pen"></i></a>
+                                    <form asp-controller="Admin" asp-action="DeleteProduct" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xoá sản phẩm này?');" style="display:inline;">
+                                        <input type="hidden" name="id" value="@product.Id" />
+                                        <button type="submit" class="btn btn-outline btn-icon" title="Xoá" style="color:var(--a-danger);"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

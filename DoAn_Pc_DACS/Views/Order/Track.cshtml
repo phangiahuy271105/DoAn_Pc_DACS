@@ -1,0 +1,74 @@
+@model DoAn_Pc_DACS.Models.OrderTrackingViewModel
+@{
+    ViewData["Title"] = "Tra cứu đơn hàng";
+}
+<div class="container py-4" style="max-width:960px;">
+    <h1 class="h3 fw-bold">Tra cứu đơn hàng</h1>
+    <p class="text-muted">Nhập mã đơn trên trang đặt hàng thành công và số điện thoại bạn đã dùng để đặt hàng.</p>
+    <form asp-controller="Order" asp-action="Track" method="post" class="card card-body shadow-sm mb-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="row g-3 align-items-start">
+            <div class="col-md-5">
+                <label asp-for="OrderCode" class="form-label">Mã đơn hàng</label>
+                <input asp-for="OrderCode" class="form-control" placeholder="Ví dụ: #123" maxlength="11" required />
+                <span asp-validation-for="OrderCode" class="text-danger"></span>
+            </div>
+            <div class="col-md-5">
+                <label asp-for="PhoneNumber" class="form-label">Số điện thoại đặt hàng</label>
+                <input asp-for="PhoneNumber" type="tel" class="form-control" autocomplete="tel" maxlength="25" required />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="col-md-2 pt-md-4">
+                <button class="btn btn-danger w-100 mt-md-2" type="submit">Tra cứu</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Result is { } order)
+    {
+        var statusClass = order.Status switch { "Hoàn tất" => "bg-success", "Đã hủy" => "bg-danger", "Đang giao" => "bg-primary", _ => "bg-secondary" };
+        var explanation = order.Status switch
+        {
+            "Chờ xác nhận" => "Cửa hàng đã nhận đơn và đang chờ xác nhận thông tin.",
+            "Đang giao" => "Đơn hàng đang được giao đến bạn.",
+            "Hoàn tất" => "Đơn hàng đã hoàn tất. Cảm ơn bạn đã mua hàng!",
+            "Đã hủy" => "Đơn hàng đã được hủy.",
+            _ => "Vui lòng liên hệ cửa hàng để biết thêm thông tin."
+        };
+        <section class="card card-body shadow-sm" aria-label="Kết quả tra cứu">
+            <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+                <h2 class="h4">Đơn hàng #@order.Id</h2>
+                <span class="badge @statusClass align-self-start p-2">@order.Status</span>
+            </div>
+            <p class="text-muted">@explanation</p>
+            <dl class="row">
+                <dt class="col-sm-3">Ngày đặt</dt><dd class="col-sm-9">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+                <dt class="col-sm-3">Người nhận</dt><dd class="col-sm-9">@order.CustomerName</dd>
+                <dt class="col-sm-3">Số điện thoại</dt><dd class="col-sm-9">@order.PhoneNumber</dd>
+                <dt class="col-sm-3">Địa chỉ giao hàng</dt><dd class="col-sm-9">@order.Address</dd>
+                @if (!string.IsNullOrWhiteSpace(order.Note))
+                {
+                    <dt class="col-sm-3">Ghi chú</dt><dd class="col-sm-9">@order.Note</dd>
+                }
+            </dl>
+            <h3 class="h5 border-top pt-3">Sản phẩm trong đơn</h3>
+            @foreach (var item in order.OrderDetails)
+            {
+                <div class="d-flex gap-3 border-bottom py-3 align-items-center">
+                    @if (item.Product != null)
+                    {
+                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name" width="72" height="72" style="object-fit:contain;" />
+                    }
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">@(item.Product?.Name ?? "Sản phẩm không còn hiển thị")</div>
+                        <div class="text-muted">@item.Price.ToString("N0")₫ × @item.Quantity</div>
+                        <div class="text-danger fw-bold">@((item.Price * item.Quantity).ToString("N0"))₫</div>
+                    </div>
+                </div>
+            }
+            <div class="d-flex justify-content-between mt-3 fs-5 fw-bold">
+                <span>Tổng tiền đơn hàng</span><span class="text-danger">@order.TotalAmount.ToString("N0")₫</span>
+            </div>
+        </section>
+    }
+</div>

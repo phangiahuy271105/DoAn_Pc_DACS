@@ -6,9 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="wwwroot\css\admin.css" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
@@ -27,8 +24,5 @@
     <Folder Include="wwwroot\images\uploads\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\css\admin.css" />
-  </ItemGroup>
 
 </Project>

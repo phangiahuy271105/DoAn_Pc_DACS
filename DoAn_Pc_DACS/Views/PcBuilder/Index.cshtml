@@ -1,0 +1,94 @@
+@model DoAn_Pc_DACS.Models.PcBuilderViewModel
+@{
+    ViewData["Title"] = "Tự chọn cấu hình PC";
+}
+<link rel="stylesheet" href="~/css/pc-builder.css" asp-append-version="true" />
+<div class="container py-4 builder-page">
+    <h1 class="h3 fw-bold text-center">CHỌN LINH KIỆN XÂY DỰNG CẤU HÌNH</h1>
+    <p>Chọn linh kiện đang bán tại cửa hàng. Mỗi mục chọn một sản phẩm; bạn có thể thay đổi số lượng trong giỏ hàng.</p>
+    <form asp-controller="PcBuilder" asp-action="AddToCart" method="post" id="builderForm">
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+        <div class="builder-toolbar">
+            <button type="button" class="btn btn-danger" id="clearBuild">Làm mới cấu hình</button>
+            <strong>Chi phí dự tính: <span id="buildTotalTop" class="text-danger">0₫</span></strong>
+        </div>
+        <div class="builder-layout">
+            <div class="builder-table">
+                @foreach (var slot in PcBuilderViewModel.Slots)
+                {
+                    var choices = Model.Products.Where(product => product.ComponentType == slot.Key).ToList();
+                    var selected = Model.Selection.GetValueOrDefault(slot.Key);
+                    <section class="builder-slot" data-slot="@slot.Key">
+                        <h2 class="h5">@(Array.IndexOf(PcBuilderViewModel.Slots.Keys.ToArray(), slot.Key) + 1). @slot.Value</h2>
+                        <div class="builder-slot-content">
+                        <label for="part-@slot.Key" class="visually-hidden">Chọn @slot.Value</label>
+                        <select id="part-@slot.Key" name="Selection[@slot.Key]" class="form-select builder-select" hidden>
+                            <option value="0">Chưa chọn @slot.Value</option>
+                            @if (selected != 0 && choices.All(product => product.Id != selected))
+                            {
+                                <option value="@selected" selected data-unavailable="true">Sản phẩm đã chọn không còn khả dụng — hãy chọn lại</option>
+                            }
+                            @foreach (var product in choices)
+                            {
+                                <option value="@product.Id" selected="@(selected == product.Id)"
+                                        data-name="@product.Name" data-price="@product.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-image="@product.ImageUrl" data-socket="@product.BuildSocket"
+                                        data-memory="@product.BuildMemoryType" data-stock="@product.StockQuantity">
+                                    @product.Name — @product.Price.ToString("N0")₫
+                                </option>
+                            }
+                        </select>
+                        <div class="builder-preview"></div>
+                        <div class="d-flex gap-2 mt-2">
+                            <button type="button" class="btn btn-outline-primary choose-part">+ Chọn @slot.Value (@choices.Count lựa chọn)</button>
+                            <button type="button" class="btn btn-outline-secondary remove-part">Bỏ chọn</button>
+                        </div>
+                        @if (choices.Count == 0)
+                        {
+                            <p class="text-muted mt-2 mb-0">Chưa có linh kiện còn hàng trong mục này.</p>
+                        }
+                        </div>
+                    </section>
+                }
+            </div>
+            <aside class="builder-summary">
+                <h2 class="h5">Cấu hình đã chọn</h2>
+                <p id="buildCount"></p>
+                <div class="fs-4 text-danger fw-bold" id="buildTotal" aria-live="polite">0₫</div>
+                <div id="buildChecks" class="my-3" aria-live="polite"></div>
+                <p class="small text-muted">Chỉ kiểm tra socket CPU–Mainboard và chuẩn RAM–Mainboard. Cần kiểm tra thêm BIOS, công suất nguồn, kích thước, tản nhiệt và khả năng xuất hình. Đây chưa phải xác nhận một bộ PC hoàn chỉnh.</p>
+                <label class="d-flex gap-2 small mb-3">
+                    <input asp-for="AcknowledgeLimitations" type="checkbox" />
+                    Tôi hiểu phạm vi kiểm tra và sẽ kiểm tra các thông số còn lại trước khi mua.
+                </label>
+                <button type="submit" class="btn btn-danger w-100" id="addBuild">Thêm linh kiện đã chọn vào giỏ</button>
+            </aside>
+        </div>
+    </form>
+    <dialog id="partPicker">
+        <div class="d-flex justify-content-between gap-3 mb-3"><h2 class="h5" id="pickerTitle">Chọn linh kiện</h2><button type="button" id="closePicker" class="btn btn-outline-secondary">Đóng</button></div>
+        <label for="pickerSearch">Tìm theo tên</label>
+        <input id="pickerSearch" type="search" class="form-control mb-3" placeholder="Nhập tên linh kiện…" />
+        <div class="d-flex flex-wrap gap-3 mb-3">
+            <label>Đối chiếu với cấu hình đã chọn
+                <select id="pickerFilter" class="form-select">
+                    <option value="all">Tất cả lựa chọn</option>
+                    <option value="match">Khớp các thông số đã kiểm tra</option>
+                    <option value="unknown">Chưa đủ dữ liệu kiểm tra</option>
+                </select>
+            </label>
+            <label>Sắp xếp giá
+                <select id="pickerSort" class="form-select">
+                    <option value="asc">Thấp đến cao</option>
+                    <option value="desc">Cao đến thấp</option>
+                </select>
+            </label>
+        </div>
+        <p class="small text-muted">Đối chiếu socket và chuẩn RAM; nhiều sản phẩm có thể cùng khớp. Các tiêu chí khác vẫn cần kiểm tra thêm.</p>
+        <p id="pickerCount" aria-live="polite"></p>
+        <div id="pickerResults"></div>
+    </dialog>
+</div>
+@section Scripts {
+    <script src="~/js/pc-builder.js" asp-append-version="true"></script>
+}
